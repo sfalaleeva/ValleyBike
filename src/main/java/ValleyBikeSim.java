@@ -17,35 +17,32 @@ import java.text.SimpleDateFormat;
 
 public class ValleyBikeSim {
 
-	/**
-	 * Fields related to stations.
-	 */
-	public static List<Station> stationsList;
+	/** Map of station ids to station objects. */
 	public static TreeMap<Integer, Station> stationsMap;
-	public static List<String[]> allStationEntries;
-
-	public static List<Station> stationWithAvailableDocks;
-	public static List<Integer> stationId;
-
+	
+	//TODO() Uncomment users map, stationToBikeMap, and issueMap when
+	// the appropriate classes are created.
+	
+	/** Map of user ids to user objects. */
+	//public static TreeMap<Integer, User> usersMap;
+	
+	/** Map of station ids to a list of bikes at that station. */
+	//public static Map<Integer, ArrayList<Bike>> stationToBikeMap;
+	
+	/** Map of user ids to maintenance requests. */
+	//public static Map<Integer, Issue> issueMap;
+	
+	/** Map of date to rides that have't been saved to files yet. */
+	public static Map<Date, ArrayList<Ride>> dailyRidesMap;
+	
+	/** The logged in user id. */
+	public static int currentUserID;
+	
+	/** The number of bikes in the system that need maintenance. */
+	public static int bikesNeedMaintenance;
 
 	public  static FileWriter csvWriter;
 	public static CSVWriter writer;
-
-
-	/**
-	 * Fields related to rides.
-	 */
-	public static List<Ride> ridesList;
-	public static List<String[]> allRidesEntries;
-
-	/**
-	 * the new station instance that gets instantiated every time the addStation() function is run
-	 * and the list of new Stations that needs to be instantiated and saved into the CSV file every
-	 * time the saveStationList() function is called.
-	 */
-	public static Station newStation;
-
-
 
 	/**
 	 * Read in all the data files and store them in appropriate data structures. A TreeMap was used so that
@@ -59,26 +56,27 @@ public class ValleyBikeSim {
 			CSVReader stationDataReader = new CSVReader(new FileReader(stationData));
 
 
-			stationsList = new ArrayList<>();
+			List<Station> stationsList = new ArrayList<>();
 			stationsMap = new TreeMap<>();
 
 			/* to read the CSV data row wise: */
-			allStationEntries = stationDataReader.readAll();
+			List<String[]> allStationEntries = stationDataReader.readAll();
 			System.out.println("");
 			int counter = 0;
 			for(String[] array : allStationEntries) {
 				if(counter == 0) {
 
 				} else {
-					stationsList.add(new Station((Integer.parseInt(array[0])), array[1], Integer.parseInt(array[2]), Integer.parseInt(array[3]), Integer.parseInt(array[4]),
-						Integer.parseInt(array[5]), Integer.parseInt(array[6]), toBool(array[7]), array[8]));
+					Station station = new Station(Integer.parseInt(array[0]), array[1], Integer.parseInt(array[2]), Integer.parseInt(array[3]), Integer.parseInt(array[4]),
+							Integer.parseInt(array[5]), Integer.parseInt(array[6]), toBool(array[7]), array[8]);
+					stationsMap.put(station.getID(),station);
 				}
 				counter++;
 			}
 
-			for(Station station : stationsList) {
+			/**for(Station station : stationsList) {
 				stationsMap.put(station.getID(), station);
-			}
+			}*/
 
 
 		}
@@ -147,28 +145,14 @@ public class ValleyBikeSim {
 	}
 
 	/**
-	 * Create a list of all Station IDs. Used to assist the recordRide() function.
-	 * @return - a list of all Station IDs.
-	 */
-	public static List<Integer> stationID() {
-		stationId = new ArrayList<>();
-
-		for (Station station : stationsList) {
-			stationId.add(station.getID());
-		}
-
-		return stationId;
-	}
-
-	/**
 	 * Create a list of Stations that still have docks available for parking. Used to assist the
 	 * recordRide() function.
 	 * @return - list of stations that have available docks.
 	 */
 	public static List<Station> availableStation() {
-		stationWithAvailableDocks = new ArrayList<>();
+		List<Station> stationWithAvailableDocks = new ArrayList<>();
 
-		for (Station station : stationsList) {
+		for (Station station : stationsMap.values()) {
 			if (station.getAvailableDocks() > 0) {
 				stationWithAvailableDocks.add(station);
 			}
@@ -213,7 +197,7 @@ public class ValleyBikeSim {
 	 * Create a station as prompted by the user.
 	 */
 	public static void addStation() {
-		newStation = new Station(0, null, 0, 0, 0, 0, 0, false, null);
+		Station newStation = new Station(0, null, 0, 0, 0, 0, 0, false, null);
 		System.out.println("\nYou are about to add a new station. Please specify the following details for the new station:\n");
 		while(true) {
 			System.out.println("Station ID (00-99):");
@@ -337,9 +321,8 @@ public class ValleyBikeSim {
 
 
 			/*
-			 * Save this newly created station to the stations list.
+			 * Save this newly created station to the stations map.
 			 */
-			stationsList.add(newStation);
 			stationsMap.put(newStation.getID(), newStation);
 			System.out.println("Station successfully added. Choose 'View station list' in menu to view the station.\n");
 
@@ -369,7 +352,7 @@ public class ValleyBikeSim {
 		}
 
 		//loops through and saves all stations
-		for (Station station : stationsList) {
+		for (Station station : stationsMap.values()) {
 			saveAll(station);
 		}
 	}
@@ -429,7 +412,6 @@ public class ValleyBikeSim {
 		String transportation = null;
 		int end = 0;
 		Station endStation = new Station(0, null, 0, 0, 0, 0, 0, false, null);
-		stationId = stationID();
 
 		//what's the start station
 		while (error) {
@@ -443,8 +425,8 @@ public class ValleyBikeSim {
 			}
 
 		}
-
-		while (! stationId.contains(start)) {
+		
+		while (! stationsMap.containsKey(start)) {
 			try {
 				System.out.println("Please enter an existing station ID: ");
 				start = Integer.parseInt(input.nextLine());
@@ -477,7 +459,7 @@ public class ValleyBikeSim {
 
 					}
 
-					while (! stationId.contains(start)) {
+					while (! stationsMap.containsKey(start)) {
 						try {
 							System.out.println("Please enter an existing station ID: ");
 							start = Integer.parseInt(input.nextLine());
@@ -511,7 +493,7 @@ public class ValleyBikeSim {
 
 					}
 
-					while (! stationId.contains(start)) {
+					while (! stationsMap.containsKey(start)) {
 						try {
 							System.out.println("Please enter an existing station ID: ");
 							start = Integer.parseInt(input.nextLine());
@@ -550,7 +532,7 @@ public class ValleyBikeSim {
 
 		}
 
-		while (! stationId.contains(end)) {
+		while (! stationsMap.containsKey(end)) {
 			try {
 				System.out.println("Please enter an existing station ID: ");
 				end = Integer.parseInt(input.nextLine());
@@ -568,7 +550,7 @@ public class ValleyBikeSim {
 			System.out.println("ID" + "\t" + "Bikes" + "\t" + "Pedelecs" + "\t" + "AvDocs"
 	    			+ "\t" + "MainReq" + "\t" + "Cap" + "\t" + "Kiosk" + "\t" + "Name - Address");
 
-			stationWithAvailableDocks = availableStation();
+			List<Station> stationWithAvailableDocks = availableStation();
 			for (Station station : stationWithAvailableDocks) {
 				station.printStation();
 			}
@@ -585,7 +567,7 @@ public class ValleyBikeSim {
 				}
 			}
 
-			while (!stationId.contains(end)) {
+			while (! stationsMap.containsKey(end)) {
 				try {
 					System.out.println("Please enter an existing station ID: ");
 					end = Integer.parseInt(input.nextLine());
@@ -619,9 +601,9 @@ public class ValleyBikeSim {
 
 		try {
 			CSVReader rideDataReader = new CSVReader(new FileReader(rideData));
-			ridesList = new ArrayList<>();
+			List<Ride> ridesList = new ArrayList<>();
 
-			allRidesEntries = rideDataReader.readAll();
+			List<String[]> allRidesEntries = rideDataReader.readAll();
 			System.out.println("");
 
 			int counter = 0;
@@ -667,21 +649,21 @@ public class ValleyBikeSim {
 		// this will help with distributing left over bikes to stations with higher capacity instead of by ID
 		// potentially only have station ids and reference them by ID in the TreeMap
         int totalBikes = 0;
-		for (Station station : stationsList) {
+		for (Station station : stationsMap.values()) {
 			totalBikes += station.getBikes();
 		}
 
         int totalPedelecs = 0;
-		for (Station station : stationsList) {
+		for (Station station : stationsMap.values()) {
 			totalPedelecs += station.getPedelecs();
 		}
 
         int totalCapacity = 0;
-		for (Station station : stationsList) {
+		for (Station station : stationsMap.values()) {
 			totalCapacity += station.getCapacity();
 		}
 
-		for (Station station : stationsList) {
+		for (Station station : stationsMap.values()) {
 			int bikes = station.getBikes();
 			int capacity = station.getCapacity();
 			bikes = Math.round(capacity * totalBikes / totalCapacity);
@@ -689,7 +671,7 @@ public class ValleyBikeSim {
 			station.setBikes(bikes);
 		}
 
-		for (Station station : stationsList) {
+		for (Station station : stationsMap.values()) {
 			int pedelecs = station.getPedelecs();
 			int capacity = station.getCapacity();
 			// use Math.floor function instead of round, so we don't assign more bikes than we have
@@ -699,34 +681,42 @@ public class ValleyBikeSim {
 
 		//what if after equalizing, the number of bikes isn't the same
 		int nowTotalBikes = 0;
-		for (Station station : stationsList) {
+		for (Station station : stationsMap.values()) {
 			nowTotalBikes += station.getBikes();
 		}
 
+		// Wrote this section to work with stationsMap instead of stationsList.
+		// It still functions the way original one functioned. So will be changed.
 		if (nowTotalBikes != totalBikes) {
 			int difference = totalBikes - nowTotalBikes; //can calculate nowTotalBikesLeftOver as we reassign them
-			for (int i = 0; i < difference; i++) {
-				int bikes = stationsList.get(i).getBikes() + 1; //delete
-				stationsList.get(i).setBikes(bikes);  //change setBikes to addBikes
+			for (Station station: stationsMap.values()) {
+				if (difference > 0) {
+					int bikes = station.getBikes() + 1; // delete
+					station.setBikes(bikes); // change setBikes to addBikes
+				}
+				difference--;
 			}
 		}
 
 		//what if the number of pedelecs isn't the same
 		int nowTotalPedelecs = 0;
-		for (Station station : stationsList) {
+		for (Station station : stationsMap.values()) {
 			nowTotalPedelecs += station.getPedelecs();
 		}
 
 		if (nowTotalPedelecs != totalPedelecs) {
 			int difference = totalPedelecs - nowTotalPedelecs;
-			for (int i = 0; i < difference; i++) {
-				int pedelecs = stationsList.get(i).getPedelecs() + 1;
-				stationsList.get(i).setPedelecs(pedelecs);
+			for (Station station: stationsMap.values()) {
+				if (difference > 0) {
+					int pedelecs = station.getPedelecs() + 1; // delete
+					station.setPedelecs(pedelecs); // change setBikes to addBikes
+				}
+				difference--;
 			}
 		}
 
 		//TODO: delete
-		for (Station station : stationsList) {
+		for (Station station : stationsMap.values()) {
 			int aDocs = station.getAvailableDocks();
 			aDocs = station.getCapacity() - station.getBikes() - station.getPedelecs();
 			station.setAvailableDocks(aDocs);
