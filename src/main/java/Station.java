@@ -1,20 +1,74 @@
 public class Station {
+	
+	/**
+	 * Static across all stations, the next ID to be assigned to a new station
+	 */
+	static int nextStationID;
+	
+	
+	/**
+	 * Unique integer ID of this station
+	 */
 	private int ID;
+	
+	
+	/**
+	 * Station name
+	 */
 	private String name;
+	
+	
+	/**
+	 * Number of bikes at the station
+	 */
 	private int bikes;
-	private int pedelecs;
+	
+	
+	/**
+	 * Number of docks the station has
+	 */
 	private int availableDocks;
+	
+	
+	/**
+	 * Number of maintenance requests at this station
+	 */
 	private int mReq;
+	
+	
+	/**
+	 * Total capacity of the station
+	 */
 	private int capacity;
+	
+	
+	/**
+	 * Whether or not the station has a kiosk
+	 */
 	private boolean hasKiosk;
+	
+	
+	/**
+	 * Address of the station
+	 */
 	private String address;
 
-	public Station(int ID, String name, int bikes, int pedelecs, int aDocks, int mReq, int capacity,
+	/**
+	 * Creates a station
+	 * @param ID - Station ID
+	 * @param name - Station name
+	 * @param bikes - # bikes
+	 * @param aDocks - available docks
+	 * @param mReq - # maintenance requests
+	 * @param capacity - Total capacity of the station
+	 * @param hasKiosk - Whether or not it has a kiosk
+	 * @param address - Address of the station
+	 */
+	public Station(int ID, String name, int bikes, int aDocks, int mReq, int capacity,
 			boolean hasKiosk, String address) {
 		this.ID = ID;
 		this.name = name;
 		this.bikes = bikes;
-		this.pedelecs = pedelecs;
 		this.availableDocks = aDocks;
 		this.mReq = mReq;
 		this.capacity = capacity;
@@ -22,14 +76,28 @@ public class Station {
 		this.address = address;
 	}
 
+	/**
+	 * Sets the station ID
+	 * @param ID - Unique station ID
+	 */
 	public void setID(int ID) {
 		this.ID = ID;
 	}
 
+	
+	/**
+	 * Sets the station name
+	 * @param name - station name
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
+	
+	/**
+	 * Sets the number of bikes at the station
+	 * @param bikes - # bikes at the station
+	 */
 	public void setBikes(int bikes) {
 		this.bikes = bikes;
 		//TODO: update available docks
@@ -37,72 +105,142 @@ public class Station {
 
 	//TODO: write addBikes method, so we can add a number of bikes to whatever is already at the station
 	//also will update available docks
-	
-	public void setPedelecs(int pedelecs) {
-		this.pedelecs = pedelecs;
+	/**
+	 * Adds the number of bikes to the total station tally
+	 * @param bikesAdded - number of bikes added
+	 */
+	public boolean addBikes(int bikesAdded) {
+		this.bikes += bikesAdded;
+		//TODO: Check whether there's enough docks for this many bikes
+		// Return true if the operation completed successfully, false otherwise
+		// Call setAvailableDocks from here
+		setAvailableDocks(availableDocks - bikesAdded);
+		return true;
 	}
 
+	
+	/**
+	 * Sets the number of docks available at the station
+	 * @param availableDocks - number of docks available
+	 */
 	//TODO: make private, because we should not call this without updating bikes first
-	public void setAvailableDocks(int availableDocks) {
+	private void setAvailableDocks(int availableDocks) {
 		this.availableDocks = availableDocks;
 	}
 
+	
+	/**
+	 * Sets number of maintenance requests currently at the station
+	 * @param mReq - Number of maintenance requests
+	 */
 	public void setMaintenanceRequests(int mReq) {
 		this.mReq = mReq;
 	}
 
+	
+	/**
+	 * Sets the station capacity
+	 * @param capacity - new station capacity
+	 */
 	public void setCapacity(int capacity) {
 		this.capacity = capacity;
 	}
 
+	
+	/**
+	 * Set whether or not the station has a kiosk
+	 * @param hasKiosk - whether or not a kiosk exists
+	 */
 	public void setHasKiosk(boolean hasKiosk) {
 		this.hasKiosk = hasKiosk;
 	}
 
+	
+	/**
+	 * Sets the station address
+	 * @param address - String address of the physical station
+	 */
 	public void setAddress(String address) {
 		this.address = address;
 	}
 
 
+	/**
+	 * Get the station id
+	 * @return - station id
+	 */
 	public int getID() {
 		return this.ID;
 	}
 
+	
+	/**
+	 * Get the station name
+	 * @return - station name
+	 */
 	public String getName() {
 		return this.name;
 	}
 
+	
+	/**
+	 * Get the number of bikes at the station currently
+	 * @return - number of bikes
+	 */
 	public int getBikes() {
 		return this.bikes;
 	}
 
-	public int getPedelecs() {
-		return this.pedelecs;
-	}
 
+	/**
+	 * Get the number of available docks at the station
+	 * @return - number of docks available
+	 */
 	public int getAvailableDocks() {
 		return this.availableDocks;
 	}
 
+	
+	/**
+	 * Get number of maintenance requests at the station
+	 * @return - 
+	 */
 	public int getMaintainenceReq() {
 		return this.mReq;
 	}
 
+	
+	/**
+	 * Gets the station capacity
+	 * @return - Total station capacity
+	 */
 	public int getCapacity() {
 		return this.capacity;
 	}
 
+	
+	/**
+	 * Get whether the station has a kiosk or not
+	 * @return - whether or not the station has a kiosk
+	 */
 	public boolean getHasKiosk() {
 		return this.hasKiosk;
 	}
 
+	
+	/**
+	 * Gets the station address
+	 * @return - station address
+	 */
 	public String getAddress() {
 		return this.address;
 	}
 
-
+	/**
+	 * Prints out the station data to the console
+	 */
 	public void printStation() {
-		System.out.println(this.ID + "\t" + this.bikes + "\t" + this.pedelecs + "\t"
+		System.out.println(this.ID + "\t" + this.bikes + "\t" 
 				+ this.availableDocks + "\t" + this.mReq + "\t" + this.capacity + "\t"
 				+ this.hasKiosk + "\t" + this.name + " - " + this.address);
 	}
