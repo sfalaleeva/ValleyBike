@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Date;
 
 public class user extends account{
 	
@@ -32,8 +33,7 @@ public class user extends account{
 	/**
 	 * User's date of birth: Must be over eighteen to ride.
 	 */
-	//TODO: Set up date class
-	//private Date dob;
+	private Date dob;
 	
 	
 	/**
@@ -67,8 +67,7 @@ public class user extends account{
 	/**
 	 * Total duration of all rides user has taken
 	 */
-	//TODO: Figure out time class setup?
-	//private [Duration?] totalRideTime;
+	private long totalRideTime;
 	
 	
 	/**
@@ -87,8 +86,7 @@ public class user extends account{
 	/**
 	 * The expiration date of the user's membership
 	 */
-	//TODO: date format?
-	//private Date membershipExpirationDate;
+	private Date membershipExpirationDate;
 	
 	
 	/**
@@ -156,7 +154,9 @@ public class user extends account{
 	 * Gets date of birth
 	 * @return - date of birth of user
 	 */
-	//TODO: getDOB needs Date
+	public Date getDOB() {
+		return dob;
+	}
 	
 	
 	/**
@@ -199,7 +199,9 @@ public class user extends account{
 	 * Gets total length of time user has ridden on the bikes
 	 * @return - total ride time
 	 */
-	//TODO: getTotalRideTime needs a duration class
+	public long getTotalTime() {
+		return totalRideTime;
+	}
 	
 	public float getTotalDistance() {
 		return totalDistance;
@@ -269,11 +271,10 @@ public class user extends account{
 	 * Sets user's date of birth
 	 * @param birth - user's date of birth
 	 */
-	/*
 	public void setDOB(Date birth) {
-		//TODO: Need a date class
+		dob = birth;
 	}
-	*/
+	
 	
 	
 	/**
