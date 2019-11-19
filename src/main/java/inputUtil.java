@@ -1,6 +1,7 @@
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Scanner;
 
 /**
  * Handles all functionality related to collecting,
@@ -8,10 +9,57 @@ import java.util.Date;
  */
 public class inputUtil {
 	
+	/** Scanner for obtaining user input.*/
+	private static Scanner userInput = new Scanner(System.in);
+	
 	/*
-	 *
+	 * ********* INPUT FUNCTIONS ***********
+	 */
+	
+	public static String getString() {
+		return userInput.nextLine();
+	}
+	
+	public static int getInt() {
+		String input = userInput.nextLine();
+		return Integer.parseInt(input);
+	}
+	
+	public static boolean getBool() {
+		while (true) {
+			String input = userInput.nextLine();
+			input = input.toLowerCase();
+			if(input.charAt(0) == 'y') {
+				return true;
+			} else if(input.charAt(0) == 'n') {
+				return false;
+			} else {
+				System.out.println("\nInvalid input. Please enter y/n.");
+				continue;
+			}
+		}
+	}
+	
+	/** Helper function generates number in a specified range. */
+	public static int getIntInRange(int min, int max, String desiredInput) {
+		while(true) {
+			String input = userInput.nextLine();
+			try {
+				int parsedInput = Integer.parseInt(input);
+				if(parsedInput < min | parsedInput > max) {
+					System.out.println("\nInvalid " + desiredInput + " : out of range. Please start over.");
+					continue;
+				} else {
+					return parsedInput;
+				}
+		} catch(NumberFormatException e) {
+			System.out.println("Invalid input. Please start over.");
+			continue;
+			}
+		}
+	}
+	/*
 	 * ********* FORMATING FUNCTIONS ***********
-	 *
 	 */
 	
 	/**

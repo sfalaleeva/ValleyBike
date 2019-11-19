@@ -147,137 +147,48 @@ public class ValleyBikeSim {
 	 */
 	public static void addStation() {
 		Station newStation = new Station(0, null, 0, 0, 0, 0, 0, false, null);
+		
+		// Determines station id based on the current largest station id.
+		int highestID = stationsMap.lastKey();
+		newStation.setID(highestID + 1);
+		
 		System.out.println("\nYou are about to add a new station. Please specify the following details for the new station:\n");
-		while(true) {
-			System.out.println("Station ID (00-99):");
-			Scanner userInput = new Scanner(System.in);
-			String inputID = userInput.nextLine();
-			try {
-				int parsedID = Integer.parseInt(inputID);
-				if(!stationsMap.containsKey(parsedID)) {
-					if(parsedID < 00 | parsedID > 99) {
-						System.out.println("\nInvalid input ID: out of range (00-99). Please start over.");
-						continue;
-					} else {
-						newStation.setID(parsedID);
-					}
-				}
-				else {
-					System.out.println("Invalid ID number: A station with that ID already exists. Please enter a valid ID.");
-					continue;
-				}
-			} catch(NumberFormatException e) {
-				System.out.println("Invalid input. Please start over.");
-				continue;
-			}
 
-			System.out.println("Station Name: ");
-			String inputName = userInput.nextLine();
-			newStation.setName(inputName);
+		System.out.println("Station Name: ");
+		newStation.setName(inputUtil.getString());
 
+		System.out.println("Specify the capacity for the new station (range: 0-20):");			int inputCapacity = inputUtil.getIntInRange(0, 20, "capacity");
+		newStation.setCapacity(inputCapacity);
 
+		// Bikes refer to pedelecs.
+		System.out.println("Enter the number of total bikes at this station (range: 0-" + newStation.getCapacity() + "): ");
+		int bikesParsed = inputUtil.getIntInRange(0, newStation.getCapacity(), "number of bikes entered");			newStation.setPedelecs(bikesParsed);
+		
+		newStation.setAvailableDocks(newStation.getCapacity() - newStation.getPedelecs());
 
+		System.out.println("\nDoes the station have a kiosk?");
+		Boolean hasKiosk = inputUtil.getBool();
+		newStation.setHasKiosk(hasKiosk);
+		
+		System.out.println("Lastly, please enter the address for the new station:\n");
+		newStation.setAddress(inputUtil.getString());
 
-			System.out.println("Specify the capacity for the new station (range: 0-20):");
-			String inputCapacity = userInput.nextLine();
-			try {
-				int capacityParsed = Integer.parseInt(inputCapacity);
-				if(capacityParsed > 20 | capacityParsed < 0) {
-					System.out.println("Invalid capacity specified. Please start over.");
-					continue;
-				} else {
-					newStation.setCapacity(capacityParsed);
-				}
-			} catch(NumberFormatException e) {
-				System.out.println("Invalid input. Please start over.");
-				continue;
-			}
+		// Assumes a new station doesn't require maintenance requests and hence setting them to 0.
 
-
-
-
-			System.out.println("Enter the number of total bikes at this station (range: 0-" + newStation.getCapacity() + "): ");
-			String inputBikes = userInput.nextLine();
-			try {
-				int bikesParsed = Integer.parseInt(inputBikes);
-				if(bikesParsed > newStation.getCapacity()) {
-					System.out.println("The number of bikes specified exceeds the capacity of the station. Please start over.\n");
-					continue;
-				} else if(bikesParsed < 0) {
-					System.out.println("Invalid number of bikes entered. Please start over.\n");
-					continue;
-				} else {
-					newStation.setBikes(bikesParsed);
-				}
-			} catch(NumberFormatException e) {
-				System.out.println("Invalid input. Please start over.");
-				continue;
-			}
-
-
-			System.out.println("Enter the number of pedelecs (range: 0-" + (newStation.getCapacity() - newStation.getBikes()) +"): ");
-			String inputPedelecs = userInput.nextLine();
-			try {
-				int pedelecsParsed = Integer.parseInt(inputPedelecs);
-				if(pedelecsParsed > newStation.getCapacity() - newStation.getBikes()) {
-					System.out.println("The number of pedelecs specified exceeds the available docks. Please start over.\n");
-					continue;
-				} else if(pedelecsParsed < 0) {
-					System.out.println("Invalid number of pedelecs entered. Please start over.\n");
-					continue;
-				} else {
-					newStation.setPedelecs(pedelecsParsed);
-				}
-			} catch(NumberFormatException e) {
-				System.out.println("Invalid input. Please start over.");
-				continue;
-			}
-
-			newStation.setAvailableDocks(newStation.getCapacity() - (newStation.getBikes() + newStation.getPedelecs()));
-
-
-
-			System.out.println("\nDoes the station have a kiosk?");
-			String inputKiosk = userInput.nextLine();
-			if(inputKiosk.equals("Y") || inputKiosk.equals("yes") || inputKiosk.equals("Yes") || inputKiosk.equals("YES")) {
-				newStation.setHasKiosk(true);
-			} else if(inputKiosk.equals("N") || inputKiosk.equals("no") || inputKiosk.equals("No") || inputKiosk.equals("NO")) {
-				newStation.setHasKiosk(false);
-			} else {
-				System.out.println("\nInvalid input. Please start over.");
-				continue;
-			}
-
-
-			System.out.println("Lastly, please enter the address for the new station:\n");
-			String inputAddressString = userInput.nextLine();
-			newStation.setAddress(inputAddressString);
-
-
-			/*
-			 * Assuming a new station doesn't require maintenance requests and hence setting them to 0.
-			 */
-
-
-			/*
-			 * Printing all the specifications of the station designed by the user:
-			 */
-			System.out.println("This new station was added to the list:\n" + "\nID: " + newStation.getID() + "\nName: " +
-			newStation.getName() + "\nCapacity: " + newStation.getCapacity() +
+		/*
+		* Printing all the specifications of the station designed by the user:
+		*/
+		System.out.println("This new station was added to the list:\n" + "\nID: " + newStation.getID() + "\nName: " +
+				newStation.getName() + "\nCapacity: " + newStation.getCapacity() +
 				"\nNumber of Bikes: " + newStation.getBikes() + "\nNumber of Pedelecs: " + newStation.getPedelecs() + "\nNumber of Available Docks: " +
-			newStation.getAvailableDocks() + "\nNumber of Maintenance Requests: " + newStation.getMaintainenceReq() + "\nHas a kiosk: " +
+				newStation.getAvailableDocks() + "\nNumber of Maintenance Requests: " + newStation.getMaintainenceReq() + "\nHas a kiosk: " +
 				newStation.getHasKiosk() + "\nAddress: " + newStation.getAddress() + "\n");
 
-
-			/*
-			 * Save this newly created station to the stations map.
-			 */
-			stationsMap.put(newStation.getID(), newStation);
-			System.out.println("Station successfully added. Choose 'View station list' in menu to view the station.\n");
-
-			break;
-		}
-		return;
+		/*
+		 * Save this newly created station to the stations map.
+		 */
+		stationsMap.put(newStation.getID(), newStation);
+		System.out.println("Station successfully added. Choose 'View station list' in menu to view the station.\n");
 	}
 
 	/**
