@@ -68,7 +68,7 @@ public class ValleyBikeSim {
 
 				} else {
 					Station station = new Station(Integer.parseInt(array[0]), array[1], Integer.parseInt(array[2]), Integer.parseInt(array[3]), Integer.parseInt(array[4]),
-							Integer.parseInt(array[5]), Integer.parseInt(array[6]), toBool(array[7]), array[8]);
+							Integer.parseInt(array[5]), Integer.parseInt(array[6]), inputUtil.toBool(array[7]), array[8]);
 					stationsMap.put(station.getID(),station);
 				}
 				counter++;
@@ -92,57 +92,6 @@ public class ValleyBikeSim {
 	 *
 	 */
 
-
-	/**
-	 * Interpret the boolean given as argument and return a number.
-	 * @param b - a boolean argument to be interpreted as a number
-	 * @return a number: 0 if boolean is false or 1 if boolean is true
-	 */
-	public static int boolToInt(boolean b) {
-		if(b) {
-			return 1;
-		} else {
-			return 0;
-		}
-	}
-
-
-	/**
-	 * Convert a string to Date java object.
-	 * @throws ParseException
-	 */
-	private static Date toDate(String s) throws ParseException {
-		Date dateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(s);
-		return dateTime;
-	}
-
-
-	/**
-	 * Helper function to pass the String values of "0" and "1" as arguments
-	 * and return boolean values of true and false respectively.
-	 */
-	private static boolean toBool(String s) {
-		if(s.equals("0")) {
-			return false;
-		} else {
-			return true;
-		}
-	}
-
-	/**
-	 * Helper function to pass a boolean and change it to a string of "0" if false
-	 * and "1" if true respectively so that it can be used to make a new station into a corresponding
-	 * row to be saved to the CSV. used the helper function in saveStationList() method.
-	 * @param b - boolean
-	 * @return - corresponding string of either "0" or "1".
-	 */
-	public static String fromBool(Boolean b) {
-		if(b == true) {
-			return "1";
-		} else {
-			return "0";
-		}
-	}
 
 	/**
 	 * Create a list of Stations that still have docks available for parking. Used to assist the
@@ -379,7 +328,7 @@ public class ValleyBikeSim {
 			csvWriter.append(',');
 			csvWriter.append(Integer.toString(station.getCapacity()));
 			csvWriter.append(',');
-			csvWriter.append(fromBool(station.getHasKiosk()));
+			csvWriter.append(inputUtil.fromBool(station.getHasKiosk()));
 			csvWriter.append(',');
 			csvWriter.append(station.getAddress());
 
@@ -612,7 +561,7 @@ public class ValleyBikeSim {
 
 				} else {
 					ridesList.add(new Ride(Integer.parseInt(array[0]), Integer.parseInt(array[1]),
-							Integer.parseInt(array[2]), toDate(array[3]), toDate(array[4])));
+							Integer.parseInt(array[2]), inputUtil.toDate(array[3]), inputUtil.toDate(array[4])));
 				}
 				counter++;
 
