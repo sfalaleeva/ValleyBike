@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.Date;
 
-public class user extends account{
+public class User extends Account{
 	
 	
 	
@@ -106,7 +106,7 @@ public class user extends account{
 	/**
 	 * Instantiates a user object. 
 	 */
-	public user(String pwd) {
+	public User(String pwd) {
 		super(pwd);
 		//TODO: add user class constructor here
 	}

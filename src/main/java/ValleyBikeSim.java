@@ -24,10 +24,10 @@ public class ValleyBikeSim {
 	// the appropriate classes are created.
 	
 	/** Map of user ids to user objects. */
-	//public static TreeMap<Integer, User> usersMap;
+	public static TreeMap<Integer, User> usersMap;
 	
 	/** Map of station ids to a list of bikes at that station. */
-	//public static Map<Integer, ArrayList<Bike>> stationToBikeMap;
+	public static Map<Integer, ArrayList<Bike>> stationToBikeMap;
 	
 	/** Map of user ids to maintenance requests. */
 	//public static Map<Integer, Issue> issueMap;

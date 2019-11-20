@@ -1,5 +1,5 @@
 
-public class account {
+public class Account {
 	
 	/**
 	 * For the entire class, the highest user ID plus one, to be assigned to the next registering user.
@@ -22,7 +22,7 @@ public class account {
 	 * @param id - unique user id
 	 * @param pwd - string password
 	 */
-	public account(String pwd) {
+	public Account(String pwd) {
 		userID = nextUserID;
 		password = pwd;
 		

@@ -1,5 +1,5 @@
 
-public class bike {
+public class Bike {
 	
 	/**
 	 * Unique integer ID of the bike object
@@ -25,7 +25,7 @@ public class bike {
 	 */
 	static int nextBikeID;
 	
-	public bike() {
+	public Bike() {
 		//TODO: set up bike constructor
 	}
 	
