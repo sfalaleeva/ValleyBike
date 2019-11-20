@@ -20,9 +20,6 @@ public class ValleyBikeSim {
 	/** Map of station ids to station objects. */
 	public static TreeMap<Integer, Station> stationsMap;
 	
-	//TODO() Uncomment users map, stationToBikeMap, and issueMap when
-	// the appropriate classes are created.
-	
 	/** Map of user ids to user objects. */
 	public static TreeMap<Integer, User> usersMap;
 	
@@ -30,7 +27,7 @@ public class ValleyBikeSim {
 	public static Map<Integer, ArrayList<Bike>> stationToBikeMap;
 	
 	/** Map of user ids to maintenance requests. */
-	//public static Map<Integer, Issue> issueMap;
+	public static Map<Integer, Issue> issueMap;
 	
 	/** Map of date to rides that have't been saved to files yet. */
 	public static Map<Date, ArrayList<Ride>> dailyRidesMap;
