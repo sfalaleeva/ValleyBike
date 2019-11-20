@@ -32,7 +32,8 @@ public class ValleyBikeSim {
 	/** Map of date to rides that have't been saved to files yet. */
 	public static Map<Date, ArrayList<Ride>> dailyRidesMap;
 	
-	/** The logged in user id. */
+	/** The logged in user id. 
+	 * 	-1 if no user. */
 	public static int currentUserID;
 	
 	/** The number of bikes in the system that need maintenance. */
@@ -108,17 +109,6 @@ public class ValleyBikeSim {
 	 * ********* HELPER FUNCTIONS END HERE: ***********
 	 *
 	 */
-
-
-
-	/**
-	 * Prints the main menu for the Valley Bike Simulator to the console.
-	 */
-	public static void printMainMenu() {
-		System.out.println("Please choose from one of the following menu options:\n"
-				+ "0. Quit Program.\n1. View station list.\n2. Add station.\n3. Save station list.\n"
-				+ "4. Record ride.\n5. Resolve ride data.\n6. Equalize stations.");
-	}
 
 	/**
 	 * When the user prompts, print the list of stations.
@@ -578,11 +568,24 @@ public class ValleyBikeSim {
 	 */
 	public static void main(String[] args) {
 		System.out.println("Welcome to the ValleyBike Simulator.");
+		currentUserID = -1; // no user is logged in to start
 		readData();
 		Scanner userInput = new Scanner(System.in);
 		try {
 			while(true) {
-				printMainMenu();
+				if (currentUserID > 0) {
+					printUserMenu();
+					//TODO(): handle userMenu inputs
+				}
+				// assume admin has default id 0
+				else if (currentUserID == 0) {
+					printAdminMenu();
+					//TODO(): handle adminMenu input
+				}
+				else {
+					printMainMenu();
+				}
+				
 				System.out.println("\nPlease enter a number (0-6): ");
 				String input = userInput.nextLine();
 
@@ -604,7 +607,14 @@ public class ValleyBikeSim {
 					resolveRideData(rideFile);
 				} else if(input.equals("6")) {
 					equalizeStations();
-				} else {
+				} 
+				else if (input.equals("7")) {
+					//TODO(): implement Login
+				}
+				else if (input.equals("8")) {
+					//TODO(): implement Register
+				}
+				else {
 					System.out.println("\nInvalid input, please select a number within the 0-6 range.\n");
 				}
 			}
@@ -612,6 +622,36 @@ public class ValleyBikeSim {
 
 		}
 
+	}
+	
+	/**
+	 * Prints the main menu for the Valley Bike Simulator to the console
+	 * before any accounts are logged in.
+	 */
+	//TODO(): remove equalize, resolve ride data, record ride, add station, save station list
+	// once all menus are established.
+	public static void printMainMenu() {
+		System.out.println("Please choose from one of the following menu options:\n"
+				+ "0. Quit Program.\n1. View station list.\n2. Add station.\n3. Save station list.\n"
+				+ "4. Record ride.\n5. Resolve ride data.\n6. Equalize stations.\n7. Login.\n8. Register.");
+	}
+	
+	/**
+	 * Prints the user menu for the Valley Bike Simulator to the console.
+	 */
+	public static void printUserMenu() {
+		System.out.println("Please choose from one of the following menu options:\n"
+				+ "0. Quit Program.\n1. View station list.\n2. Unlock Bike.\n3. End Ride.\n"
+				+ "4. Report Issue.\n5. Update Account.\n6. View User Report.\n7. Log Out.");
+	}
+	
+	/**
+	 * Prints the admin menu for the Valley Bike Simulator to the console.
+	 */
+	public static void printAdminMenu() {
+		System.out.println("Please choose from one of the following menu options:\n"
+				+ "0. Quit Program.\n1. View station list.\n2. Add station.\n3. Save station list.\n"
+				+ "4. Resolve ride data.\n5. Equalize stations.\n6. Update Account.\n7. Resolve Issues.");
 	}
 
 
