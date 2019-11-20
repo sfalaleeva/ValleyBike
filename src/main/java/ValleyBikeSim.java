@@ -67,18 +67,13 @@ public class ValleyBikeSim {
 				if(counter == 0) {
 
 				} else {
-					Station station = new Station(Integer.parseInt(array[0]), array[1], Integer.parseInt(array[2]), Integer.parseInt(array[3]), Integer.parseInt(array[4]),
+					// the pedelec category of data array[3] is saved in Station.bike 
+					Station station = new Station(Integer.parseInt(array[0]), array[1], Integer.parseInt(array[3]), Integer.parseInt(array[4]),
 							Integer.parseInt(array[5]), Integer.parseInt(array[6]), inputUtil.toBool(array[7]), array[8]);
-					stationsMap.put(station.getID(),station);
+					stationsMap.put(station.getID(), station);
 				}
 				counter++;
 			}
-
-			/**for(Station station : stationsList) {
-				stationsMap.put(station.getID(), station);
-			}*/
-
-
 		}
 		catch(Exception e) {
 			System.out.println(e.getMessage());
@@ -132,11 +127,13 @@ public class ValleyBikeSim {
 	 * When the user prompts, print the list of stations.
 	 */
 	public static void printStationList() {
-		System.out.println("\nID\tBikes\tPedelecs AvDocs\tMainReq\t  Cap\tKiosk\tName - Address\n");
-		for(Map.Entry<Integer, Station> entry: stationsMap.entrySet()) {
-			System.out.println(entry.getKey() + "\t" + entry.getValue().getBikes() + "\t" + entry.getValue().getPedelecs()
-			+ "\t  " + entry.getValue().getAvailableDocks() + "\t" + entry.getValue().getMaintainenceReq() + "\t  " + entry.getValue().getCapacity()
-			+ "\t" + entry.getValue().getHasKiosk() + "\t" + entry.getValue().getName() + " - " + entry.getValue().getAddress());
+		System.out.println("\nID\tBikes\tAvDocs\tMainReq\t  Cap\tKiosk\tName - Address\n");
+		for(Station station: stationsMap.values()) {
+			System.out.println(station.getID() + "\t" + station.getBikes()
+			+ "\t  " + station.getAvailableDocks() + "\t" +
+			+ station.getMaintainenceReq() + "\t  " + station.getCapacity()
+			+ "\t" + station.getHasKiosk() + "\t" + station.getName() 
+			+ " - " + station.getAddress());
 		}
 		System.out.println("");
 
@@ -146,7 +143,7 @@ public class ValleyBikeSim {
 	 * Create a station as prompted by the user.
 	 */
 	public static void addStation() {
-		Station newStation = new Station(0, null, 0, 0, 0, 0, 0, false, null);
+		Station newStation = new Station(0, null, 0, 0, 0, 0, false, null);
 		
 		// Determines station id based on the current largest station id.
 		int highestID = stationsMap.lastKey();
@@ -160,11 +157,11 @@ public class ValleyBikeSim {
 		System.out.println("Specify the capacity for the new station (range: 0-20):");			int inputCapacity = inputUtil.getIntInRange(0, 20, "capacity");
 		newStation.setCapacity(inputCapacity);
 
-		// Bikes refer to pedelecs.
 		System.out.println("Enter the number of total bikes at this station (range: 0-" + newStation.getCapacity() + "): ");
-		int bikesParsed = inputUtil.getIntInRange(0, newStation.getCapacity(), "number of bikes entered");			newStation.setPedelecs(bikesParsed);
+		int bikesParsed = inputUtil.getIntInRange(0, newStation.getCapacity(), "number of bikes entered");
+		newStation.setBikes(bikesParsed);
 		
-		newStation.setAvailableDocks(newStation.getCapacity() - newStation.getPedelecs());
+		// Available docks are set by the setBike function.
 
 		System.out.println("\nDoes the station have a kiosk?");
 		Boolean hasKiosk = inputUtil.getBool();
@@ -180,7 +177,7 @@ public class ValleyBikeSim {
 		*/
 		System.out.println("This new station was added to the list:\n" + "\nID: " + newStation.getID() + "\nName: " +
 				newStation.getName() + "\nCapacity: " + newStation.getCapacity() +
-				"\nNumber of Bikes: " + newStation.getBikes() + "\nNumber of Pedelecs: " + newStation.getPedelecs() + "\nNumber of Available Docks: " +
+				"\nNumber of Bikes: " + newStation.getBikes() + "\nNumber of Available Docks: " +
 				newStation.getAvailableDocks() + "\nNumber of Maintenance Requests: " + newStation.getMaintainenceReq() + "\nHas a kiosk: " +
 				newStation.getHasKiosk() + "\nAddress: " + newStation.getAddress() + "\n");
 
@@ -229,9 +226,10 @@ public class ValleyBikeSim {
 		    csvWriter.append(',');
 			csvWriter.append(station.getName());
 			csvWriter.append(',');
-			csvWriter.append(Integer.toString(station.getBikes()));
+			// there are no bikes in the ValleyBike system
+			csvWriter.append(Integer.toString(0));
 			csvWriter.append(',');
-			csvWriter.append(Integer.toString(station.getPedelecs()));
+			csvWriter.append(Integer.toString(station.getBikes()));
 			csvWriter.append(',');
 			csvWriter.append(Integer.toString(station.getAvailableDocks()));
 			csvWriter.append(',');
@@ -268,10 +266,10 @@ public class ValleyBikeSim {
 		Scanner input = new Scanner(System.in);
 		boolean error = true;
 		int start = 0;
-		Station startStation = new Station(0, null, 0, 0, 0, 0, 0, false, null);
+		Station startStation = new Station(0, null, 0, 0, 0, 0, false, null);
 		String transportation = null;
 		int end = 0;
-		Station endStation = new Station(0, null, 0, 0, 0, 0, 0, false, null);
+		Station endStation = new Station(0, null, 0, 0, 0, 0, false, null);
 
 		//what's the start station
 		while (error) {
@@ -333,13 +331,12 @@ public class ValleyBikeSim {
 					error = true;
 					continue;
 				}
-				startStation.setBikes(startStation.getBikes()-1);
-				startStation.setAvailableDocks(startStation.getAvailableDocks()+1);
+				startStation.setBikes(startStation.getBikes()-1); // update availableDocks internally
 				error = false;
 			}
 
 			else if (transportation.toLowerCase().equals("pedelec")) {
-				if (startStation.getPedelecs() <= 0) {
+				if (startStation.getBikes() <= 0) {
 					System.out.println("There's no pedelec at the start station. Please start over and enter the correct start station ID and the transportation you used.");
 					while (error) {
 						System.out.println("Which station did you start from (station ID)? ");
@@ -367,8 +364,7 @@ public class ValleyBikeSim {
 					error = true;
 					continue;
 				}
-				startStation.setPedelecs(startStation.getPedelecs() - 1);
-				startStation.setAvailableDocks(startStation.getAvailableDocks()+1);
+				startStation.setBikes(startStation.getBikes() - 1);
 				error = false;
 
 			}
@@ -444,9 +440,8 @@ public class ValleyBikeSim {
 		if (transportation.toLowerCase().equals("bike")) {
 			endStation.setBikes(endStation.getBikes()+1);
 		} else {
-			endStation.setPedelecs(endStation.getPedelecs()+1);
+			endStation.setBikes(endStation.getBikes()+1); // sets available bikes internally
 		}
-		endStation.setAvailableDocks(endStation.getAvailableDocks()-1);
 
 	}
 
@@ -471,7 +466,9 @@ public class ValleyBikeSim {
 				if(counter == 0) {
 
 				} else {
-					ridesList.add(new Ride(Integer.parseInt(array[0]), Integer.parseInt(array[1]),
+					//TODO() change what gets read/written in from ride.csv files
+					// current the bike id of existing rides is hard coded to 0
+					ridesList.add(new Ride(Integer.parseInt(array[0]), 0, Integer.parseInt(array[1]),
 							Integer.parseInt(array[2]), inputUtil.toDate(array[3]), inputUtil.toDate(array[4])));
 				}
 				counter++;
@@ -515,7 +512,7 @@ public class ValleyBikeSim {
 
         int totalPedelecs = 0;
 		for (Station station : stationsMap.values()) {
-			totalPedelecs += station.getPedelecs();
+			totalPedelecs += station.getBikes();
 		}
 
         int totalCapacity = 0;
@@ -532,11 +529,11 @@ public class ValleyBikeSim {
 		}
 
 		for (Station station : stationsMap.values()) {
-			int pedelecs = station.getPedelecs();
+			int pedelecs = station.getBikes();
 			int capacity = station.getCapacity();
 			// use Math.floor function instead of round, so we don't assign more bikes than we have
 			pedelecs = Math.round(capacity * totalPedelecs / totalCapacity);
-			station.setPedelecs(pedelecs);
+			station.setBikes(pedelecs);
 		}
 
 		//what if after equalizing, the number of bikes isn't the same
@@ -561,25 +558,18 @@ public class ValleyBikeSim {
 		//what if the number of pedelecs isn't the same
 		int nowTotalPedelecs = 0;
 		for (Station station : stationsMap.values()) {
-			nowTotalPedelecs += station.getPedelecs();
+			nowTotalPedelecs += station.getBikes();
 		}
 
 		if (nowTotalPedelecs != totalPedelecs) {
 			int difference = totalPedelecs - nowTotalPedelecs;
 			for (Station station: stationsMap.values()) {
 				if (difference > 0) {
-					int pedelecs = station.getPedelecs() + 1; // delete
-					station.setPedelecs(pedelecs); // change setBikes to addBikes
+					int pedelecs = station.getBikes() + 1; // delete
+					station.setBikes(pedelecs); // change setBikes to addBikes
 				}
 				difference--;
 			}
-		}
-
-		//TODO: delete
-		for (Station station : stationsMap.values()) {
-			int aDocs = station.getAvailableDocks();
-			aDocs = station.getCapacity() - station.getBikes() - station.getPedelecs();
-			station.setAvailableDocks(aDocs);
 		}
 
 		System.out.println("\n" + "Equalization completed! Choose 'View station list' in menu to view the station.\n");
