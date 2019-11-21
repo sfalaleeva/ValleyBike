@@ -134,16 +134,22 @@ public class Station {
 		return true;
 	}
 
-	
+	/**
+	 * Removes a certain number of bikes from a station and returns them as a list
+	 * @param numBikes - number of bikes to remove
+	 * @return - list of bikes removed from the station
+	 */
 	public ArrayList<Bike> removeBikes(int numBikes) {
 		if(bikes < numBikes) {
 			return null;
 		}
 		ArrayList<Bike> removed = new ArrayList<>();
 		ArrayList<Bike> current = ValleyBikeSim.stationToBikeMap.get(ID);
-		for(int i = 0; i<numBikes; i++) {
+		for(int i = 0; i < numBikes; i ++) {
 			removed.add(current.remove(0));
 		}
+		ValleyBikeSim.stationToBikeMap.put(ID, current);
+		bikes = current.size();
 		return removed;
 	}
 	
