@@ -133,6 +133,24 @@ public class Station {
 		
 		return true;
 	}
+	
+	/**
+	 * Adds one single bike to a station
+	 * @param bike - the bike object added
+	 * @return true: operation completed successfully, false if there was a problem
+	 */
+	public boolean addOneBike(Bike b) {
+		if(availableDocks < 1) {
+			return false;
+		}
+		
+		ArrayList<Bike> currentBikes = ValleyBikeSim.stationToBikeMap.get(ID);
+		currentBikes.add(b);
+		ValleyBikeSim.stationToBikeMap.put(ID, currentBikes);
+		bikes ++;
+		availableDocks --;
+		return true;
+	}
 
 	/**
 	 * Removes a certain number of bikes from a station and returns them as a list
@@ -151,6 +169,17 @@ public class Station {
 		ValleyBikeSim.stationToBikeMap.put(ID, current);
 		bikes = current.size();
 		return removed;
+	}
+	
+	
+	public boolean removeOneBike(Bike b) {
+		ArrayList<Bike> currentBikes = ValleyBikeSim.stationToBikeMap.get(ID);
+		boolean checkExecution = currentBikes.remove(b);
+		
+		bikes = currentBikes.size();
+		ValleyBikeSim.stationToBikeMap.put(ID, currentBikes);
+		
+		return checkExecution;
 	}
 	
 	/**

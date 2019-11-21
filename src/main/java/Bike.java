@@ -25,8 +25,17 @@ public class Bike {
 	 */
 	static int nextBikeID;
 	
-	public Bike() {
-		//TODO: set up bike constructor
+	/**
+	 * Constructs a bike object
+	 * @param statID - ID of the station the bike was initialized at
+	 */
+	public Bike(int statID) {
+		ID = nextBikeID;
+		this.statID = statID;
+		onRide = false;
+		needsMaintenance = false;
+		
+		nextBikeID ++;
 	}
 	
 	
@@ -78,15 +87,28 @@ public class Bike {
 	 * @param statID - station to be checked into 
 	 * @return - true if everything went all right, false if the bike wasn't out on a ride or other error occurred
 	 */
-	public boolean checkIn(int statID) {
-		//TODO: Check bike into station. 
-		
+	public boolean checkIn(int newStatID) {
 		//Check onRide was true and set to false
+		if(!onRide) {
+			return false;
+		}
+		//Check the station has space
+		Station station = ValleyBikeSim.stationsMap.get(newStatID);
+		if(station.getAvailableDocks() < 1) {
+			System.out.println("We are sorry, that station is currently full.");
+			return false;
+		}
+		
+		onRide = false;
+		
 		//Set StatID to the one given
+		this.statID = newStatID;
+		
 		//add bike to stationToBikeMap for this station
+		boolean checkExecution = station.addOneBike(this);
 		
 		//return true on no error, false if there was a problem
-		return true;
+		return checkExecution;
 		
 	}
 	
@@ -96,16 +118,26 @@ public class Bike {
 	 * @return - true if no error, false if an error occurred
 	 */
 	public boolean checkOut() {
-		//TODO: Check bike out of station
 		
-		/*
-		 * Check onRide false, set to true
-		 * Check no maintenance request, refuse to checkout if needsMaintenance true
-		 * Delete bike from current station in stationToBikeMap
-		 * return true on no error, false if there was a problem
-		 */
+		//Check that the bike is not out on a ride. It shouldn't be, but check anyways.
+		if(onRide) {
+			System.out.println("This bike has already been checked out.");
+			return false;
+		}
+		onRide = true;
 		
-		return true;
+		//Check if the bike is in maintenance mode. Deny access if it is.
+		if(needsMaintenance) {
+			System.out.println("This bike is damaged and should not be ridden. Please choose another.");
+			return false;
+		}
+		
+		//Remove bike from the current station
+		Station station = ValleyBikeSim.stationsMap.get(statID);
+		boolean checkExecution = station.removeOneBike(this);
+		
+		
+		return checkExecution;
 		
 	}
 	
