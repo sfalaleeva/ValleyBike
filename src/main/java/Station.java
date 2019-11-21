@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class Station {
 	
 	/**
@@ -103,27 +105,52 @@ public class Station {
 		//TODO: update available docks
 	}
 
-	//TODO: write addBikes method, so we can add a number of bikes to whatever is already at the station
-	//also will update available docks
+	
 	/**
 	 * Adds the number of bikes to the total station tally
-	 * @param bikesAdded - number of bikes added
+	 * @param bikesAdded - list of bike objects added
+	 * @return true if operation completed successfully, false otherwise.
 	 */
-	public boolean addBikes(int bikesAdded) {
-		this.bikes += bikesAdded;
-		//TODO: Check whether there's enough docks for this many bikes
-		// Return true if the operation completed successfully, false otherwise
-		// Call setAvailableDocks from here
-		setAvailableDocks(availableDocks - bikesAdded);
+	public boolean addBikes(ArrayList<Bike> bikesAdded) {
+		//Checks if enough docks are available, returns false if not
+		if(availableDocks <= bikesAdded.size()) {
+			return false;
+		}
+		
+		//Adds each bike object to the station map list
+		ArrayList<Bike> currentBikesList = ValleyBikeSim.stationToBikeMap.get(ID);
+		for(Bike b: bikesAdded) {
+			currentBikesList.add(b);
+			bikes ++;
+		}
+		if(bikes != currentBikesList.size()) {
+			System.out.println("Something went wrong. Bike number mismatch in station " + ID);
+			return false;
+		}
+		//updates available docks and the station map
+		setAvailableDocks(availableDocks - bikesAdded.size());
+		ValleyBikeSim.stationToBikeMap.put(ID, currentBikesList);
+		
 		return true;
 	}
 
+	
+	public ArrayList<Bike> removeBikes(int numBikes) {
+		if(bikes < numBikes) {
+			return null;
+		}
+		ArrayList<Bike> removed = new ArrayList<>();
+		ArrayList<Bike> current = ValleyBikeSim.stationToBikeMap.get(ID);
+		for(int i = 0; i<numBikes; i++) {
+			removed.add(current.remove(0));
+		}
+		return removed;
+	}
 	
 	/**
 	 * Sets the number of docks available at the station
 	 * @param availableDocks - number of docks available
 	 */
-	//TODO: make private, because we should not call this without updating bikes first
 	private void setAvailableDocks(int availableDocks) {
 		this.availableDocks = availableDocks;
 	}
