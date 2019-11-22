@@ -586,6 +586,8 @@ public class ValleyBikeSim {
 		usersMap.put(user.getUserID(), user);
 		
 		// what other action occur behind the scenes when a user is register?
+		currentUserID = user.getUserID();
+		System.out.println("Your account has been created and you have been logged in.");
 	}
 
 	/**
@@ -708,7 +710,7 @@ public class ValleyBikeSim {
 	//TODO(): remove equalize, resolve ride data, record ride, add station, save station list
 	// once all menus are established.
 	public static void printMainMenu() {
-		System.out.println("Please choose from one of the following menu options:\n"
+		System.out.println("\nPlease choose from one of the following menu options:\n"
 				+ "0. Quit Program.\n1. View station list.\n2. Login.\n3. Register.");
 				}
 	
@@ -716,7 +718,7 @@ public class ValleyBikeSim {
 	 * Prints the user menu for the Valley Bike Simulator to the console.
 	 */
 	public static void printUserMenu() {
-		System.out.println("Please choose from one of the following menu options:\n"
+		System.out.println("\nPlease choose from one of the following menu options:\n"
 				+ "0. Quit Program.\n1. View station list.\n2. Unlock Bike.\n3. End Ride.\n"
 				+ "4. Report Issue.\n5. Update Account.\n6. View User Report.\n7. Log Out.");
 	}
@@ -725,7 +727,7 @@ public class ValleyBikeSim {
 	 * Prints the admin menu for the Valley Bike Simulator to the console.
 	 */
 	public static void printAdminMenu() {
-		System.out.println("Please choose from one of the following menu options:\n"
+		System.out.println("\nPlease choose from one of the following menu options:\n"
 				+ "0. Quit Program.\n1. View station list.\n2. Add station.\n3. Save station list.\n"
 				+ "4. Resolve ride data.\n5. Equalize stations.\n6. Update Account.\n7. Resolve Issues.");
 	}

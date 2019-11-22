@@ -4,7 +4,7 @@ public class Account {
 	/**
 	 * For the entire class, the highest user ID plus one, to be assigned to the next registering user.
 	 */
-	static int nextUserID = 0;
+	static int nextUserID = 1;
 	
 	/**
 	 * Unique integer id of the account

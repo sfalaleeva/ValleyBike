@@ -22,29 +22,25 @@ public final class UserModifier {
 		//TODO(): Get address inputs
 		//System.out.println("Address:");
 		
-		System.out.println("Date of Birth:");
-		//TODO(): implement getDate() yyyy-mm-dd
-		Date dob = new Date();
-		// = inputUtil.getDate();
-		
-		System.out.println("Phone:");
-		String phone = "";
-		//TODO(): = inputUtil.getValidPhone();
+		System.out.println("Date of Birth [yyyy-MM-dd]:");
+		Date dob = inputUtil.getDate();
+	
+		System.out.println("Phone [no spaces or extra characters:]");
+		String phone = inputUtil.getValidPhone();
 		System.out.println("Email:");
-		String email = "";
-		//TODO(): = inputUtil.getValidEmail();
+		String email = inputUtil.getValidEmail();
+		
 		System.out.println("Password:");
-		String pwd = "";
-		//TODO(): = inputUtil.getValidPassword();
+		String pwd = inputUtil.getValidPassword();
 		System.out.println("Retype Password:");
-		//TODO(): check passwords match
+		
+		// check passwords match
 		while (!pwd.equals(inputUtil.getString())) {
 			System.out.println("Passwords do not match.");
 			inputUtil.getString();
 		}
 		
 		User user = new User(fName, lName, dob, phone, email, pwd);
-		user.updateStatus();
 		
 		System.out.println("Would you like to continue activiating your account?");
 		if (inputUtil.getBool()) {
@@ -52,6 +48,7 @@ public final class UserModifier {
 			//TODO(): addPayment();
 		}
 		
+		user.updateStatus();
 		return user;
 	}
 	

@@ -1,4 +1,5 @@
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -74,7 +75,7 @@ public class User extends Account{
 	/**
 	 * The expiration date of the user's membership.
 	 */
-	private LocalDateTime membershipExpirationDate;
+	private LocalDate membershipExpirationDate;
 	
 	/**
 	 * List of rides the user has taken
@@ -216,7 +217,7 @@ public class User extends Account{
 	 * Gets user's membership expiration date.
 	 * @return - date
 	 */
-	public LocalDateTime getMembershipExpirationDate() {
+	public LocalDate getMembershipExpirationDate() {
 		return membershipExpirationDate;
 	}
 	
@@ -266,7 +267,7 @@ public class User extends Account{
 	 * @param email - email address of user
 	 */
 	public void setEmail(String email) {
-		//TODO: regex matching for email
+		this.email = email;
 	}
 	
 	/**
@@ -283,7 +284,7 @@ public class User extends Account{
 	 * @param phone - phone number
 	 */
 	public void setPhone(String phone) {
-		//TODO: Regex matching for phone number
+		this.phone = phone;
 	}
 	
 	/**
@@ -307,7 +308,6 @@ public class User extends Account{
 		 * updateStatus()
 		 */
 	}
-	
 	
 	/**
 	 * Adds a charge to the user's balance
@@ -362,7 +362,7 @@ public class User extends Account{
 			if (this.isActive) {
 				addToBalance(membership.getPrice()); // update what user owes
 				
-				LocalDateTime now = LocalDateTime.now(); // immutable object
+				LocalDate now = LocalDate.now(); // immutable object
 				
 				switch (membership) {
 					case MONTH:
