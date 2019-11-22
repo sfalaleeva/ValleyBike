@@ -26,7 +26,7 @@ public class Account {
 		userID = nextUserID;
 		password = pwd;
 		
-		nextUserID ++;
+		nextUserID++;
 	}
 	
 	/**
@@ -43,6 +43,14 @@ public class Account {
 	 */
 	public void setUserID(int id) {
 		userID = id;
+	}
+	
+	/**
+	 * Gets the user ID
+	 * @return id - unique user id of account
+	 */
+	public int getUserID() {
+		return userID;
 	}
 	
 }

@@ -12,37 +12,30 @@ public class User extends Account{
 	 */
 	private boolean isActive;
 	
-	
 	/**
 	 * User's first name
 	 */
 	private String firstName;
-	
 	
 	/**
 	 * User's last name
 	 */
 	private String lastName;
 	
-	
-	
 	/**
 	 * User's email address
 	 */
 	private String email;
-	
 	
 	/**
 	 * User's date of birth: Must be over eighteen to ride.
 	 */
 	private Date dob;
 	
-	
 	/**
 	 * User's phone number
 	 */
 	private String phone;
-	
 	
 	/**
 	 * User's home address, billing address
@@ -53,61 +46,57 @@ public class User extends Account{
 	private String zip;
 	private String country;
 	
-	
 	/**
 	 * User's credit card number for billing purposes
 	 */
 	private String creditCard;
-	
 	
 	/**
 	 * User's outstanding balance 
 	 */
 	private float balance;
 	
-	
 	/**
 	 * Total duration of all rides user has taken
 	 */
 	private long totalRideTime;
-	
 	
 	/**
 	 * Total distance of rides user has taken
 	 */
 	private float totalDistance;
 	
-	
 	/**
 	 * User's membership type
 	 */
 	private Membership membership;
 	
-	
 	/**
-	 * The expiration date of the user's membership
-	 * in the format mm/dd/yyyy.
+	 * The expiration date of the user's membership.
 	 */
 	private LocalDateTime membershipExpirationDate;
-	
 	
 	/**
 	 * List of rides the user has taken
 	 */
 	private ArrayList<Ride> rideHistory;
 	
-	
 	/**
 	 * ID of the ride the user is currently on. Null if user is not on a ride.
 	 */
 	private int currentRideID;
 	
-	
 	/**
-	 * Instantiates a user object. 
+	 * Instantiates an inactive user object. 
 	 */
-	public User(String pwd) {
+	public User(String firstName, String lastName, Date dob, String phone, String email, String pwd) {
 		super(pwd);
+		//TODO(): add address to user
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.dob = dob;
+		this.phone = phone;
+		this.email = email;
 		//TODO: add user class constructor here
 	}
 

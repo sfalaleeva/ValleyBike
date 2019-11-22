@@ -41,6 +41,23 @@ public class ValleyBikeSim {
 
 	public  static FileWriter csvWriter;
 	public static CSVWriter writer;
+	
+	/** Private static instance of class. */
+	private static ValleyBikeSim valleyBike = new ValleyBikeSim();
+	
+	/** 
+	 * Private ValleyBike constructor.
+	 */
+	private ValleyBikeSim() {
+		usersMap = new TreeMap<>();
+		stationsMap = new TreeMap<>();
+		stationToBikeMap = new HashMap<>();
+		issueMap = new HashMap<>();
+		dailyRidesMap = new HashMap<>();
+		currentUserID = -1;
+		bikesNeedMaintenance = 0;
+	}
+
 
 	/**
 	 * Read in all the data files and store them in appropriate data structures. A TreeMap was used so that
@@ -55,7 +72,6 @@ public class ValleyBikeSim {
 
 
 			List<Station> stationsList = new ArrayList<>();
-			stationsMap = new TreeMap<>();
 
 			/* to read the CSV data row wise: */
 			List<String[]> allStationEntries = stationDataReader.readAll();
@@ -561,7 +577,16 @@ public class ValleyBikeSim {
 
 		System.out.println("\n" + "Equalization completed! Choose 'View station list' in menu to view the station.\n");
 	}
-
+	
+	/**
+	 * Creates a new user and adds to system.
+	 */
+	private static void addUser() {
+		User user = UserModifier.register();
+		usersMap.put(user.getUserID(), user);
+		
+		// what other action occur behind the scenes when a user is register?
+	}
 
 	/**
 	 * Initializes our Valley Bike Simulator.
@@ -573,13 +598,13 @@ public class ValleyBikeSim {
 		initializeBikes();
 		Scanner userInput = new Scanner(System.in);
 		String input = "";
-		
+	
 		try {
 			while(true) {	
 				if (currentUserID > 0) {
+					printUserMenu();
 					System.out.println("\nPlease enter a number (0-7): ");
 					input = userInput.nextLine();
-					printUserMenu();
 					switch (input) {
 						case "0": 
 							System.out.println("\nThank you for using Valley Bike Simulator!");
@@ -611,9 +636,9 @@ public class ValleyBikeSim {
 				}
 				// assume admin has default id 0
 				else if (currentUserID == 0) {
+					printAdminMenu();
 					System.out.println("\nPlease enter a number (0-7): ");
 					input = userInput.nextLine();
-					printAdminMenu();
 					switch (input) {
 						case "0": 
 							System.out.println("\nThank you for using Valley Bike Simulator!");
@@ -647,9 +672,9 @@ public class ValleyBikeSim {
 					}
 				}
 				else {
+					printMainMenu();
 					System.out.println("\nPlease enter a number (0-3): ");
 					input = userInput.nextLine();
-					printMainMenu();
 					switch (input) {
 						case "0": 
 							System.out.println("\nThank you for using Valley Bike Simulator!");
@@ -663,8 +688,7 @@ public class ValleyBikeSim {
 							System.out.println("Logging in");
 							break;
 						case "3":
-							//TODO(): register();
-							System.out.println("Register");
+							addUser();
 							break;
 						default: 
 							System.out.print("\nInvalid input, please select a number within the 0-3 range.\n");
@@ -675,7 +699,8 @@ public class ValleyBikeSim {
 
 		}
 	}
-	
+
+
 	/**
 	 * Prints the main menu for the Valley Bike Simulator to the console
 	 * before any accounts are logged in.
@@ -709,7 +734,6 @@ public class ValleyBikeSim {
 	 * Initializes all the bikes at the stations.
 	 */
 	private static void initializeBikes() {
-		stationToBikeMap = new HashMap<>();
 		ArrayList<Bike> bikes = new ArrayList<>();
 		
 		for (Station station : stationsMap.values()) {
