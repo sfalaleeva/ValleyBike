@@ -426,6 +426,9 @@ public class User extends Account{
 	 * and updates.
 	 */
 	public void updateStatus() {
+		
+		//Payment.validateCardNumber(creditCard);
+		
 		/*
 		 * TODO: updatestatus
 		 * if creditcard != null and membership != null
