@@ -23,7 +23,7 @@ public class Bike {
 	/**
 	 * Next bike ID that will be assigned for the whole class: Always 1 more than current highest id
 	 */
-	static int nextBikeID;
+	private static int nextBikeID;
 	
 	/**
 	 * Constructs a bike object
@@ -35,7 +35,7 @@ public class Bike {
 		onRide = false;
 		needsMaintenance = false;
 		
-		nextBikeID ++;
+		nextBikeID++;
 	}
 	
 	
@@ -75,7 +75,7 @@ public class Bike {
 	 */
 	public boolean getMaintenance() {
 		return needsMaintenance;
-	}
+	} 
 	
 	/*
 	 * Functional methods

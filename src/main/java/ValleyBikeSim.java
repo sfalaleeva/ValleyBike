@@ -24,7 +24,7 @@ public class ValleyBikeSim {
 	public static TreeMap<Integer, User> usersMap;
 	
 	/** Map of station ids to a list of bikes at that station. */
-	public static Map<Integer, ArrayList<Bike>> stationToBikeMap;
+	public static HashMap<Integer, ArrayList<Bike>> stationToBikeMap;
 	
 	/** Map of user ids to maintenance requests. */
 	public static Map<Integer, Issue> issueMap;
@@ -570,7 +570,9 @@ public class ValleyBikeSim {
 		System.out.println("Welcome to the ValleyBike Simulator.");
 		currentUserID = -1; // no user is logged in to start
 		readData();
+		initializeBikes();
 		Scanner userInput = new Scanner(System.in);
+		
 		try {
 			while(true) {
 				if (currentUserID > 0) {
@@ -652,6 +654,25 @@ public class ValleyBikeSim {
 		System.out.println("Please choose from one of the following menu options:\n"
 				+ "0. Quit Program.\n1. View station list.\n2. Add station.\n3. Save station list.\n"
 				+ "4. Resolve ride data.\n5. Equalize stations.\n6. Update Account.\n7. Resolve Issues.");
+	}
+	
+	/**
+	 * Initializes all the bikes at the stations.
+	 */
+	private static void initializeBikes() {
+		stationToBikeMap = new HashMap<>();
+		ArrayList<Bike> bikes = new ArrayList<>();
+		
+		for (Station station : stationsMap.values()) {
+			int numBikes = station.getBikes();
+			// initialize all bikes at this station
+			while (numBikes > 0) {
+				Bike bike = new Bike(station.getID());
+				bikes.add(bike);
+				numBikes--;
+			}
+			stationToBikeMap.put(station.getID(), bikes);
+		}
 	}
 
 
