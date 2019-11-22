@@ -1,10 +1,12 @@
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 
 public class User extends Account{
 	
-	
-	
+
 	/**
 	 * Whether or not the user has a registered membership and card
 	 */
@@ -79,14 +81,14 @@ public class User extends Account{
 	/**
 	 * User's membership type
 	 */
-	//TODO: Set up enum class
-	//private enum membership;
+	private Membership membership;
 	
 	
 	/**
 	 * The expiration date of the user's membership
+	 * in the format mm/dd/yyyy.
 	 */
-	private Date membershipExpirationDate;
+	private LocalDateTime membershipExpirationDate;
 	
 	
 	/**
@@ -101,8 +103,6 @@ public class User extends Account{
 	private int currentRideID;
 	
 	
-	
-	
 	/**
 	 * Instantiates a user object. 
 	 */
@@ -110,20 +110,23 @@ public class User extends Account{
 		super(pwd);
 		//TODO: add user class constructor here
 	}
-	
-	
+
 	
 	/*
 	 * 
 	 * 
-	 * 
 	 * Accessor Methods
 	 * 
-	 * 
-	 * 
-	 * 
+	 *
 	 */
 	
+	/**
+	 * Gets the status of the user account.
+	 * @return true if account is active
+	 */
+	public boolean getIsActive() {
+		return isActive;
+	}
 	
 	/**
 	 * Gets user's first name
@@ -203,6 +206,10 @@ public class User extends Account{
 		return totalRideTime;
 	}
 	
+	/**
+	 * Gets total distance user has ridden on the bikes.
+	 * @return - total distance of user rides
+	 */
 	public float getTotalDistance() {
 		return totalDistance;
 	}
@@ -212,7 +219,17 @@ public class User extends Account{
 	 * Gets user's membership type
 	 * @return - membership type enum
 	 */
-	//TODO: getMembership needs the membership enums to be set up
+	public Membership getMembership() {
+		return membership;
+	}
+	
+	/**
+	 * Gets user's membership expiration date.
+	 * @return - date
+	 */
+	public LocalDateTime getMembershipExpirationDate() {
+		return membershipExpirationDate;
+	}
 	
 	/**
 	 * Gets the user's entire ride history
@@ -233,12 +250,8 @@ public class User extends Account{
 	/*
 	 * 
 	 * 
-	 * 
-	 * 
 	 * SETTER METHODS
-	 * 
-	 * 
-	 * 
+	 *  
 	 * 
 	 */
 	
@@ -274,7 +287,6 @@ public class User extends Account{
 	public void setDOB(Date birth) {
 		dob = birth;
 	}
-	
 	
 	
 	/**
@@ -346,17 +358,41 @@ public class User extends Account{
 	
 	
 	/**
-	 * Update or change user's membership details
+	 * Update or change user's membership details. 
+	 * Returns false if credit card isn't valid.
+	 * @param membership - the membership enum
+	 * @return boolean - success of membership update
 	 */
-	public void updateMembership() {
-		//TODO: Membership enum
-		
-		/*
-		 * Can pass null ->  membership = null
-		 * membership != null, update expirationdate
-		 * call updateStatus()
-		 * addToBalance() whatever is owed
-		 */
+	public boolean updateMembership(Membership membership) {
+			this.membershipExpirationDate = null; // resets expiration date
+			this.membership = membership; // sets user membership
+			
+		if (!membership.equals(Membership.NONE)) {
+			// check if user's payment information is valid and activates user
+			updateStatus();
+			if (this.isActive) {
+				addToBalance(membership.getPrice()); // update what user owes
+				
+				LocalDateTime now = LocalDateTime.now(); // immutable object
+				
+				switch (membership) {
+					case MONTH:
+						this.membershipExpirationDate = now.plusMonths(1);
+						break;
+					case DAY:
+						this.membershipExpirationDate = now.plusDays(1);
+						break;
+					default: // PAY_PER_RIDE, YEAR, FOUNDER last 1 year
+						this.membershipExpirationDate = now.plusYears(1);
+				}
+			}
+			else {
+				// if the account is not validated, the update fails.
+				this.membership = Membership.NONE;
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	
@@ -386,7 +422,8 @@ public class User extends Account{
 	
 	
 	/**
-	 * Checks whether the user should be considered active. 
+	 * Checks whether the user should be considered active
+	 * and updates.
 	 */
 	public void updateStatus() {
 		/*
@@ -394,6 +431,7 @@ public class User extends Account{
 		 * if creditcard != null and membership != null
 		 * then isActive = true
 		 */
+		this.isActive = true;
 	}
 	
 	
