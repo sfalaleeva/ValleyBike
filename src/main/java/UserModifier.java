@@ -48,11 +48,9 @@ public final class UserModifier {
 		
 		System.out.println("Would you like to continue activiating your account?");
 		if (inputUtil.getBool()) {
-			//TODO(): addPayment();
-			
-			User membership = changeMembership(user); 
+			user = changePayment(user);
+			user = changeMembership(user); 
 		}
-		
 		user.updateStatus();
 		return user;
 	}
@@ -69,6 +67,23 @@ public final class UserModifier {
 		return user;
 	}
 	
+	/**
+	 * Method for getting user membership choice and 
+	 * updating the user's membership.
+	 * @param user
+	 * @return
+	 */
+	public static User changePayment(User user) {
+		System.out.println("Enter valid credit card number.");
+		String cc = inputUtil.getString();
+		while (!Payment.validateCardNumber(cc)) {
+			System.out.println("Invalid. Enter valid credit card number.");
+			cc = inputUtil.getString();
+		}
+		user.setCreditCard(cc);
+		return user;
+	}
+
 	/*
 	 * Internal Method
 	 */

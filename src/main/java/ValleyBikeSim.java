@@ -583,11 +583,20 @@ public class ValleyBikeSim {
 	 */
 	private static void addUser() {
 		User user = UserModifier.register();
+		
 		usersMap.put(user.getUserID(), user);
 		
 		// what other action occur behind the scenes when a user is register?
 		currentUserID = user.getUserID();
 		System.out.println("Your account has been created and you have been logged in.");
+		
+		if (user.getIsActive()) {
+			System.out.println("Your account is active - have fun on your first ride.");
+		}
+		else {
+			System.out.println("You havn't selected a membership or payment method yet. "
+					+ "\nUpdate your account to start riding.");
+		}
 	}
 
 	/**
@@ -626,6 +635,7 @@ public class ValleyBikeSim {
 						case "5": 
 							//TODO(): updateAccount();
 							// includes potential call to UserModifier.changeMembership();
+							// includes potential call to UserModifier.changePayment();
 							break;
 						case "6":
 							//TODO(): viewUserReport();
