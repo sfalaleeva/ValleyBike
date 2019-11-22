@@ -51,13 +51,13 @@ public final class inputUtil {
 			try {
 				int parsedInput = Integer.parseInt(input);
 				if(parsedInput < min | parsedInput > max) {
-					System.out.println("\nInvalid " + desiredInput + " : out of range. Please start over.");
+					System.out.printf("\nInvalid " + desiredInput + ". Please enter int in range %d-%d.", min, max);
 					continue;
 				} else {
 					return parsedInput;
 				}
 		} catch(NumberFormatException e) {
-			System.out.println("Invalid input. Please start over.");
+			System.out.printf("Invalid input. Please enter int in range %d-%d.", min, max);
 			continue;
 			}
 		}

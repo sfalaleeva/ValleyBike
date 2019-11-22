@@ -572,58 +572,108 @@ public class ValleyBikeSim {
 		readData();
 		initializeBikes();
 		Scanner userInput = new Scanner(System.in);
+		String input = "";
 		
 		try {
-			while(true) {
+			while(true) {	
 				if (currentUserID > 0) {
+					System.out.println("\nPlease enter a number (0-7): ");
+					input = userInput.nextLine();
 					printUserMenu();
-					//TODO(): handle userMenu inputs
+					switch (input) {
+						case "0": 
+							System.out.println("\nThank you for using Valley Bike Simulator!");
+							break;
+						case "1":
+							printStationList();
+							break;
+						case "2":
+							//TODO(): unlockBike();
+							break;
+						case "3":
+							//TODO(): endRide();
+							break;
+						case "4":
+							//TODO(): reportIssue();
+							break;
+						case "5": 
+							//TODO(): updateAccount();
+							break;
+						case "6":
+							//TODO(): viewUserReport();
+							break;
+						case "7":
+							//TODO(): logout();
+							break;
+						default: 
+							System.out.print("\nInvalid input, please select a number within the 0-7 range.\n");
+					}
 				}
 				// assume admin has default id 0
 				else if (currentUserID == 0) {
+					System.out.println("\nPlease enter a number (0-7): ");
+					input = userInput.nextLine();
 					printAdminMenu();
-					//TODO(): handle adminMenu input
+					switch (input) {
+						case "0": 
+							System.out.println("\nThank you for using Valley Bike Simulator!");
+							break;
+						case "1":
+							printStationList();
+							break;
+						case "2":
+							addStation();
+							break;
+						case "3":
+							saveStationList();
+							System.out.println("\nSuccessfylly saved station list!");
+							break;
+						case "4":
+							System.out.println("\nEnter the file name (including extension) of the file located in data-files:");
+							String rideFile = userInput.nextLine();
+							resolveRideData(rideFile);
+							break;
+						case "5": 
+							equalizeStations();
+							break;
+						case "6":
+							//TODO(): updateAccount();
+							break;
+						case "7":
+							//TODO(): resolveIssues();
+							break;
+						default: 
+							System.out.print("\nInvalid input, please select a number within the 0-7 range.\n");
+					}
 				}
 				else {
+					System.out.println("\nPlease enter a number (0-3): ");
+					input = userInput.nextLine();
 					printMainMenu();
-				}
-				
-				System.out.println("\nPlease enter a number (0-6): ");
-				String input = userInput.nextLine();
-
-				if(input.compareTo("0") == 0) {
-					System.out.println("\nThank you for using Valley Bike Simulator!");
-					break;
-				} else if(input.compareTo("1") == 0) {
-					printStationList();
-				} else if(input.equals("2")) {
-					addStation();
-				} else if(input.equals("3")) {
-					saveStationList();
-					System.out.println("\nStations successfully added to the csv data file!\n");
-				} else if(input.equals("4")) {
-					recordRide();
-				} else if(input.equals("5")) {
-					System.out.println("\nEnter the file name (including extension) of the file located in data-files:");
-					String rideFile = userInput.nextLine();
-					resolveRideData(rideFile);
-				} else if(input.equals("6")) {
-					equalizeStations();
-				} 
-				else if (input.equals("7")) {
-					//TODO(): implement Login
-				}
-				else if (input.equals("8")) {
-					//TODO(): implement Register
-				}
-				else {
-					System.out.println("\nInvalid input, please select a number within the 0-6 range.\n");
+					switch (input) {
+						case "0": 
+							System.out.println("\nThank you for using Valley Bike Simulator!");
+							System.exit(0);
+							break;
+						case "1":
+							printStationList();
+							break;
+						case "2":
+							//TODO(): login();
+							System.out.println("Logging in");
+							break;
+						case "3":
+							//TODO(): register();
+							System.out.println("Register");
+							break;
+						default: 
+							System.out.print("\nInvalid input, please select a number within the 0-3 range.\n");
+					}
 				}
 			}
 		} catch(Exception e){
 
 		}
-
 	}
 	
 	/**
@@ -634,9 +684,8 @@ public class ValleyBikeSim {
 	// once all menus are established.
 	public static void printMainMenu() {
 		System.out.println("Please choose from one of the following menu options:\n"
-				+ "0. Quit Program.\n1. View station list.\n2. Add station.\n3. Save station list.\n"
-				+ "4. Record ride.\n5. Resolve ride data.\n6. Equalize stations.\n7. Login.\n8. Register.");
-	}
+				+ "0. Quit Program.\n1. View station list.\n2. Login.\n3. Register.");
+				}
 	
 	/**
 	 * Prints the user menu for the Valley Bike Simulator to the console.
