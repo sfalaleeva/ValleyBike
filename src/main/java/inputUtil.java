@@ -5,12 +5,16 @@ import java.util.Scanner;
 
 /**
  * Handles all functionality related to collecting,
- * formatting, and validating inputs.
+ * formatting, and validating inputs. This helper class
+ * is final because it should never be instantiated.
  */
-public class inputUtil {
+public final class inputUtil {
 	
 	/** Scanner for obtaining user input.*/
 	private static Scanner userInput = new Scanner(System.in);
+	
+	/** private parameter-less constructor; this class is never instantiated. **/
+	private inputUtil() {}
 	
 	/*
 	 * ********* INPUT FUNCTIONS ***********
