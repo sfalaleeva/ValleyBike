@@ -1,7 +1,5 @@
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -83,7 +81,7 @@ public class User extends Account{
 	private ArrayList<Ride> rideHistory;
 	
 	/**
-	 * ID of the ride the user is currently on. Null if user is not on a ride.
+	 * ID of the ride the user is currently on. -1 if user is not on a ride.
 	 */
 	private int currentRideID;
 	
@@ -98,16 +96,20 @@ public class User extends Account{
 		this.dob = dob;
 		this.phone = phone;
 		this.email = email;
-		//TODO: add user class constructor here
+		creditCard = "";
+		balance = 0f;
+		totalRideTime = 0;
+		totalDistance = 0;
+		membership = Membership.NONE;
+		rideHistory = new ArrayList<>();
+		currentRideID = -1;
+		isActive = false;
 	}
-
 	
 	/*
 	 * 
-	 * 
 	 * Accessor Methods
 	 * 
-	 *
 	 */
 	
 	/**
@@ -151,7 +153,6 @@ public class User extends Account{
 		return dob;
 	}
 	
-	
 	/**
 	 * Gets user phone number
 	 * @return - phone number of user
@@ -159,8 +160,7 @@ public class User extends Account{
 	public String getPhone() {
 		return phone;
 	}
-	
-	
+
 	/**
 	 * Gets the address of the user, whether as a list of fields or compiled into an address class
 	 * @return - user's address
@@ -170,7 +170,6 @@ public class User extends Account{
 		return "This method needs an address class";
 	}
 	
-	
 	/**
 	 * Gets the user's credit card number
 	 * @return - credit card number
@@ -178,7 +177,6 @@ public class User extends Account{
 	public String getCreditCard() {
 		return creditCard;
 	}
-	
 	
 	/**
 	 * Gets user's current balance
@@ -203,7 +201,6 @@ public class User extends Account{
 	public float getTotalDistance() {
 		return totalDistance;
 	}
-	
 	
 	/**
 	 * Gets user's membership type
@@ -239,12 +236,9 @@ public class User extends Account{
 	
 	/*
 	 * 
-	 * 
 	 * SETTER METHODS
 	 *  
-	 * 
 	 */
-	
 	
 	/**
 	 * Sets the user's name
@@ -267,7 +261,9 @@ public class User extends Account{
 	 * @param email - email address of user
 	 */
 	public void setEmail(String email) {
-		this.email = email;
+		if (inputUtil.validateEmail(email)) {
+			this.email = email;
+		}
 	}
 	
 	/**
@@ -278,18 +274,19 @@ public class User extends Account{
 		dob = birth;
 	}
 	
-	
 	/**
-	 * Sets user's phone number
+	 * Sets user's phone number.
 	 * @param phone - phone number
 	 */
 	public void setPhone(String phone) {
-		this.phone = phone;
+		if (inputUtil.validatePhone(phone)) {
+			this.phone = phone;
+		}
 	}
 	
 	/**
 	 * Sets the user's address
-	 * @param addr - either list of string objects or an address class
+	 * @param addr - either list of string objects or an address class.
 	 */
 	/*
 	public void setAddress(Address addr) {
@@ -298,28 +295,34 @@ public class User extends Account{
 	*/
 	
 	/**
-	 * Sets the user's credit card number
+	 * Sets the user's credit card number. If invalid and the previous
+	 * credit card is not valid, the credit card is set to null.
 	 * @param cc - credit card number
 	 */
 	public void setCreditCard(String cc) {
-		/*
-		 * validateCard()
-		 * update only if it's valid
-		 * updateStatus()
-		 */
+		if (!cc.isEmpty() && Payment.validateCardNumber(cc) && Payment.validateCard(cc)) {
+			this.creditCard = cc;
+		}
+		else if (Payment.validateCard(this.creditCard)) {
+			// keep existing valid card
+		}
+		else {
+			// neither option is valid and user account is inactive.
+			this.creditCard = null;
+		}
+		updateStatus();
 	}
 	
 	/**
-	 * Adds a charge to the user's balance
+	 * Adds a charge to the user's balance.
 	 * @param charge - amount charged to the account
 	 */
 	public void addToBalance(float charge) {
 		balance += charge;
 	}
 	
-	
 	/**
-	 * Adds a ride duration to the total time sum
+	 * Adds a ride duration to the total time sum.
 	 * @param time - duration of ride being added
 	 */
 	/*
@@ -336,7 +339,6 @@ public class User extends Account{
 		totalDistance += dist;
 	}
 	
-	
 	/**
 	 * Sets the current ride id
 	 * @param id - id of current ride object
@@ -344,7 +346,6 @@ public class User extends Account{
 	public void setCurrentRide(int id) {
 		currentRideID = id;
 	}
-	
 	
 	/**
 	 * Update or change user's membership details. 
@@ -387,9 +388,7 @@ public class User extends Account{
 	
 	/*
 	 * 
-	 * 
 	 * OTHER METHODS
-	 * 
 	 * 
 	 */
 	
@@ -398,15 +397,14 @@ public class User extends Account{
 	 * Charge user money for a ride taken, set balance to zero
 	 * @return true for card successfully charged, false for any error or failure.
 	 */
-	public boolean chargeUser() {
-		//TODO: chargeUser
-		
-		/*
-		 * get balance, pretend charge card, set balance to zero
-		 */
-		
-		//return success or failure
-		return true;
+	public boolean chargeUser() {	
+		if (Payment.chargeCard(this.creditCard)) {
+			this.balance = 0;
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 	
 	
@@ -415,15 +413,9 @@ public class User extends Account{
 	 * and updates.
 	 */
 	public void updateStatus() {
-		
-		//Payment.validateCardNumber(creditCard);
-		
-		/*
-		 * TODO: updatestatus
-		 * if creditcard != null and membership != null
-		 * then isActive = true
-		 */
-		this.isActive = true;
+		if (!creditCard.isEmpty() && !this.membership.equals(Membership.NONE)) {
+			this.isActive = true;
+		}
 	}
 	
 	

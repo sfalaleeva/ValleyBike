@@ -21,7 +21,8 @@ public class UserTest {
 
 	@Before
 	public void setUp() throws Exception {
-		user = new User("password"); // empty user object
+		user = new User(null, null, null, null, null, "pwd"); // empty user object
+		user.setCreditCard("1234567891234567"); // valid credit card number
 	}
 
 	@After
@@ -35,19 +36,40 @@ public class UserTest {
 		assertEquals(Membership.NONE, user.getMembership());
 	}
 	
-	// will pass if updateStatus() sets isActive to true
 	@Test
-	public void setWithValidPaymentOption() {
+	public void testAccountActived() {
 		user.updateMembership(Membership.DAY);
 		// activates user account
-		assertEquals(user.getIsActive(), true);
+		assertEquals(true, user.getIsActive());
+	}
+	
+	@Test
+	// will fail if the creditCard isn't validated.
+	public void testMembershipIsSet() {
+		user.updateMembership(Membership.DAY);
 		// membership set
 		assertEquals(Membership.DAY, user.getMembership());
+	}
+	
+	@Test
+	public void testExpirationDateChanged() {
+		user.updateMembership(Membership.DAY);
 		// expiration date updated
 		assertNotEquals(user.getMembershipExpirationDate(), null);
+	}
+	
+	@Test
+	public void testUserBalance() {
+		user.updateMembership(Membership.DAY);
 		// user balance updated
 		assertEquals(Membership.DAY.getPrice(), user.getBalance(), 0);
-		//fail("User balance not updated.");
 	}
-
+	
+	@Test
+	public void testUpdateStatus() {
+		assertEquals(false, user.getIsActive()); // starts false with no membership
+		user.updateMembership(Membership.DAY);
+		user.updateStatus();
+		assertEquals(true, user.getIsActive());
+	}
 }

@@ -33,4 +33,13 @@ public final class Payment {
 		}
 		return false;
 	}
+
+	/**
+	 * Abstraction for charging a credit card if it is valid.
+	 * @param creditCard
+	 * @return true if charge succeeds.
+	 */
+	public static boolean chargeCard(String creditCard) {
+		return validateCard(creditCard);
+	}
 }
