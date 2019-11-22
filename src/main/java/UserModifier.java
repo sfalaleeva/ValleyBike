@@ -7,6 +7,10 @@ import java.util.Date;
  */
 public final class UserModifier {
 
+	/*
+	 * Publicly facing methods.
+	 */
+	
 	/**
 	 * Obtains the information about the user required to register,
 	 * adds the user to the system.
@@ -44,12 +48,65 @@ public final class UserModifier {
 		
 		System.out.println("Would you like to continue activiating your account?");
 		if (inputUtil.getBool()) {
-			//TODO(): addMembership(); which will use updateMembership()
 			//TODO(): addPayment();
+			
+			User membership = changeMembership(user); 
 		}
 		
 		user.updateStatus();
 		return user;
 	}
 	
+	/**
+	 * Method for getting user membership choice and 
+	 * updating the user's membership.
+	 * @param user
+	 * @return
+	 */
+	public static User changeMembership(User user) {
+		Membership m = selectMembership();
+		user.updateMembership(m);
+		return user;
+	}
+	
+	/*
+	 * Internal Method
+	 */
+	
+	/**
+	 * private method for obtaining membership choice, called by changeMembership
+	 * @return Membership enum
+	 */
+	private static Membership selectMembership() {		
+		int counter = 0;
+		for (Membership m: Membership.values()) {
+			if (m.equals(Membership.NONE)) {
+			}
+			else {
+			System.out.println(counter + ". " + m + " - $" + m.getPrice() +" every " + m.getDuration() + " days. $" + m.getPricePerRide() + " per " 
+					+ m.getFreeRideDuration() + " minute ride.");
+			counter++;
+			}
+		}
+		
+			System.out.println("Pick a membership.");
+			String selection = "";
+			while(true) {
+				selection = inputUtil.getString();
+				switch (selection) {
+					case "0":
+						return Membership.PAY_PER_RIDE;
+					case "1":
+						return Membership.DAY;
+					case "2":
+						return Membership.MONTH;
+					case "3":
+						return Membership.YEAR;
+					case "4":
+						return Membership.FOUNDER;
+					default: 
+						System.out.println("Enter number in range [0-4]");
+				}
+			}
+		}
 }

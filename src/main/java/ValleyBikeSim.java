@@ -600,7 +600,7 @@ public class ValleyBikeSim {
 		initializeBikes();
 		Scanner userInput = new Scanner(System.in);
 		String input = "";
-	
+		
 		try {
 			while(true) {	
 				if (currentUserID > 0) {
@@ -625,6 +625,7 @@ public class ValleyBikeSim {
 							break;
 						case "5": 
 							//TODO(): updateAccount();
+							// includes potential call to UserModifier.changeMembership();
 							break;
 						case "6":
 							//TODO(): viewUserReport();

@@ -38,7 +38,7 @@ public enum Membership {
 	 * Accessors
 	 */
 	
-	/** Gets membership duration.
+	/** Gets membership duration in days.
 	 *  @return duration
 	 */
 	public int getDuration() {
@@ -68,5 +68,5 @@ public enum Membership {
 	public float getFreeRideDuration() {
 		return freeRideDuration;
 	}
-			
+	
 }
