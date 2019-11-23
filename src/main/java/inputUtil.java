@@ -5,6 +5,8 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+//Cite: https://howtodoinjava.com/regex/how-to-build-regex-based-password-validator-in-java/
+
 /**
  * Handles all functionality related to collecting,
  * formatting, and validating inputs. This helper class
@@ -15,6 +17,14 @@ public final class inputUtil {
 	/** Regex for validating email strings. */
 	public static final Pattern VALID_EMAIL_ADDRESS_REGEX = 
 		    Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+	
+	/** Regex for validating password strings. 
+	 * Specifies at least 1 of each: lower case, upper case, digit, and then length somewhere from 6-16
+	 * TODO: fix this regex/get new one, it might need 2 uppercase or something but it doesn't always work as described
+	 *  If you change pwd parameters, change pwd description in getValidPassword()
+	 **/
+	public static final Pattern VALID_PASSWORD_REGEX = 
+			Pattern.compile("((?=.*[a-z])(?=.*d)(?=.*[A-Z]).{6,16})");
 	
 	/** Scanner for obtaining user input.*/
 	private static Scanner userInput = new Scanner(System.in);
@@ -223,7 +233,9 @@ public final class inputUtil {
 				break;
 			}
 			else {
-				System.out.println("Invalid password.");
+				System.out.println("Invalid password." 
+			+ "\n Must be 6-16 characters long" 
+			+ "\n Must have at least 1 lower case, 1 upper case, and 1 digit");
 				continue;
 			}
 		}
@@ -231,12 +243,14 @@ public final class inputUtil {
 	}
 	
 	/**
-	 * True if string is a valid email.
-	 * @param regex Matcher for email
+	 * True if string is a valid password.
+	 * @param regex Matcher for pwd
 	 * @return boolean
 	 */
 	public static boolean validatePwd(String pwd) {
-		return pwd.matches(".{8}");
+		//return pwd.matches(".{8}");
+		Matcher matcher = VALID_PASSWORD_REGEX .matcher(pwd);
+		return matcher.find();
 	}
 	
 }

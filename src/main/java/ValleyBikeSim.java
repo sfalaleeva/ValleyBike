@@ -582,8 +582,6 @@ public class ValleyBikeSim {
 	 * Creates a new user and adds to system.
 	 */
 	private static void addUser() {
-		//TODO: change in inputUtil pwd needing to be 8 characters in getValidatePassword
-		// different/additional password restrictions should be decided on
 		
 		User user = UserModifier.register();
 		
@@ -606,6 +604,7 @@ public class ValleyBikeSim {
 	 */
 	public static void logout() {
 		currentUserID = -1; //no user logged in 
+		System.out.println("");
 		System.out.println("You have been logged out.");
 	}
 	
@@ -619,17 +618,16 @@ public class ValleyBikeSim {
 		//to keep forever for security reasons? Or if it should be in User class? 
 		
 		System.out.println("Please enter your email: ");
-		Scanner userInput = new Scanner(System.in);
-		String inputEmail = userInput.nextLine();
-		//TODO(): make use of inputUtil.getString() for getting email and password.
+		String inputEmail = inputUtil.getString();
 		
 		System.out.println("Please enter your password: ");
-		String inputPwd = userInput.nextLine();
+		String inputPwd = inputUtil.getString();
 		
 		for (User user : usersMap.values()) { //loop through user accounts
 			if (inputEmail.equalsIgnoreCase(user.getEmail())) {
 				if (inputPwd.equals(user.getPwd())) {
 					currentUserID = user.getUserID();
+					System.out.println("");
 					System.out.println("You have been logged in.");
 				}
 			}
