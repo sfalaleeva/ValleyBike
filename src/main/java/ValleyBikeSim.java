@@ -582,7 +582,8 @@ public class ValleyBikeSim {
 	 * Creates a new user and adds to system.
 	 */
 	private static void addUser() {
-		//TODO: change in inputUtil pwd needing to be 8 characters? in getValidatePassword
+		//TODO: change in inputUtil pwd needing to be 8 characters in getValidatePassword
+		// different/additional password restrictions should be decided on
 		
 		User user = UserModifier.register();
 		
@@ -620,6 +621,7 @@ public class ValleyBikeSim {
 		System.out.println("Please enter your email: ");
 		Scanner userInput = new Scanner(System.in);
 		String inputEmail = userInput.nextLine();
+		//TODO(): make use of inputUtil.getString() for getting email and password.
 		
 		System.out.println("Please enter your password: ");
 		String inputPwd = userInput.nextLine();
