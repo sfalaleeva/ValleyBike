@@ -53,4 +53,12 @@ public class Account {
 		return userID;
 	}
 	
+	/**
+	 * Gets the password
+	 * @return password - unique password of account
+	 */
+	public String getPwd() {
+		return password;
+	}
+	
 }

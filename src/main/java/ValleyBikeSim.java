@@ -582,6 +582,7 @@ public class ValleyBikeSim {
 	 * Creates a new user and adds to system.
 	 */
 	private static void addUser() {
+		
 		User user = UserModifier.register();
 		
 		usersMap.put(user.getUserID(), user);
@@ -596,6 +597,44 @@ public class ValleyBikeSim {
 		else {
 			System.out.println("You havn't selected a membership or payment method yet. "
 					+ "\nUpdate your account to start riding.");
+		}
+	}
+	/**
+	 * Logs out a user that is currently logged in
+	 */
+	public static void logout() {
+		currentUserID = -1; //no user logged in 
+		System.out.println("");
+		System.out.println("You have been logged out.");
+	}
+	
+	/**
+	 * Logs in a user based on correct email and password info
+	 */
+	public static void login() {
+		//Needs to be case sensitive for pswd and not for email. 
+		
+		//I added a getPwd() method to Account class, not sure if we want 
+		//to keep forever for security reasons? Or if it should be in User class? 
+		
+		System.out.println("Please enter your email: ");
+		String inputEmail = inputUtil.getString();
+		
+		System.out.println("Please enter your password: ");
+		String inputPwd = inputUtil.getString();
+		
+		for (User user : usersMap.values()) { //loop through user accounts
+			if (inputEmail.equalsIgnoreCase(user.getEmail())) {
+				if (inputPwd.equals(user.getPwd())) {
+					currentUserID = user.getUserID();
+					System.out.println("");
+					System.out.println("You have been logged in.");
+				}
+			}
+		}
+		if (currentUserID == -1) { //if it didn't successfully log in
+			System.out.println("Login unsuccessful." 
+					+ "\nPlease try logging in again with a correct email and password.");
 		}
 	}
 
@@ -641,7 +680,7 @@ public class ValleyBikeSim {
 							//TODO(): viewUserReport();
 							break;
 						case "7":
-							//TODO(): logout();
+							logout();
 							break;
 						default: 
 							System.out.print("\nInvalid input, please select a number within the 0-7 range.\n");
@@ -697,8 +736,7 @@ public class ValleyBikeSim {
 							printStationList();
 							break;
 						case "2":
-							//TODO(): login();
-							System.out.println("Logging in");
+							login();
 							break;
 						case "3":
 							addUser();
