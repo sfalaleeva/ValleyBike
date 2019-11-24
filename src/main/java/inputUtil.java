@@ -5,7 +5,7 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-//Cite: https://howtodoinjava.com/regex/how-to-build-regex-based-password-validator-in-java/
+//Cite: https://www.mkyong.com/regular-expressions/how-to-validate-password-with-regular-expression/
 
 /**
  * Handles all functionality related to collecting,
@@ -20,11 +20,9 @@ public final class inputUtil {
 	
 	/** Regex for validating password strings. 
 	 * Specifies at least 1 of each: lower case, upper case, digit, and then length somewhere from 6-16
-	 * TODO: fix this regex/get new one, it might need 2 uppercase or something but it doesn't always work as described
-	 *  If you change pwd parameters, change pwd description in getValidPassword()
 	 **/
 	public static final Pattern VALID_PASSWORD_REGEX = 
-			Pattern.compile("((?=.*[a-z])(?=.*d)(?=.*[A-Z]).{6,16})");
+			Pattern.compile("((?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,16})");
 	
 	/** Scanner for obtaining user input.*/
 	private static Scanner userInput = new Scanner(System.in);
