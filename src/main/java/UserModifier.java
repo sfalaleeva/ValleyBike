@@ -38,10 +38,11 @@ public final class UserModifier {
 		String pwd = inputUtil.getValidPassword();
 		System.out.println("Retype Password:");
 		
+		String pwdRetype = inputUtil.getString();
 		// check passwords match
-		while (!pwd.equals(inputUtil.getString())) {
-			System.out.println("Passwords do not match.");
-			inputUtil.getString();
+		while (!pwd.equals(pwdRetype)) {
+			System.out.println("Passwords do not match." + "\nRetype Password:");
+			pwdRetype = inputUtil.getString();
 		}
 		
 		User user = new User(fName, lName, dob, phone, email, pwd);
