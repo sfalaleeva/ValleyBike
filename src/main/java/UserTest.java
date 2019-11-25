@@ -21,7 +21,7 @@ public class UserTest {
 
 	@Before
 	public void setUp() throws Exception {
-		user = new User(null, null, null, null, null, "pwd"); // empty user object
+		user = new User(null, null, null, null, null, null, "pwd"); // empty user object
 		user.setCreditCard("1234567891234567"); // valid credit card number
 	}
 
