@@ -487,6 +487,7 @@ public class ValleyBikeSim {
 		userRecords.put(ADMIN, 0);
 		
 		//TODO:() initialize an admin object
+
 		System.out.println("Welcome to the ValleyBike Simulator.");
 		currentUserID = -1; // no user is logged in to start
 		readData();
@@ -494,6 +495,8 @@ public class ValleyBikeSim {
 		Scanner userInput = new Scanner(System.in);
 		String input = "";
 		
+		//TODO: for quit program options, create quit() method 
+		//save all relevant info to CSVs when quit
 		try {
 			while(true) {	
 				if (currentUserID > 0) {
