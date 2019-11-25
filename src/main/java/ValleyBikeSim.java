@@ -1,5 +1,6 @@
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -26,6 +27,9 @@ public class ValleyBikeSim {
 	/** Map of station ids to a list of bikes at that station. */
 	public static HashMap<Integer, ArrayList<Bike>> stationToBikeMap;
 	
+	/** Map of bike ids to Bike objects */
+	public static TreeMap<Integer, Bike> bikesMap;
+	
 	/** Map of user ids to maintenance requests. */
 	public static Map<Integer, Issue> issueMap;
 	
@@ -51,6 +55,7 @@ public class ValleyBikeSim {
 	private ValleyBikeSim() {
 		usersMap = new TreeMap<>();
 		stationsMap = new TreeMap<>();
+		bikesMap = new TreeMap<>();
 		stationToBikeMap = new HashMap<>();
 		issueMap = new HashMap<>();
 		dailyRidesMap = new HashMap<>();
@@ -130,6 +135,7 @@ public class ValleyBikeSim {
 	 * When the user prompts, print the list of stations.
 	 */
 	public static void printStationList() {
+		
 		System.out.println("\nID\tBikes\tAvDocs\tMainReq\t  Cap\tKiosk\tName - Address\n");
 		for(Station station: stationsMap.values()) {
 			System.out.println(station.getID() + "\t" + station.getBikes()
@@ -157,7 +163,8 @@ public class ValleyBikeSim {
 		System.out.println("Station Name: ");
 		newStation.setName(inputUtil.getString());
 
-		System.out.println("Specify the capacity for the new station (range: 0-20):");			int inputCapacity = inputUtil.getIntInRange(0, 20, "capacity");
+		System.out.println("Specify the capacity for the new station (range: 0-20):");			
+		int inputCapacity = inputUtil.getIntInRange(0, 20, "capacity");
 		newStation.setCapacity(inputCapacity);
 
 		System.out.println("Enter the number of total bikes at this station (range: 0-" + newStation.getCapacity() + "): ");
@@ -256,196 +263,37 @@ public class ValleyBikeSim {
 			e.printStackTrace();
 		}
 			}
-
-
-	/**
-	 * When the user tries to record a new ride, do the following:
-	 * 1. Make sure that the ride is valid by accounting all exceptions.
-	 * 2. Ask the user which station did they take the ride from, what vehicle they used, and which station was their end destination.
-	 * 3. Update the values of the stations in stationsList after these rides were recorded.
-	 * (Note: this is different from saving the station list, which manages to write to the CSV file itself.)
-	 */
-	public static void recordRide() {
-		Scanner input = new Scanner(System.in);
-		boolean error = true;
-		int start = 0;
-		Station startStation = new Station(0, null, 0, 0, 0, 0, false, null);
-		String transportation = null;
-		int end = 0;
-		Station endStation = new Station(0, null, 0, 0, 0, 0, false, null);
-
-		//what's the start station
-		while (error) {
-			System.out.println("Which station did you start from (station ID)? ");
-			try {
-				start = Integer.parseInt(input.nextLine());
-				error = false;
-			}
-			catch (NumberFormatException nfe) {
-				System.out.println("Please enter a valid integer ID.");
-			}
-
+	
+	public static void pickOutBike() {
+		System.out.println("First, enter the ID of the station you want to start your ride from:");
+		int stationID = inputUtil.getIntInRange(20, stationsMap.lastKey(), "station ID");
+		Station station = stationsMap.get(stationID);
+		if(station.getBikes() <= 0) {
+			System.out.println("It looks like there are no bikes at this station. You can try looking for a bike at another station");
 		}
-		
-		while (! stationsMap.containsKey(start)) {
-			try {
-				System.out.println("Please enter an existing station ID: ");
-				start = Integer.parseInt(input.nextLine());
-			}
-			catch (NumberFormatException nfe) {
-				System.out.println(nfe.getMessage());
-			}
+		List<Integer> bikeIDs = stationToBikeMap.get(stationID).stream().map(b -> b.getID()).collect(Collectors.toList());
+		System.out.println("These are the bikes that are currently at the station: "+ bikeIDs.toString());  
+		System.out.println("Please enter the ID of the bike you would like to check out: ");
+		Integer bikeID = inputUtil.getIntInList(bikeIDs, "bike ID");
+		startRide(bikeID);
+	}
+	
+	public static void startRide(Integer bikeID) {
+		User currentUser = usersMap.get(currentUserID);
+		if (!currentUser.getIsActive()) {
+			System.out.println("You must have active membership and valid credit card information to check out a bike.");
+			return;
 		}
-
-		startStation = stationsMap.get(start);
-
-		//what's the transportation
-		error = true;
-		while (error) {
-			System.out.println("Which transportation did you use (bike or pedelec)? ");
-			transportation = input.nextLine();
-
-			if (transportation.toLowerCase().equals("bike")) {
-				if (startStation.getBikes() <= 0) {
-					System.out.println("There's no bike at the start station. Please start over and enter the correct start station ID and the transportation.");
-					while (error) {
-						System.out.println("Which station did you start from (station ID)? ");
-						try {
-							start = Integer.parseInt(input.nextLine());
-							error = false;
-						}
-						catch (NumberFormatException nfe) {
-							System.out.println("Please enter a valid integer ID.");
-						}
-
-					}
-
-					while (! stationsMap.containsKey(start)) {
-						try {
-							System.out.println("Please enter an existing station ID: ");
-							start = Integer.parseInt(input.nextLine());
-						}
-						catch (NumberFormatException nfe) {
-							System.out.println(nfe.getMessage());
-						}
-					}
-
-					startStation = stationsMap.get(start);
-					error = true;
-					continue;
-				}
-				startStation.setBikes(startStation.getBikes()-1); // update availableDocks internally
-				error = false;
-			}
-
-			else if (transportation.toLowerCase().equals("pedelec")) {
-				if (startStation.getBikes() <= 0) {
-					System.out.println("There's no pedelec at the start station. Please start over and enter the correct start station ID and the transportation you used.");
-					while (error) {
-						System.out.println("Which station did you start from (station ID)? ");
-						try {
-							start = Integer.parseInt(input.nextLine());
-							error = false;
-						}
-						catch (NumberFormatException nfe) {
-							System.out.println("Please enter a valid integer ID.");
-						}
-
-					}
-
-					while (! stationsMap.containsKey(start)) {
-						try {
-							System.out.println("Please enter an existing station ID: ");
-							start = Integer.parseInt(input.nextLine());
-						}
-						catch (NumberFormatException nfe) {
-							System.out.println(nfe.getMessage());
-						}
-					}
-
-					startStation = stationsMap.get(start);
-					error = true;
-					continue;
-				}
-				startStation.setBikes(startStation.getBikes() - 1);
-				error = false;
-
-			}
-
-			else {
-				System.out.println("Please enter either 'bike' or 'pedelec'.");
-			}
+		if (currentUser.getCurrentRideID() != -1) {
+			System.out.println("It looks like you already have a bike checked out. Only one bike per person is allowed.");
+			return;
 		}
-
-		//what's the destination
-		error = true;
-		while (error) {
-			System.out.println("Where's your destination (station ID)? ");
-			try {
-				end = Integer.parseInt(input.nextLine());
-				error = false;
-			}
-			catch (NumberFormatException nfe) {
-				System.out.println("Please enter a valid integer ID.");
-			}
-
-		}
-
-		while (! stationsMap.containsKey(end)) {
-			try {
-				System.out.println("Please enter an existing station ID: ");
-				end = Integer.parseInt(input.nextLine());
-			}
-			catch (NumberFormatException nfe) {
-				System.out.println(nfe.getMessage());
-			}
-		}
-
-		endStation = stationsMap.get(end);
-
-		while (endStation.getAvailableDocks() <= 0) {
-			System.out.println("Sorry, there's no available dock for you to return.");
-			System.out.println("\n" + "Here's a list of stations that have available docks: ");
-			System.out.println("ID" + "\t" + "Bikes" + "\t" + "Pedelecs" + "\t" + "AvDocs"
-	    			+ "\t" + "MainReq" + "\t" + "Cap" + "\t" + "Kiosk" + "\t" + "Name - Address");
-
-			List<Station> stationWithAvailableDocks = availableStation();
-			for (Station station : stationWithAvailableDocks) {
-				station.printStation();
-			}
-
-			error = true;
-			while (error) {
-				System.out.println("Please choose an available station to return (station ID): ");
-				try {
-					end = Integer.parseInt(input.nextLine());
-					error = false;
-				}
-				catch (NumberFormatException nfe) {
-					System.out.println("Please enter a valid integer ID.");
-				}
-			}
-
-			while (! stationsMap.containsKey(end)) {
-				try {
-					System.out.println("Please enter an existing station ID: ");
-					end = Integer.parseInt(input.nextLine());
-				}
-				catch (NumberFormatException nfe) {
-					System.out.println(nfe.getMessage());
-				}
-			}
-
-			endStation = stationsMap.get(end);
-		}
-
-		System.out.println("You've recorded your ride successfully!\n");
-		if (transportation.toLowerCase().equals("bike")) {
-			endStation.setBikes(endStation.getBikes()+1);
-		} else {
-			endStation.setBikes(endStation.getBikes()+1); // sets available bikes internally
-		}
-
+		Bike bike = bikesMap.get(bikeID);
+		bike.checkOut();
+		currentUser.addToBalance(currentUser.getMembership().getPricePerRide()); //charge per ride according to membership
+		Ride ride = new Ride(currentUserID, bikeID, bike.getStatID(), -1, new Date(), null);
+		currentUser.setCurrentRide(ride.getID());
+		System.out.println("Your ride has been started successfully!");
 	}
 
 	/**
@@ -500,78 +348,42 @@ public class ValleyBikeSim {
 	 */
 	public static void equalizeStations() {
 
-		//TODO: get rid of the bikes all together
-		// compress all of the 3 for-loops to 1
 
-		//TODO: change all stationList references to stationsMap
-
-		//TODO: sort stations by capacity and store them in a list at the beginning of the FUNCTION
-		// this will help with distributing left over bikes to stations with higher capacity instead of by ID
-		// potentially only have station ids and reference them by ID in the TreeMap
+		//sort stations by capacity to help with distributing left over bikes to stations with higher capacity instead of by ID
+		List<Integer> stationIdsSortedByCapacity = stationsMap.values().stream().sorted(
+				Comparator.comparingInt(Station::getCapacity).reversed()
+				).map(s -> s.getID()).collect(Collectors.toList());
         int totalBikes = 0;
+        int totalCapacity = 0;
+        
 		for (Station station : stationsMap.values()) {
 			totalBikes += station.getBikes();
-		}
-
-        int totalPedelecs = 0;
-		for (Station station : stationsMap.values()) {
-			totalPedelecs += station.getBikes();
-		}
-
-        int totalCapacity = 0;
-		for (Station station : stationsMap.values()) {
 			totalCapacity += station.getCapacity();
 		}
-
+		
+		int bikesLeftUnassigned = totalBikes; //keeps track of how many bikes have yet to be distributed
 		for (Station station : stationsMap.values()) {
 			int bikes = station.getBikes();
 			int capacity = station.getCapacity();
-			bikes = Math.round(capacity * totalBikes / totalCapacity);
-			//there should be a comment that describes what we are doing here in plain English
+			// totalBikes/totalCapacity = percentage of the docks that should be filled at each station
+			// multiply by each station's capacity to get an exact number of bikes that should be at that station
+			bikes = (int) Math.floor(capacity * totalBikes / totalCapacity);
 			station.setBikes(bikes);
+			bikesLeftUnassigned -= bikes;
 		}
 
-		for (Station station : stationsMap.values()) {
-			int pedelecs = station.getBikes();
-			int capacity = station.getCapacity();
-			// use Math.floor function instead of round, so we don't assign more bikes than we have
-			pedelecs = Math.round(capacity * totalPedelecs / totalCapacity);
-			station.setBikes(pedelecs);
-		}
+		//what if after equalizing, we still have bikes left over
 
-		//what if after equalizing, the number of bikes isn't the same
-		int nowTotalBikes = 0;
-		for (Station station : stationsMap.values()) {
-			nowTotalBikes += station.getBikes();
-		}
-
-		// Wrote this section to work with stationsMap instead of stationsList.
-		// It still functions the way original one functioned. So will be changed.
-		if (nowTotalBikes != totalBikes) {
-			int difference = totalBikes - nowTotalBikes; //can calculate nowTotalBikesLeftOver as we reassign them
-			for (Station station: stationsMap.values()) {
-				if (difference > 0) {
+		// TODO: revisit using list of station IDs and then retrieving stations from the map instead of
+		// just keeping a list of Station objects to begin with
+		if (bikesLeftUnassigned != 0) {
+			for (Integer stationID: stationIdsSortedByCapacity) {
+				Station station = stationsMap.get(stationID);
+				if (bikesLeftUnassigned > 0) {
 					int bikes = station.getBikes() + 1; // delete
 					station.setBikes(bikes); // change setBikes to addBikes
 				}
-				difference--;
-			}
-		}
-
-		//what if the number of pedelecs isn't the same
-		int nowTotalPedelecs = 0;
-		for (Station station : stationsMap.values()) {
-			nowTotalPedelecs += station.getBikes();
-		}
-
-		if (nowTotalPedelecs != totalPedelecs) {
-			int difference = totalPedelecs - nowTotalPedelecs;
-			for (Station station: stationsMap.values()) {
-				if (difference > 0) {
-					int pedelecs = station.getBikes() + 1; // delete
-					station.setBikes(pedelecs); // change setBikes to addBikes
-				}
-				difference--;
+				bikesLeftUnassigned--;
 			}
 		}
 
@@ -617,6 +429,9 @@ public class ValleyBikeSim {
 		//I added a getPwd() method to Account class, not sure if we want 
 		//to keep forever for security reasons? Or if it should be in User class? 
 		
+		
+		//TODO: check if email belongs to the registered user first
+		// don't prompt for password in that case, prompt to register
 		System.out.println("Please enter your email: ");
 		String inputEmail = inputUtil.getString();
 		
@@ -663,7 +478,7 @@ public class ValleyBikeSim {
 							printStationList();
 							break;
 						case "2":
-							//TODO(): unlockBike();
+							pickOutBike();
 							break;
 						case "3":
 							//TODO(): endRide();
@@ -785,18 +600,20 @@ public class ValleyBikeSim {
 	 * Initializes all the bikes at the stations.
 	 */
 	private static void initializeBikes() {
-		ArrayList<Bike> bikes = new ArrayList<>();
 		
 		for (Station station : stationsMap.values()) {
 			int numBikes = station.getBikes();
+			ArrayList<Bike> bikes = new ArrayList<>();
 			// initialize all bikes at this station
 			while (numBikes > 0) {
 				Bike bike = new Bike(station.getID());
 				bikes.add(bike);
+				bikesMap.put(bike.getID(), bike);
 				numBikes--;
 			}
 			stationToBikeMap.put(station.getID(), bikes);
 		}
+
 	}
 
 

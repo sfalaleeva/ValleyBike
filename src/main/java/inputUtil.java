@@ -1,4 +1,6 @@
 import java.text.ParseException;
+
+import java.util.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
@@ -101,6 +103,24 @@ public final class inputUtil {
 				}
 		} catch(NumberFormatException e) {
 			System.out.printf("Invalid input. Please enter int in range %d-%d.", min, max);
+			continue;
+			}
+		}
+	}
+	
+	public static int getIntInList(List<Integer> list, String desiredInput) {
+		while(true) {
+			String input = userInput.nextLine();
+			try {
+				int parsedInput = Integer.parseInt(input);
+				if(!list.contains(parsedInput)) {
+					System.out.printf("\nInvalid " + desiredInput + ". Please enter one of the numers in the list: ", list);
+					continue;
+				} else {
+					return parsedInput;
+				}
+		} catch(NumberFormatException e) {
+			System.out.printf("Invalid input. Please enter one of the numers in the list: ", list);
 			continue;
 			}
 		}

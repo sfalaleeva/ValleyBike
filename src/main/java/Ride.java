@@ -1,6 +1,17 @@
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 public class Ride {
+		
+		/** 
+		 * ID to be assigned to next ride
+		 */
+		static int nextRideID = 1;
+		
+		/**
+		 * RideID, unique to each ride object
+		 */
+		private int rideID;
+		
 		/**
 		 * User ID of the user on the ride
 		 */
@@ -51,18 +62,29 @@ public class Ride {
 		 * @param endTime - end time of the ride
 		 */
 		public Ride(int userID, int bikeID, int fromStationID, int toStationID, Date startTime, Date endTime) {
+			this.rideID = nextRideID;
 			this.userID = userID;
 			this.fromStationID = fromStationID;
 			this.toStationID = toStationID;
 			this.startTime = startTime;
 			this.endTime = endTime;
 			calculateDuration();
+			nextRideID++;
 		} 
 		
 		
 		/**
 		 * Getter methods for the Ride objects.
 		 */
+		
+		
+		/**
+		 * Gets ID of the ride
+		 * @return - ride ID for this ride
+		 */
+		public int getID() {
+			return this.rideID;
+		}
 		
 		
 		/**
@@ -178,6 +200,11 @@ public class Ride {
 		 * Calculate the duration of the ride 
 		 */
 		private void calculateDuration() {
+			//if ride is incomplete, end time will be null
+			if (this.endTime == null) {
+				this.rideDuration = 0;
+				return;
+			}
 			long duration = this.endTime.getTime() - this.startTime.getTime();
 			long intoMinutes = TimeUnit.MINUTES.convert(duration, TimeUnit.MILLISECONDS);
 			this.rideDuration = intoMinutes;
