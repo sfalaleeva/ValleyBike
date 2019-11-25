@@ -18,6 +18,9 @@ import java.text.SimpleDateFormat;
 
 public class ValleyBikeSim {
 
+	/** Temporary admin email login bypass */
+	private static final String ADMIN = "admin";
+
 	/** Map of station ids to station objects. */
 	public static TreeMap<Integer, Station> stationsMap;
 	
@@ -30,7 +33,7 @@ public class ValleyBikeSim {
 	/** Map of bike ids to Bike objects */
 	public static TreeMap<Integer, Bike> bikesMap;
 	
-	/** Map of user ids to maintenance requests. */
+	/** Map of issue id to maintenance requests. */
 	public static Map<Integer, Issue> issueMap;
 	
 	/** Map of date to rides that have't been saved to files yet. */
@@ -45,6 +48,10 @@ public class ValleyBikeSim {
 
 	public  static FileWriter csvWriter;
 	public static CSVWriter writer;
+	
+	/* Fields for login process. */
+	/** Map of user emails to user ids. */
+	public static HashMap<String, Integer> userRecords;
 	
 	/** Private static instance of class. */
 	private static ValleyBikeSim valleyBike = new ValleyBikeSim();
@@ -61,6 +68,7 @@ public class ValleyBikeSim {
 		dailyRidesMap = new HashMap<>();
 		currentUserID = -1;
 		bikesNeedMaintenance = 0;
+		userRecords = new HashMap<>();
 	}
 
 
@@ -399,7 +407,10 @@ public class ValleyBikeSim {
 		
 		usersMap.put(user.getUserID(), user);
 		
-		// what other action occur behind the scenes when a user is register?
+		// for use when logging in
+		//TODO(): maintain when account is deleted or changed
+		userRecords.put(user.getEmail(), user.getUserID());
+		
 		currentUserID = user.getUserID();
 		System.out.println("Your account has been created and you have been logged in.");
 		
@@ -429,27 +440,42 @@ public class ValleyBikeSim {
 		//I added a getPwd() method to Account class, not sure if we want 
 		//to keep forever for security reasons? Or if it should be in User class? 
 		
-		
-		//TODO: check if email belongs to the registered user first
-		// don't prompt for password in that case, prompt to register
 		System.out.println("Please enter your email: ");
 		String inputEmail = inputUtil.getString();
 		
-		System.out.println("Please enter your password: ");
-		String inputPwd = inputUtil.getString();
-		
-		for (User user : usersMap.values()) { //loop through user accounts
-			if (inputEmail.equalsIgnoreCase(user.getEmail())) {
-				if (inputPwd.equals(user.getPwd())) {
-					currentUserID = user.getUserID();
-					System.out.println("");
-					System.out.println("You have been logged in.");
-				}
+		// if the user email is not in the system, the user will
+		// be given the option to register instead.
+		if (userRecords.get(inputEmail) == null ) {
+			System.out.println("There is no registered account with this email.");
+			System.out.println("Would you like to register?");
+			boolean wantToRegister = inputUtil.getBool();
+			if (wantToRegister) {
+				addUser();
 			}
 		}
-		if (currentUserID == -1) { //if it didn't successfully log in
-			System.out.println("Login unsuccessful." 
-					+ "\nPlease try logging in again with a correct email and password.");
+		// if there is an entry for the given email and the id isn't 0
+		// (admin) the system will prompt the user for a password.
+		else {
+			int userID = userRecords.get(inputEmail);
+			if (userID != 0) { // id is 0 if the admin bypass was entered
+				// other wise, a valid use is attempting to login.
+				User user = usersMap.get(userID);
+				System.out.println("Please enter your password: ");
+				String inputPwd = inputUtil.getString();
+				
+				if (inputPwd.equals(user.getPwd())) {
+					currentUserID = user.getUserID();
+					System.out.println("\nYou have been logged in.");
+				}
+				else { // if invalid password
+					System.out.println("Login unsuccessful." 
+							+ "\nPlease try logging in again with a correct email and password.");
+				}
+			}
+			// if the id was 0, log the admin in.
+			else {
+				currentUserID = 0;
+			}
 		}
 	}
 
@@ -457,9 +483,11 @@ public class ValleyBikeSim {
 	 * Initializes our Valley Bike Simulator.
 	 */
 	public static void main(String[] args) {
-		//TODO: for quit program options, create quit() method 
-		//save all relevant info to CSVs when quit
+		// add admin to map of emails to user ids.
+		userRecords.put(ADMIN, 0);
 		
+		//TODO:() initialize an admin object
+
 		System.out.println("Welcome to the ValleyBike Simulator.");
 		currentUserID = -1; // no user is logged in to start
 		readData();
@@ -467,6 +495,8 @@ public class ValleyBikeSim {
 		Scanner userInput = new Scanner(System.in);
 		String input = "";
 		
+		//TODO: for quit program options, create quit() method 
+		//save all relevant info to CSVs when quit
 		try {
 			while(true) {	
 				if (currentUserID > 0) {
@@ -507,7 +537,7 @@ public class ValleyBikeSim {
 				// assume admin has default id 0
 				else if (currentUserID == 0) {
 					printAdminMenu();
-					System.out.println("\nPlease enter a number (0-7): ");
+					System.out.println("\nPlease enter a number (0-8): ");
 					input = userInput.nextLine();
 					switch (input) {
 						case "0": 
@@ -536,6 +566,9 @@ public class ValleyBikeSim {
 							break;
 						case "7":
 							//TODO(): resolveIssues();
+							break;
+						case "8":
+							logout();
 							break;
 						default: 
 							System.out.print("\nInvalid input, please select a number within the 0-7 range.\n");
@@ -574,8 +607,6 @@ public class ValleyBikeSim {
 	 * Prints the main menu for the Valley Bike Simulator to the console
 	 * before any accounts are logged in.
 	 */
-	//TODO(): remove equalize, resolve ride data, record ride, add station, save station list
-	// once all menus are established.
 	public static void printMainMenu() {
 		System.out.println("\nPlease choose from one of the following menu options:\n"
 				+ "0. Quit Program.\n1. View station list.\n2. Login.\n3. Register.");
@@ -596,7 +627,7 @@ public class ValleyBikeSim {
 	public static void printAdminMenu() {
 		System.out.println("\nPlease choose from one of the following menu options:\n"
 				+ "0. Quit Program.\n1. View station list.\n2. Add station.\n3. Save station list.\n"
-				+ "4. Resolve ride data.\n5. Equalize stations.\n6. Update Account.\n7. Resolve Issues.");
+				+ "4. Resolve ride data.\n5. Equalize stations.\n6. Update Account.\n7. Resolve Issues.\n8. Log Out.");
 	}
 	
 	/**
