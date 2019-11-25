@@ -457,6 +457,9 @@ public class ValleyBikeSim {
 	 * Initializes our Valley Bike Simulator.
 	 */
 	public static void main(String[] args) {
+		//TODO: for quit program options, create quit() method 
+		//save all relevant info to CSVs when quit
+		
 		System.out.println("Welcome to the ValleyBike Simulator.");
 		currentUserID = -1; // no user is logged in to start
 		readData();
