@@ -7,11 +7,19 @@
  *
  */
 public class Issue {
+	
+	//TODO: Constructor for the issue class
 
 	/**
 	 * The issue id.
 	 */
 	private int issueID; 
+	
+	/**
+	 * The user id.
+	 */
+	
+	private int userID;
 	
 	/**
 	 * Boolean indicates status of issue.
@@ -44,6 +52,14 @@ public class Issue {
 	 */
 	public int getIssueID() {
 		return issueID;
+	}
+	
+	/**
+	 * Gets user's id.
+	 * @return this user's id.
+	 */
+	public int getUserID() {
+		return userID;
 	}
 	
 	/**
