@@ -23,8 +23,7 @@ public final class UserModifier {
 		System.out.println("Last Name:");
 		String lName = inputUtil.getString();
 		
-		//TODO(): Get address inputs
-		//System.out.println("Address:");
+		Address userAddress = getAddress();
 		
 		System.out.println("Date of Birth [yyyy-MM-dd]:");
 		Date dob = inputUtil.getDate();
@@ -45,7 +44,7 @@ public final class UserModifier {
 			pwdRetype = inputUtil.getString();
 		}
 		
-		User user = new User(fName, lName, dob, phone, email, pwd);
+		User user = new User(fName, lName, userAddress, dob, phone, email, pwd);
 		
 		System.out.println("Would you like to continue activiating your account?");
 		if (inputUtil.getBool()) {
@@ -54,6 +53,22 @@ public final class UserModifier {
 		}
 		user.updateStatus();
 		return user;
+	}
+	
+	/**
+	 * Get the information to create user object.
+	 * @return Address
+	 */
+	public static Address getAddress() {
+		System.out.print("Enter your address:\nStreet: ");
+		String street = inputUtil.getString();
+		System.out.print("City: ");
+		String city = inputUtil.getString();
+		System.out.println("Zip Code: ");
+		String zip = inputUtil.getString();
+		System.out.println("Country: ");
+		String country = inputUtil.getString();
+		return new Address(street, city, zip, country);
 	}
 	
 	/**

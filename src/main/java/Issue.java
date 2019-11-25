@@ -18,7 +18,6 @@ public class Issue {
 	/**
 	 * The user id.
 	 */
-	
 	private int userID;
 	
 	/**

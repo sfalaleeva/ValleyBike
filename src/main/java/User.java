@@ -40,11 +40,7 @@ public class User extends Account{
 	/**
 	 * User's home address, billing address
 	 */
-	//TODO: Decide on address class?
-	private String street;
-	private String city;
-	private String zip;
-	private String country;
+	private Address address;
 	
 	/**
 	 * User's credit card number for billing purposes
@@ -89,11 +85,11 @@ public class User extends Account{
 	/**
 	 * Instantiates an inactive user object. 
 	 */
-	public User(String firstName, String lastName, Date dob, String phone, String email, String pwd) {
+	public User(String firstName, String lastName, Address address, Date dob, String phone, String email, String pwd) {
 		super(pwd);
-		//TODO(): add address to user
 		this.firstName = firstName;
 		this.lastName = lastName;
+		this.address = address;
 		this.dob = dob;
 		this.phone = phone;
 		this.email = email;
@@ -166,9 +162,8 @@ public class User extends Account{
 	 * Gets the address of the user, whether as a list of fields or compiled into an address class
 	 * @return - user's address
 	 */
-	//TODO: Convert this into an address class
-	public String getAddress() {
-		return "This method needs an address class";
+	public Address getAddress() {
+		return address;
 	}
 	
 	/**
@@ -287,13 +282,11 @@ public class User extends Account{
 	
 	/**
 	 * Sets the user's address
-	 * @param addr - either list of string objects or an address class.
+	 * @param addr - Address object.
 	 */
-	/*
 	public void setAddress(Address addr) {
-		//TODO: Address class
+		this.address = addr;
 	}
-	*/
 	
 	/**
 	 * Sets the user's credit card number. If invalid and the previous
