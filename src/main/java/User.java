@@ -1,4 +1,5 @@
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
@@ -325,11 +326,11 @@ public class User extends Account{
 	 * Adds a ride duration to the total time sum.
 	 * @param time - duration of ride being added
 	 */
-	/*
+	
 	public void addToRideTime(Duration time) {
 		//TODO: Duration class
 	}
-	*/
+	
 	
 	/**
 	 * Adds a ride distance to the total distance sum
