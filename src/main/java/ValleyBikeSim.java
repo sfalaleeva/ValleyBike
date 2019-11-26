@@ -565,8 +565,8 @@ public class ValleyBikeSim {
 			//TODO(): the menu isn't reprinted after the first selection is made
 			switch (input) {
 				case "0": 
+					//exits to main account menu
 					System.out.println("\nGoing back. "); //isn't necessary? 
-					//TODO(): doesn't exit the menu.
 					break;
 				case "1":
 					//change membership

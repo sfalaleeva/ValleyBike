@@ -28,7 +28,7 @@ public final class UserModifier {
 		System.out.println("Date of Birth [yyyy-MM-dd]:");
 		Date dob = inputUtil.getDate();
 	
-		System.out.println("Phone [no spaces or extra characters:]");
+		System.out.println("Phone [10 digits, no spaces or extra characters:]");
 		String phone = inputUtil.getValidPhone();
 		System.out.println("Email:");
 		String email = inputUtil.getValidEmail();
@@ -112,7 +112,7 @@ public final class UserModifier {
 					break;
 				case "4":
 					//Phone
-					System.out.println("Phone [no spaces or extra characters:]");
+					System.out.println("Phone [10 digits, no spaces or extra characters:]");
 					String phone = inputUtil.getValidPhone();
 					user.setPhone(phone);
 					break;
@@ -168,7 +168,7 @@ public final class UserModifier {
 	 * @return
 	 */
 	public static User changePayment(User user) {
-		System.out.println("Enter valid credit card number.");
+		System.out.println("Enter valid credit card number (16 digits):");
 		String cc = inputUtil.getString();
 		while (!Payment.validateCardNumber(cc)) {
 			System.out.println("Invalid. Enter valid credit card number.");
