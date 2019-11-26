@@ -58,6 +58,12 @@ public class ValleyBikeSim {
 	/** Private static instance of class. */
 	private static ValleyBikeSim valleyBike = new ValleyBikeSim();
 	
+	/**FAKE USER use to check user menu stuff without registering, TODO: delete when useless/before A5 submit */
+	private static User fakeUser = new User("Sarah", "Pong", new Address("123 silver st","Holyoke", "01040", "USA"), 
+			new Date(), "4135555555", "sarah@gmail.com", "Pwd123");
+	
+	
+	
 	/** 
 	 * Private ValleyBike constructor.
 	 */
@@ -517,13 +523,87 @@ public class ValleyBikeSim {
 			}
 		}
 	}
-
+	
+	/**
+	 * Updates account details for either a user's own account or 
+	 * for a user specified by the admin. This gives the options to 
+	 * change a user's membership, payment info, personal info, or cancel membership.
+	 */
+	public static void updateAccount() {
+		//check for whether admin or not
+		Integer userChangeID = -1; //will be changed
+		User userChange; 
+		
+		//TODO: check admin option is working
+		while(userChangeID == -1) {
+			if (currentUserID == 0) {
+				System.out.println("Please enter email of user whose account info you'd like to change: ");
+				String userEmail = inputUtil.getString();
+				if (userRecords.get(userEmail) == null ) {
+					System.out.println("There is no registered account with this email.");
+				} else {
+					userChangeID = userRecords.get(userEmail);
+					System.out.println("For the user you selected--");
+				}
+				
+			} else if (currentUserID > 0) {
+				userChangeID = currentUserID;
+			}
+		}
+		
+		userChange = usersMap.get(userChangeID);
+		
+		//put in print update method
+		userChange.printInfo();
+		System.out.println("\nPlease choose from one of the following menu options:\n"
+				+ "0. Back to Main Menu.\n1. Change Membership." 
+				+"\n2. Add payment info.\n3. Change personal info. \n4. Cancel Membership. \n5. Delete Account");
+		System.out.println("Enter a number (0-5): \n");
+		
+		while(true) {
+			String input = inputUtil.getString();
+			switch (input) {
+				case "0": 
+					System.out.println("\nGoing back. "); //isn't necessary? 
+					break;
+				case "1":
+					//change membership
+					UserModifier.changeMembership(userChange);
+					break;
+				case "2":
+					//add payment info
+					UserModifier.changePayment(userChange);
+					break;
+				case "3":
+					//change personal info
+					UserModifier.changePersonalInfo(userChange);
+					break;
+				case "4":
+					//cancel membership
+					userChange.cancelMembership();
+					break;
+				case "5":
+					//delete acct
+					deleteAcct(userChange);
+					break;
+				default: 
+					System.out.print("\nInvalid input, please select a number within the 0-5 range.\n");
+						
+			}
+			break; //exit out of while loop
+		}
+	}
+	
 	/**
 	 * Initializes our Valley Bike Simulator.
 	 */
 	public static void main(String[] args) {
 		// add admin to map of emails to user ids.
 		userRecords.put(ADMIN, 0);
+		
+		//TODO: delete these when fakeUser is no longer needed 
+		usersMap.put(fakeUser.getUserID(), fakeUser);
+		userRecords.put(fakeUser.getEmail(), fakeUser.getUserID());
 		
 		//TODO:() initialize an admin object
 
@@ -559,9 +639,7 @@ public class ValleyBikeSim {
 							reportIssues();
 							break;
 						case "5": 
-							//TODO(): updateAccount();
-							// includes potential call to UserModifier.changeMembership();
-							// includes potential call to UserModifier.changePayment();
+							updateAccount();
 							break;
 						case "6":
 							viewUserReport();
@@ -601,7 +679,7 @@ public class ValleyBikeSim {
 							equalizeStations();
 							break;
 						case "6":
-							//TODO(): updateAccount();
+							updateAccount();
 							break;
 						case "7":
 							logout();
@@ -654,7 +732,7 @@ public class ValleyBikeSim {
 	public static void printUserMenu() {
 		System.out.println("\nPlease choose from one of the following menu options:\n"
 				+ "0. Quit Program.\n1. View station list.\n2. Unlock Bike.\n3. End Ride.\n"
-				+ "4. Report Issue.\n5. Update Account.\n6. View User Report.\n7. Log Out.");
+				+ "4. Report Issue.\n5. View Account Details and Update Account.\n6. View User Report.\n7. Log Out.");
 	}
 	
 	/**
@@ -687,8 +765,16 @@ public class ValleyBikeSim {
 	}
 	
 	/**
-	 * 
+	 * deletes account
 	 */
+	private static void deleteAcct(User user) {
+		//TODO: change IDs once someone deletes acct? elaborate on this?
+		usersMap.remove(user.getUserID());
+		userRecords.remove(user.getEmail());
+		System.out.println("Deleted");
+		currentUserID = -1;
+	}
+
 	private static void reportIssues() {
 		System.out.println("Please select an issue type:\n" + 
 				"1. Station is empty.\n2. Station is full.\n3. A bike is broken or needs maintenance.\n" + 

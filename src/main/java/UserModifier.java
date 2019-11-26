@@ -72,6 +72,78 @@ public final class UserModifier {
 	}
 	
 	/**
+	 * Change desired personal information for specific user account
+	 * Made to be used by updateAccount() in ValleyBikeSim
+	 * @param user - user whose info is being changed 
+	 */
+	public static void changePersonalInfo(User user) {
+		System.out.println("What would you like to change? \n"
+				+"0.Go back. \n1.First and last name. \n2.Address. \n3.Date of Birth."
+				+"\n4.Phone number. \n5.Email. \n6.Password.");
+		
+		while(true) {
+			String input = inputUtil.getString();
+			switch (input) {
+				case "0": 
+					System.out.println("\n Going back. "); //is this print statement necessary? 
+					break;
+				case "1":
+					//names
+					System.out.println("First Name:");
+					String fName = inputUtil.getString();
+					System.out.println("Last Name:");
+					String lName = inputUtil.getString();
+					user.setFirstName(fName);
+					user.setLastName(lName);
+					System.out.println("Info saved! \n");
+					break;
+				case "2":
+					//address
+					Address userAddress = getAddress();
+					user.setAddress(userAddress);
+					System.out.println("Info saved! \n");
+					break;
+				case "3":
+					//DOB
+					System.out.println("Date of Birth [yyyy-MM-dd]:");
+					Date dob = inputUtil.getDate();
+					user.setDOB(dob);
+					System.out.println("Info saved! \n");
+					break;
+				case "4":
+					//Phone
+					System.out.println("Phone [no spaces or extra characters:]");
+					String phone = inputUtil.getValidPhone();
+					user.setPhone(phone);
+					break;
+				case "5":
+					//email
+					System.out.println("Email:");
+					String email = inputUtil.getValidEmail();
+					user.setEmail(email);
+					break;
+				case "6":
+					//Pwd
+					System.out.println("Password:");
+					String pwd = inputUtil.getValidPassword();
+					System.out.println("Retype Password:");
+					
+					String pwdRetype = inputUtil.getString();
+					// check passwords match
+					while (!pwd.equals(pwdRetype)) {
+						System.out.println("Passwords do not match." + "\nRetype Password:");
+						pwdRetype = inputUtil.getString();
+					}
+					user.setPassword(pwd);
+					break;
+				default: 
+					System.out.print("\nInvalid input, please select a number within the 0-6 range.\n");
+			}
+		}
+		
+	}
+	
+	/**
 	 * Method for getting user membership choice and 
 	 * updating the user's membership.
 	 * @param user
