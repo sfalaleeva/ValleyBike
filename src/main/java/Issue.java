@@ -8,17 +8,23 @@
  */
 public class Issue {
 	
-	//TODO: Constructor for the issue class
+	
 
 	/**
 	 * The issue id.
 	 */
-	private int issueID; 
+	private Integer issueID; 
 	
 	/**
 	 * The user id.
 	 */
 	private int userID;
+	
+	/**
+	 * The bike id, if applicable
+	 */
+	private int bikeID = -1;
+	
 	
 	/**
 	 * Boolean indicates status of issue.
@@ -39,7 +45,25 @@ public class Issue {
 	/**
 	 * Integer of next available id.
 	 */
-	private static int nextIssueId;
+	private static Integer nextIssueID;
+	
+	
+	/**
+	 * Creates a new issue	
+	 * @param userID - ID of the user reporting a problem
+	 * @param description - description of the problem, provided by the user
+	 * @param typeIssue - problem type enum
+	 */
+	public Issue(int userID, String description, TypeIssue typeIssue) {
+		issueID = nextIssueID;
+		this.userID = userID;
+		this.description = description;
+		this.typeIssue = typeIssue;
+		resolved = false;
+		
+		
+		nextIssueID ++;
+	}
 	
 	/*
 	 * Accessor Methods
@@ -49,7 +73,7 @@ public class Issue {
 	 * Gets issue's id.
 	 * @return this issue's id.
 	 */
-	public int getIssueID() {
+	public Integer getIssueID() {
 		return issueID;
 	}
 	
@@ -59,6 +83,14 @@ public class Issue {
 	 */
 	public int getUserID() {
 		return userID;
+	}
+	
+	/**
+	 * Gets bike id.
+	 * @return the bike id.
+	 */
+	public int getBikeID() {
+		return bikeID;
 	}
 	
 	/**
@@ -89,8 +121,8 @@ public class Issue {
 	 * Gets the next issue id.
 	 * @return next issue id.
 	 */
-	public int getNextIssueId() {
-		return nextIssueId;
+	public Integer getNextIssueID() {
+		return nextIssueID;
 	}
 	
 	/*
@@ -112,6 +144,15 @@ public class Issue {
 	public void setTypeIssue(TypeIssue typeIssue) {
 		this.typeIssue = typeIssue;
 	}
+	
+	/**
+	 * Sets the bike ID. Needs to be called if a bike is involved in the issue.
+	 * @param the bike ID
+	 */
+	public void setBikeID(int bikeID) {
+		this.bikeID = bikeID;
+	}
+	
 	
 	/*
 	 * Enum Class.
