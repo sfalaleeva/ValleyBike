@@ -335,6 +335,13 @@ public class ValleyBikeSim {
 		currentUser.setCurrentRide(-1);
 		System.out.println("Your ride was ended successfully! We hope you ride again soon!");
 	}
+	
+	/**
+	 * Prints out a report on total duration, distance and number of rides the user has taken
+	 */
+	public static void viewUserReport() {
+		System.out.println(usersMap.get(currentUserID).getUserReport());
+	}
 
 	/**
 	 * Manages to read the ride data, record all the rides in the ridesList and then calculates the average
@@ -557,7 +564,7 @@ public class ValleyBikeSim {
 							// includes potential call to UserModifier.changePayment();
 							break;
 						case "6":
-							//TODO(): viewUserReport();
+							viewUserReport();
 							break;
 						case "7":
 							logout();

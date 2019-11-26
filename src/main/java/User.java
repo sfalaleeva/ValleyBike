@@ -343,8 +343,9 @@ public class User extends Account{
 	
 	public void addRideToHistory(Ride ride) {
 		this.rideHistory.add(ride);
-		//TODO: uncomment when ride time is all the same format (duration or long)
-		//addToRideTime(ride.getRideDuration()); 
+		addToRideTime(ride.getRideDuration()); 
+		addToDistance(ride.getRideDuration()*0.2f); //calculates distance based on time
+												   //assumes bike goes on avergae 0.2 miles per minute
 	}
 	
 	/**
@@ -422,8 +423,9 @@ public class User extends Account{
 	/**
 	 * Generate a report of the user's balance, ride time and history, etc
 	 */
-	public void generateUserReport() {
-		//TODO: Did we talk about what this does?
+	public String getUserReport() {
+		return ("You've taken " + rideHistory.size() + " rides in total.\nThis amounts to a total of " + totalRideTime + " minutes and approximately " + 
+							totalDistance + " miles");
 	}
 	
 	
