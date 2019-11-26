@@ -89,6 +89,15 @@ public class Address {
 		return coordinates;
 	}
 	
+	/**
+	 * returns string of the address
+	 * @return - string of address
+	 */
+	public String getAddress() {
+		String addr = this.street +", " + this.city +", " + this.zip +", " + this.country;
+		return addr;
+	}
+	
 	/*
 	 * Setters
 	 */
@@ -132,4 +141,19 @@ public class Address {
 	public void setCoordinates(int x, int y) {
 		this.coordinates.setLocation(x,y);
 	}
+	
+	/**
+	 * OTHER METHODS
+	 * 
+	 */
+	
+	/**
+	 * prints address in reasonable format
+	 */
+	
+	public void printAddress() {
+		System.out.print(this.street +", " + this.city +", " + this.zip +", " + this.country);
+	}
+	
+	
 }

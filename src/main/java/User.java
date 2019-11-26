@@ -341,6 +341,7 @@ public class User extends Account{
 		currentRideID = id;
 	}
 	
+	
 	/**
 	 * Update or change user's membership details. 
 	 * Returns false if credit card isn't valid.
@@ -401,6 +402,12 @@ public class User extends Account{
 		}
 	}
 	
+	/**
+	 * cancels user's membership. 
+	 */
+	public void cancelMembership() {
+		this.membership = Membership.NONE;
+	}
 	
 	/**
 	 * Checks whether the user should be considered active
@@ -412,6 +419,29 @@ public class User extends Account{
 		}
 	}
 	
+	/**
+	 * prints out user's details
+	 */
+	public void printInfo() {
+		//TODO: create censoring helper in InputUtil ?
+		//public static String censorString( String str , Integer numOfCharToCensor ) { ... return censoredString } 
+		
+		String censoredPwd = String.format("%.2s", this.password);  //gets first 2 characters of pwd
+		for (int i = 0; i < this.password.length()-2; i++) { 		//replace rest of characters with *
+			censoredPwd += "*";
+		}
+		String format = "%-18s%s%n";
+		System.out.println("");
+		System.out.printf(format, "Name:", this.firstName + " " + this.lastName);
+		System.out.printf(format, "Email:", this.email);
+		System.out.printf(format, "Password:", censoredPwd);
+		System.out.printf(format, "Address:", this.address.getAddress());
+		System.out.printf(format, "Date of Birth:", this.dob);
+		System.out.printf(format, "Phone number:", this.phone);
+		System.out.printf(format, "Membership:", this.membership);
+		//System.out.printf(format, "Payment Info:", this.email);
+		
+	}
 	
 	/**
 	 * Generate a report of the user's balance, ride time and history, etc

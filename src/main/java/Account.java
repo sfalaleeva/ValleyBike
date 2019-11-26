@@ -15,7 +15,7 @@ public class Account {
 	/**
 	 * Associated password of the account
 	 */
-	private String password;
+	protected String password;
 	
 	/**
 	 * Creates a basic account
@@ -35,6 +35,7 @@ public class Account {
 	 */
 	public void setPassword(String pwd) {
 		//TODO: needs to match regex
+		password = pwd; 
 	}
 	
 	/**
