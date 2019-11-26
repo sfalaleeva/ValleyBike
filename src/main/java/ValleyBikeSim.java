@@ -39,8 +39,6 @@ public class ValleyBikeSim {
 	/** Map of date to rides that have't been saved to files yet. */
 	public static Map<Date, ArrayList<Ride>> dailyRidesMap;
 	
-	public static Map<Integer, Ride> ongoingRides;
-	
 	/** The logged in user id. 
 	 * 	-1 if no user. */
 	public static int currentUserID;
@@ -74,7 +72,6 @@ public class ValleyBikeSim {
 		stationToBikeMap = new HashMap<>();
 		issueMap = new HashMap<>();
 		dailyRidesMap = new HashMap<>();
-		ongoingRides = new HashMap<>();
 		currentUserID = -1;
 		bikesNeedMaintenance = 0;
 		userRecords = new HashMap<>();
@@ -231,7 +228,7 @@ public class ValleyBikeSim {
 		      writer.close();
 
 		} catch (IOException e) {
-			
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -281,11 +278,21 @@ public class ValleyBikeSim {
 		}
 			}
 	
-	/**
-	 * Given a bike to check out, this function checks out a bike and starts a ride for the logged in user
-	 * @param bikeID
-	 */
-	public static void startRide() {
+	public static void pickOutBike() {
+		System.out.println("First, enter the ID of the station you want to start your ride from:");
+		int stationID = inputUtil.getIntInRange(20, stationsMap.lastKey(), "station ID");
+		Station station = stationsMap.get(stationID);
+		if(station.getBikes() <= 0) {
+			System.out.println("It looks like there are no bikes at this station. You can try looking for a bike at another station");
+		}
+		List<Integer> bikeIDs = stationToBikeMap.get(stationID).stream().map(b -> b.getID()).collect(Collectors.toList());
+		System.out.println("These are the bikes that are currently at the station: "+ bikeIDs.toString());  
+		System.out.println("Please enter the ID of the bike you would like to check out: ");
+		Integer bikeID = inputUtil.getIntInList(bikeIDs, "bike ID");
+		startRide(bikeID);
+	}
+	
+	public static void startRide(Integer bikeID) {
 		User currentUser = usersMap.get(currentUserID);
 		if (!currentUser.getIsActive()) {
 			System.out.println("You must have active membership and valid credit card information to check out a bike.");
@@ -295,58 +302,12 @@ public class ValleyBikeSim {
 			System.out.println("It looks like you already have a bike checked out. Only one bike per person is allowed.");
 			return;
 		}
-
-		Integer bikeID = inputUtil.getValidBikeIdAtStation();
-		if (bikeID == -1) {
-			return;
-		}
 		Bike bike = bikesMap.get(bikeID);
 		bike.checkOut();
-		
 		currentUser.addToBalance(currentUser.getMembership().getPricePerRide()); //charge per ride according to membership
 		Ride ride = new Ride(currentUserID, bikeID, bike.getStatID(), -1, new Date(), null);
 		currentUser.setCurrentRide(ride.getID());
-		ongoingRides.put(ride.getID(), ride);
 		System.out.println("Your ride has been started successfully!");
-	}
-	
-	/**
-	 * Function gets called when user wants to end their ride and provides the ID of the station,
-	 * which they want to return their bike to
-	 * @param endStationID
-	 */
-	public static void endRide() {
-		User currentUser = usersMap.get(currentUserID);
-		if (currentUser.getCurrentRideID() == -1) {
-			System.out.println("It looks like you are not currently on a ride");
-		}
-		Integer endStationID = inputUtil.getRideEndStationID();
-		Ride currentRide = ongoingRides.get(currentUser.getCurrentRideID());
-		Bike bike = bikesMap.get(currentRide.getBikeID());
-		if (!bike.checkIn(endStationID)) {
-			return;
-		};
-		//update ride object now that it's complete, remove from ongoing rides
-		currentRide.setEndTime(new Date());
-		currentRide.setToStationID(endStationID);
-		ongoingRides.remove(currentRide.getID());
-		
-		//calculate the charge for the ride and charge the user if they've ridden longer than their membership allows for free
-		float overtime = currentRide.getRideDuration() - currentUser.getMembership().getFreeRideDuration();
-		if (overtime > 0) {
-			currentUser.addToBalance(Membership.overtimePrice * overtime);
-		}
-		currentUser.chargeUser();
-		currentUser.addRideToHistory(currentRide);
-		currentUser.setCurrentRide(-1);
-		System.out.println("Your ride was ended successfully! We hope you ride again soon!");
-	}
-	
-	/**
-	 * Prints out a report on total duration, distance and number of rides the user has taken
-	 */
-	public static void viewUserReport() {
-		System.out.println(usersMap.get(currentUserID).getUserReport());
 	}
 
 	/**
@@ -630,19 +591,19 @@ public class ValleyBikeSim {
 							printStationList();
 							break;
 						case "2":
-							startRide();
+							pickOutBike();
 							break;
 						case "3":
-							endRide();
+							//TODO(): endRide();
 							break;
 						case "4":
-							reportIssues();
+							//TODO(): reportIssue();
 							break;
 						case "5": 
 							updateAccount();
 							break;
 						case "6":
-							viewUserReport();
+							//TODO(): viewUserReport();
 							break;
 						case "7":
 							logout();
@@ -682,6 +643,9 @@ public class ValleyBikeSim {
 							updateAccount();
 							break;
 						case "7":
+							//TODO(): resolveIssues();
+							break;
+						case "8":
 							logout();
 							break;
 						default: 
@@ -741,7 +705,7 @@ public class ValleyBikeSim {
 	public static void printAdminMenu() {
 		System.out.println("\nPlease choose from one of the following menu options:\n"
 				+ "0. Quit Program.\n1. View station list.\n2. Add station.\n3. Save station list.\n"
-				+ "4. Resolve ride data.\n5. Equalize stations.\n6. Update Account.\n7. Log Out.");
+				+ "4. Resolve ride data.\n5. Equalize stations.\n6. Update Account.\n7. Resolve Issues.\n8. Log Out.");
 	}
 	
 	/**
@@ -773,75 +737,7 @@ public class ValleyBikeSim {
 		userRecords.remove(user.getEmail());
 		System.out.println("Deleted");
 		currentUserID = -1;
-	}
-
-	private static void reportIssues() {
-		System.out.println("Please select an issue type:\n" + 
-				"1. Station is empty.\n2. Station is full.\n3. A bike is broken or needs maintenance.\n" + 
-				"4. Modify account details.\n5. Other issue.");
-		int menuItem = inputUtil.getIntInRange(1, 5, "number");
-		Issue.TypeIssue typeissue = null;
 		
-		System.out.println("Please describe your issue.\n");
-		String description = inputUtil.getString();
-		
-		switch(menuItem) {
-			case 1:
-				typeissue = Issue.TypeIssue.STATION_EMPTY;
-				equalizeStations();
-				System.out.println("Balancing stations, thank you for your report!\n");
-				break;
-			case 2:
-				typeissue = Issue.TypeIssue.STATION_FULL;
-				equalizeStations();
-				System.out.println("Balancing stations, thank you for your report!\n");
-				break;
-			case 3:
-				typeissue = Issue.TypeIssue.BIKE_MAINTENANCE;
-				Issue newIssue = new Issue(currentUserID,description,typeissue);
-				System.out.println("ID of the damaged bike? [0,"+ bikesMap.size() + "]\n");
-				int bikeID = inputUtil.getIntInRange(1,bikesMap.size(),"id");
-				Bike bike = bikesMap.get(bikeID);
-				bike.setNeedsMaintenance(true);
-				newIssue.setBikeID(bikeID);
-				
-				issueMap.put(newIssue.getIssueID(),newIssue);
-				if(issueMap.size() > 10) {
-					sendMaintenanceDriver();
-				}
-				System.out.println("Thank you for your report!");
-				break;
-			case 4:
-				typeissue = Issue.TypeIssue.ACCOUNT;
-				System.out.println("Select an option:\n1. Change Membership Type.\n2. Change payment details.\n");
-				int input = inputUtil.getIntInRange(1,2, "selection");
-				if(input == 1) {
-					UserModifier.changeMembership(usersMap.get(currentUserID));
-				}
-				if(input == 2) {
-					UserModifier.changePayment(usersMap.get(currentUserID));
-				}
-				break;
-			case 5:
-				typeissue = Issue.TypeIssue.OTHER;
-				System.out.println("Your issue details are being forwarded to a Customer Service representative.\n Thank you for your report.");
-				break;
-		}
-		
-		
-	}
-	
-	/**
-	 * Models the process of fixing all the bikes with issues 
-	 * in the system.
-	 */
-	public static void sendMaintenanceDriver() {
-		for(Bike bike: bikesMap.values()) {
-			bike.setNeedsMaintenance(false);
-			
-		}
-		issueMap.clear();
-		bikesNeedMaintenance = 0;
 	}
 
 

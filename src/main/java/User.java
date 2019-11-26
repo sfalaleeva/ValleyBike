@@ -55,7 +55,7 @@ public class User extends Account{
 	/**
 	 * Total duration of all rides user has taken
 	 */
-	private long totalRideTime = 0;
+	private long totalRideTime;
 	
 	/**
 	 * Total distance of rides user has taken
@@ -320,8 +320,8 @@ public class User extends Account{
 	 * @param time - duration of ride being added
 	 */
 	
-	public void addToRideTime(long time) {
-		totalRideTime += time;
+	public void addToRideTime(Duration time) {
+		//TODO: Duration class
 	}
 	
 	
@@ -341,13 +341,6 @@ public class User extends Account{
 		currentRideID = id;
 	}
 	
-
-	public void addRideToHistory(Ride ride) {
-		this.rideHistory.add(ride);
-		addToRideTime(ride.getRideDuration()); 
-		addToDistance(ride.getRideDuration()*0.2f); //calculates distance based on time
-												   //assumes bike goes on avergae 0.2 miles per minute
-	}
 	
 	/**
 	 * Update or change user's membership details. 
@@ -364,7 +357,7 @@ public class User extends Account{
 			updateStatus();
 			if (this.isActive) {
 				addToBalance(membership.getPrice()); // update what user owes
-	
+				
 				LocalDate now = LocalDate.now(); // immutable object
 				
 				switch (membership) {
@@ -453,9 +446,8 @@ public class User extends Account{
 	/**
 	 * Generate a report of the user's balance, ride time and history, etc
 	 */
-	public String getUserReport() {
-		return ("You've taken " + rideHistory.size() + " rides in total.\nThis amounts to a total of " + totalRideTime + " minutes and approximately " + 
-							totalDistance + " miles");
+	public void generateUserReport() {
+		//TODO: Did we talk about what this does?
 	}
 	
 	

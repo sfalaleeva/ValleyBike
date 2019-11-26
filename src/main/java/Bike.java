@@ -90,7 +90,6 @@ public class Bike {
 	public boolean checkIn(int newStatID) {
 		//Check onRide was true and set to false
 		if(!onRide) {
-			System.out.println("Bike is not on ride");
 			return false;
 		}
 		//Check the station has space

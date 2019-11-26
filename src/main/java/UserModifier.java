@@ -151,13 +151,7 @@ public final class UserModifier {
 	 */
 	public static User changeMembership(User user) {
 		Membership m = selectMembership();
-		user.addToBalance(m.getPrice());
-		// charge user for their new membership
-		if (user.chargeUser()) {
-			user.updateMembership(m);
-		}else {
-			System.out.println("Could not process the payment.");
-		}
+		user.updateMembership(m);
 		return user;
 	}
 	
@@ -174,11 +168,7 @@ public final class UserModifier {
 			System.out.println("Invalid. Enter valid credit card number.");
 			cc = inputUtil.getString();
 		}
-		if (Payment.validateCard(cc)) {
-			user.setCreditCard(cc);
-		}else{
-			System.out.println("Card validation failed.");
-		}
+		user.setCreditCard(cc);
 		return user;
 	}
 
