@@ -59,11 +59,20 @@ public final class inputUtil {
 	}
 	
 	/**
-	 * Gets a string from the user.
+	 * Gets a non-empty string from the user.
 	 * @return string
 	 */
 	public static String getString() {
-		return userInput.nextLine();
+		String input = "";
+		while(true) {
+			input = userInput.nextLine();
+			if (input.isEmpty()) {
+				System.out.println("Please enter a response.");
+				continue;
+			}
+			break;
+		}
+		return input;
 	}
 	
 	/**
