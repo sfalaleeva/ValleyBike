@@ -222,7 +222,7 @@ public class ValleyBikeSim {
 		      writer.close();
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 
@@ -565,8 +565,7 @@ public class ValleyBikeSim {
 							//TODO(): updateAccount();
 							break;
 						case "7":
-							//TODO(): resolveIssues();
-							System.out.println("\nThank you for your report!");
+							resolveIssues();
 							break;
 						case "8":
 							logout();
