@@ -64,6 +64,7 @@ public class Ride {
 		public Ride(int userID, int bikeID, int fromStationID, int toStationID, Date startTime, Date endTime) {
 			this.rideID = nextRideID;
 			this.userID = userID;
+			this.bikeID = bikeID;
 			this.fromStationID = fromStationID;
 			this.toStationID = toStationID;
 			this.startTime = startTime;
@@ -95,6 +96,14 @@ public class Ride {
 			return this.userID;
 		}
 		
+		
+		/**
+		 * Gets the ID of the bike
+		 * @return - bike ID
+		 */
+		public int getBikeID() {
+			return this.bikeID;
+		}
 		
 		/**
 		 * Gets the ID of the origin station
@@ -193,6 +202,7 @@ public class Ride {
 		 */
 		public void setEndTime(Date newEndTime) {
 			this.endTime = newEndTime;
+			calculateDuration();
 		}
 		
 		
@@ -201,7 +211,7 @@ public class Ride {
 		 */
 		private void calculateDuration() {
 			//if ride is incomplete, end time will be null
-			if (this.endTime == null) {
+			if (this.endTime == null || this.startTime == null) {
 				this.rideDuration = 0;
 				return;
 			}
