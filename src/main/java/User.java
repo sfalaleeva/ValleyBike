@@ -55,7 +55,7 @@ public class User extends Account{
 	/**
 	 * Total duration of all rides user has taken
 	 */
-	private long totalRideTime;
+	private long totalRideTime = 0;
 	
 	/**
 	 * Total distance of rides user has taken
@@ -320,8 +320,8 @@ public class User extends Account{
 	 * @param time - duration of ride being added
 	 */
 	
-	public void addToRideTime(Duration time) {
-		//TODO: Duration class
+	public void addToRideTime(long time) {
+		totalRideTime += time;
 	}
 	
 	
