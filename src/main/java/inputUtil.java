@@ -37,25 +37,40 @@ public final class inputUtil {
 	
 	/**
 	 * Gets a date from the user in format
-	 * yyyy-mm-dd.
+	 * yyyy-MM-dd.
 	 * @return Date
 	 */
-	//TODO(): Works strangely. Ex. 1999-5-2654 passes. But it does ensure 
-	// there are three dashes.
 	public static Date getDate() {
 		Date date = new Date();
 		while(true) {
-			String dateString = getString();
-			try {
-				date = new SimpleDateFormat("yyyy-MM-dd").parse(dateString);
-				break;
+			String dateString = validDateString();
+				try {
+					date = new SimpleDateFormat("yyyy-MM-dd").parse(dateString);
+					break;
+				}
+				catch(ParseException e){
+					System.out.println("Please enter valid date [yyyy-MM-dd].");
+					continue;
+				}
 			}
-			catch(ParseException e){
-				System.out.println("Please enter valid date [yyyy-MM-dd].");
-				continue;
-			}
-		}
 		return date;
+	}
+	
+	/**
+	 * Returns valid date string.
+	 * @return valid string in format yyyy-MM-dd.
+	 */
+	public static String validDateString() {	
+		String pattern = "^[1-2]\\d\\d\\d[-](0[1-9]|[1-9]|1[0-2])[-]([1-9]|[1-2][0-9]|3[0-1])";
+		String dateString = getString();
+		while(true) {
+			if (dateString.matches(pattern)) {
+				return dateString;
+			}
+			System.out.println("Please enter valid date [yyyy-MM-dd].");
+			dateString = getString();
+			continue;
+		}
 	}
 	
 	/**
