@@ -341,6 +341,12 @@ public class User extends Account{
 		currentRideID = id;
 	}
 	
+	public void addRideToHistory(Ride ride) {
+		this.rideHistory.add(ride);
+		//TODO: uncomment when ride time is all the same format (duration or long)
+		//addToRideTime(ride.getRideDuration()); 
+	}
+	
 	/**
 	 * Update or change user's membership details. 
 	 * Returns false if credit card isn't valid.

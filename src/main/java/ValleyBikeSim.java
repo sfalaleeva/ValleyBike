@@ -39,6 +39,8 @@ public class ValleyBikeSim {
 	/** Map of date to rides that have't been saved to files yet. */
 	public static Map<Date, ArrayList<Ride>> dailyRidesMap;
 	
+	public static Map<Integer, Ride> ongoingRides;
+	
 	/** The logged in user id. 
 	 * 	-1 if no user. */
 	public static int currentUserID;
@@ -66,6 +68,7 @@ public class ValleyBikeSim {
 		stationToBikeMap = new HashMap<>();
 		issueMap = new HashMap<>();
 		dailyRidesMap = new HashMap<>();
+		ongoingRides = new HashMap<>();
 		currentUserID = -1;
 		bikesNeedMaintenance = 0;
 		userRecords = new HashMap<>();
@@ -272,21 +275,11 @@ public class ValleyBikeSim {
 		}
 			}
 	
-	public static void pickOutBike() {
-		System.out.println("First, enter the ID of the station you want to start your ride from:");
-		int stationID = inputUtil.getIntInRange(20, stationsMap.lastKey(), "station ID");
-		Station station = stationsMap.get(stationID);
-		if(station.getBikes() <= 0) {
-			System.out.println("It looks like there are no bikes at this station. You can try looking for a bike at another station");
-		}
-		List<Integer> bikeIDs = stationToBikeMap.get(stationID).stream().map(b -> b.getID()).collect(Collectors.toList());
-		System.out.println("These are the bikes that are currently at the station: "+ bikeIDs.toString());  
-		System.out.println("Please enter the ID of the bike you would like to check out: ");
-		Integer bikeID = inputUtil.getIntInList(bikeIDs, "bike ID");
-		startRide(bikeID);
-	}
-	
-	public static void startRide(Integer bikeID) {
+	/**
+	 * Given a bike to check out, this function checks out a bike and starts a ride for the logged in user
+	 * @param bikeID
+	 */
+	public static void startRide() {
 		User currentUser = usersMap.get(currentUserID);
 		if (!currentUser.getIsActive()) {
 			System.out.println("You must have active membership and valid credit card information to check out a bike.");
@@ -296,12 +289,51 @@ public class ValleyBikeSim {
 			System.out.println("It looks like you already have a bike checked out. Only one bike per person is allowed.");
 			return;
 		}
+
+		Integer bikeID = inputUtil.getValidBikeIdAtStation();
+		if (bikeID == -1) {
+			return;
+		}
 		Bike bike = bikesMap.get(bikeID);
 		bike.checkOut();
+		
 		currentUser.addToBalance(currentUser.getMembership().getPricePerRide()); //charge per ride according to membership
 		Ride ride = new Ride(currentUserID, bikeID, bike.getStatID(), -1, new Date(), null);
 		currentUser.setCurrentRide(ride.getID());
+		ongoingRides.put(ride.getID(), ride);
 		System.out.println("Your ride has been started successfully!");
+	}
+	
+	/**
+	 * Function gets called when user wants to end their ride and provides the ID of the station,
+	 * which they want to return their bike to
+	 * @param endStationID
+	 */
+	public static void endRide() {
+		User currentUser = usersMap.get(currentUserID);
+		if (currentUser.getCurrentRideID() == -1) {
+			System.out.println("It looks like you are not currently on a ride");
+		}
+		Integer endStationID = inputUtil.getRideEndStationID();
+		Ride currentRide = ongoingRides.get(currentUser.getCurrentRideID());
+		Bike bike = bikesMap.get(currentRide.getBikeID());
+		if (!bike.checkIn(endStationID)) {
+			return;
+		};
+		//update ride object now that it's complete, remove from ongoing rides
+		currentRide.setEndTime(new Date());
+		currentRide.setToStationID(endStationID);
+		ongoingRides.remove(currentRide.getID());
+		
+		//calculate the charge for the ride and charge the user if they've ridden longer than their membership allows for free
+		float overtime = currentRide.getRideDuration() - currentUser.getMembership().getFreeRideDuration();
+		if (overtime > 0) {
+			currentUser.addToBalance(Membership.overtimePrice * overtime);
+		}
+		currentUser.chargeUser();
+		currentUser.addRideToHistory(currentRide);
+		currentUser.setCurrentRide(-1);
+		System.out.println("Your ride was ended successfully! We hope you ride again soon!");
 	}
 
 	/**
@@ -511,10 +543,10 @@ public class ValleyBikeSim {
 							printStationList();
 							break;
 						case "2":
-							pickOutBike();
+							startRide();
 							break;
 						case "3":
-							//TODO(): endRide();
+							endRide();
 							break;
 						case "4":
 							//TODO(): reportIssue();
