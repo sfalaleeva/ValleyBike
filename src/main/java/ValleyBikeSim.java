@@ -816,9 +816,13 @@ public class ValleyBikeSim {
 				System.out.println("Select an option:\n1. Change Membership Type.\n2. Change payment details.\n");
 				int input = inputUtil.getIntInRange(1,2, "selection");
 				if(input == 1) {
+					//TODO(): currently changeMembership returns an updated user object
+					// As written, the change isn't stored here.
+					// This might not be the way we want it.
 					UserModifier.changeMembership(usersMap.get(currentUserID));
 				}
 				if(input == 2) {
+					//TODO(): same as above
 					UserModifier.changePayment(usersMap.get(currentUserID));
 				}
 				break;
