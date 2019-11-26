@@ -2,10 +2,9 @@ import java.text.ParseException;
 
 import java.util.*;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 //Cite: https://www.mkyong.com/regular-expressions/how-to-validate-password-with-regular-expression/
 
@@ -269,6 +268,37 @@ public final class inputUtil {
 		//return pwd.matches(".{8}");
 		Matcher matcher = VALID_PASSWORD_REGEX .matcher(pwd);
 		return matcher.find();
+	}
+	
+	/**
+	 * Prompts user for StationID to return their bike to, validates that ID is valid
+	 * @return station ID
+	 */
+	public static Integer getRideEndStationID() {
+		System.out.println("Please tell us ID of the station you are returning this bike to: ");
+		Integer stationID = getIntInRange(20, ValleyBikeSim.stationsMap.lastKey(), "station ID");
+		return stationID;
+	}
+	
+	/**
+	 * Function helps the user to pick out a bike they want to unlock by displaying a list of bikes
+	 * at a given station and validating that user entered one of the numbers in that list
+	 * @return bike ID
+	 */
+	public static Integer getValidBikeIdAtStation() {
+		System.out.println("First, enter the ID of the station you want to start your ride from:");
+		int stationID = getIntInRange(20, ValleyBikeSim.stationsMap.lastKey(), "station ID");
+		Station station = ValleyBikeSim.stationsMap.get(stationID);
+		if(station.getBikes() <= 0) {
+			System.out.println("It looks like there are no bikes at this station. You can try looking for a bike at another station");
+			return -1;
+		}
+		List<Integer> bikeIDs = ValleyBikeSim.stationToBikeMap.get(stationID).stream().map(b -> b.getID()).collect(Collectors.toList());
+		System.out.println("These are the bikes that are currently at the station: "+ bikeIDs.toString());  
+		System.out.println("Please enter the ID of the bike you would like to check out: ");
+		Integer bikeID = inputUtil.getIntInList(bikeIDs, "bike ID");
+	
+		return bikeID;
 	}
 	
 }

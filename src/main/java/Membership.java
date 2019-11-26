@@ -23,7 +23,7 @@ public enum Membership {
 	private final int freeRideDuration;
 
 	/** Overtime free for 1 minute. */
-	private static final float overtime = 0.15f;
+	public static final float overtimePrice = 0.15f;
 	
 	/** Create enum membership constants. */
 	Membership(int duration, float price, float pricePerRide,

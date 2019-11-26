@@ -141,6 +141,7 @@ public class Station {
 	 */
 	public boolean addOneBike(Bike b) {
 		if(availableDocks < 1) {
+			System.out.println("There is no space!");
 			return false;
 		}
 		
@@ -168,6 +169,7 @@ public class Station {
 		}
 		ValleyBikeSim.stationToBikeMap.put(ID, current);
 		bikes = current.size();
+		availableDocks += removed.size();
 		return removed;
 	}
 	
@@ -178,6 +180,7 @@ public class Station {
 		
 		bikes = currentBikes.size();
 		ValleyBikeSim.stationToBikeMap.put(ID, currentBikes);
+		availableDocks++;
 		
 		return checkExecution;
 	}
