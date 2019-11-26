@@ -225,7 +225,7 @@ public class ValleyBikeSim {
 		      writer.close();
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 
@@ -597,7 +597,7 @@ public class ValleyBikeSim {
 							//TODO(): updateAccount();
 							break;
 						case "7":
-							//TODO(): resolveIssues();
+							resolveIssues();
 							break;
 						case "8":
 							logout();
@@ -680,6 +680,83 @@ public class ValleyBikeSim {
 			stationToBikeMap.put(station.getID(), bikes);
 		}
 
+	}
+	
+	
+	private static void resolveIssues() {
+		System.out.println("Please select an issue type:\n" + 
+				"1. Station is empty.\n2. Station is full.\n3. A bike is broken or needs maintenance.\n" + 
+				"4. Modify account details.\n5. Other issue.");
+		int menuItem = inputUtil.getIntInRange(1, 5, "number");
+		Issue.TypeIssue typeissue = null;
+		switch(menuItem) {
+			case(1):
+				typeissue = Issue.TypeIssue.STATION_EMPTY;
+				break;
+			case(2):
+				typeissue = Issue.TypeIssue.STATION_FULL;
+				break;
+			case(3):
+				typeissue = Issue.TypeIssue.BIKE_MAINTENANCE;
+				break;
+			case(4):
+				typeissue = Issue.TypeIssue.ACCOUNT;
+				break;
+			case(5):
+				typeissue = Issue.TypeIssue.OTHER;
+				break;
+				
+		}
+		
+		System.out.println("Please describe your issue.\n");
+		String description = inputUtil.getString();
+		switch(typeissue) {
+			case STATION_EMPTY:
+				equalizeStations();
+				System.out.println("Balancing stations, thank you for your report!\n");
+				break;
+			case STATION_FULL:
+				equalizeStations();
+				System.out.println("Balancing stations, thank you for your report!\n");
+				break;
+			case BIKE_MAINTENANCE:
+				Issue newIssue = new Issue(currentUserID,description,typeissue);
+				System.out.println("ID of the damaged bike? \n");
+				int bikeID = inputUtil.getIntInRange(1,bikesMap.size(),"id");
+				Bike bike = bikesMap.get(bikeID);
+				bike.setNeedsMaintenance(true);
+				newIssue.setBikeID(bikeID);
+				
+				issueMap.put(newIssue.getIssueID(),newIssue);
+				if(issueMap.size() > 10) {
+					sendMaintenanceDriver();
+				}
+				System.out.println("Thank you for your report!");
+				break;
+			case ACCOUNT:
+				System.out.println("Select an option:\n1. Change Membership Type.\n2. Change payment details.\n");
+				int input = inputUtil.getIntInRange(1,2, "selection");
+				if(input == 1) {
+					UserModifier.changeMembership(usersMap.get(currentUserID));
+				}
+				if(input == 2) {
+					UserModifier.changePayment(usersMap.get(currentUserID));
+				}
+				break;
+			case OTHER:
+				System.out.println("Your issue details are being forwarded to a Customer Service representative.\n Thank you for your report.");
+				break;
+		}
+		
+		
+	}
+	
+	public static void sendMaintenanceDriver() {
+		for(Bike bike: bikesMap.values()) {
+			bike.setNeedsMaintenance(false);
+			
+		}
+		issueMap.clear();
 	}
 
 
