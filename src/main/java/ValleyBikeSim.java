@@ -562,12 +562,17 @@ public class ValleyBikeSim {
 		
 		while(true) {
 			String input = inputUtil.getString();
+			//TODO(): the menu isn't reprinted after the first selection is made
 			switch (input) {
 				case "0": 
 					System.out.println("\nGoing back. "); //isn't necessary? 
+					//TODO(): doesn't exit the menu.
 					break;
 				case "1":
 					//change membership
+					// //TODO(): currently changeMembership returns an updated user object
+					// As written, the change isn't stored here.
+					// This might not be the way we want it.
 					UserModifier.changeMembership(userChange);
 					break;
 				case "2":
@@ -576,6 +581,7 @@ public class ValleyBikeSim {
 					break;
 				case "3":
 					//change personal info
+					//TODO(): see above, a copy, not a reference is passed to this method
 					UserModifier.changePersonalInfo(userChange);
 					break;
 				case "4":
