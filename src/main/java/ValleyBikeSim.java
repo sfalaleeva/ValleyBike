@@ -549,7 +549,7 @@ public class ValleyBikeSim {
 							endRide();
 							break;
 						case "4":
-							//TODO(): reportIssue();
+							reportIssues();
 							break;
 						case "5": 
 							//TODO(): updateAccount();
@@ -597,9 +597,6 @@ public class ValleyBikeSim {
 							//TODO(): updateAccount();
 							break;
 						case "7":
-							resolveIssues();
-							break;
-						case "8":
 							logout();
 							break;
 						default: 
@@ -659,7 +656,7 @@ public class ValleyBikeSim {
 	public static void printAdminMenu() {
 		System.out.println("\nPlease choose from one of the following menu options:\n"
 				+ "0. Quit Program.\n1. View station list.\n2. Add station.\n3. Save station list.\n"
-				+ "4. Resolve ride data.\n5. Equalize stations.\n6. Update Account.\n7. Resolve Issues.\n8. Log Out.");
+				+ "4. Resolve ride data.\n5. Equalize stations.\n6. Update Account.\n7. Log Out.");
 	}
 	
 	/**
@@ -682,44 +679,32 @@ public class ValleyBikeSim {
 
 	}
 	
-	
-	private static void resolveIssues() {
+	/**
+	 * 
+	 */
+	private static void reportIssues() {
 		System.out.println("Please select an issue type:\n" + 
 				"1. Station is empty.\n2. Station is full.\n3. A bike is broken or needs maintenance.\n" + 
 				"4. Modify account details.\n5. Other issue.");
 		int menuItem = inputUtil.getIntInRange(1, 5, "number");
 		Issue.TypeIssue typeissue = null;
-		switch(menuItem) {
-			case(1):
-				typeissue = Issue.TypeIssue.STATION_EMPTY;
-				break;
-			case(2):
-				typeissue = Issue.TypeIssue.STATION_FULL;
-				break;
-			case(3):
-				typeissue = Issue.TypeIssue.BIKE_MAINTENANCE;
-				break;
-			case(4):
-				typeissue = Issue.TypeIssue.ACCOUNT;
-				break;
-			case(5):
-				typeissue = Issue.TypeIssue.OTHER;
-				break;
-				
-		}
 		
 		System.out.println("Please describe your issue.\n");
 		String description = inputUtil.getString();
-		switch(typeissue) {
-			case STATION_EMPTY:
+		
+		switch(menuItem) {
+			case 1:
+				typeissue = Issue.TypeIssue.STATION_EMPTY;
 				equalizeStations();
 				System.out.println("Balancing stations, thank you for your report!\n");
 				break;
-			case STATION_FULL:
+			case 2:
+				typeissue = Issue.TypeIssue.STATION_FULL;
 				equalizeStations();
 				System.out.println("Balancing stations, thank you for your report!\n");
 				break;
-			case BIKE_MAINTENANCE:
+			case 3:
+				typeissue = Issue.TypeIssue.BIKE_MAINTENANCE;
 				Issue newIssue = new Issue(currentUserID,description,typeissue);
 				System.out.println("ID of the damaged bike? [0,"+ bikesMap.size() + "]\n");
 				int bikeID = inputUtil.getIntInRange(1,bikesMap.size(),"id");
@@ -733,7 +718,8 @@ public class ValleyBikeSim {
 				}
 				System.out.println("Thank you for your report!");
 				break;
-			case ACCOUNT:
+			case 4:
+				typeissue = Issue.TypeIssue.ACCOUNT;
 				System.out.println("Select an option:\n1. Change Membership Type.\n2. Change payment details.\n");
 				int input = inputUtil.getIntInRange(1,2, "selection");
 				if(input == 1) {
@@ -743,7 +729,8 @@ public class ValleyBikeSim {
 					UserModifier.changePayment(usersMap.get(currentUserID));
 				}
 				break;
-			case OTHER:
+			case 5:
+				typeissue = Issue.TypeIssue.OTHER;
 				System.out.println("Your issue details are being forwarded to a Customer Service representative.\n Thank you for your report.");
 				break;
 		}
@@ -751,12 +738,17 @@ public class ValleyBikeSim {
 		
 	}
 	
+	/**
+	 * Models the process of fixing all the bikes with issues 
+	 * in the system.
+	 */
 	public static void sendMaintenanceDriver() {
 		for(Bike bike: bikesMap.values()) {
 			bike.setNeedsMaintenance(false);
 			
 		}
 		issueMap.clear();
+		bikesNeedMaintenance = 0;
 	}
 
 

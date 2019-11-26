@@ -80,6 +80,7 @@ public final class UserModifier {
 	public static User changeMembership(User user) {
 		Membership m = selectMembership();
 		user.updateMembership(m);
+		user.chargeUser(); // charge user for their new membership
 		return user;
 	}
 	

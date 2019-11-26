@@ -362,7 +362,7 @@ public class User extends Account{
 			updateStatus();
 			if (this.isActive) {
 				addToBalance(membership.getPrice()); // update what user owes
-				
+	
 				LocalDate now = LocalDate.now(); // immutable object
 				
 				switch (membership) {
