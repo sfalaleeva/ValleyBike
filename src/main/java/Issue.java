@@ -45,7 +45,7 @@ public class Issue {
 	/**
 	 * Integer of next available id.
 	 */
-	private static Integer nextIssueID;
+	private static int nextIssueID;
 	
 	
 	/**

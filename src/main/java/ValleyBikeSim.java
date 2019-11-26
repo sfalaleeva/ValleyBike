@@ -721,7 +721,7 @@ public class ValleyBikeSim {
 				break;
 			case BIKE_MAINTENANCE:
 				Issue newIssue = new Issue(currentUserID,description,typeissue);
-				System.out.println("ID of the damaged bike? \n");
+				System.out.println("ID of the damaged bike? [0,"+ bikesMap.size() + "]\n");
 				int bikeID = inputUtil.getIntInRange(1,bikesMap.size(),"id");
 				Bike bike = bikesMap.get(bikeID);
 				bike.setNeedsMaintenance(true);
