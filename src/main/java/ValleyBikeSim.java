@@ -729,7 +729,7 @@ public class ValleyBikeSim {
 	 */
 	public static void printMainMenu() {
 		System.out.println("\nPlease choose from one of the following menu options:\n"
-				+ "0. Quit Program.\n1. View station list.\n2. Login.\n3. Register.");
+				+ "0. Quit Program\t\t3. Register\n1. View station list\n2. Login");
 				}
 	
 	/**
@@ -737,8 +737,11 @@ public class ValleyBikeSim {
 	 */
 	public static void printUserMenu() {
 		System.out.println("\nPlease choose from one of the following menu options:\n"
-				+ "0. Quit Program.\n1. View station list.\n2. Unlock Bike.\n3. End Ride.\n"
-				+ "4. Report Issue.\n5. View Account Details and Update Account.\n6. View User Report.\n7. Log Out.");
+				+ "0. Quit Program\t\t5. View Account Details and Update Account"
+				+ "\n1. View station list\t6. View User Report"
+				+ "\n2. Unlock Bike\t\t7. Log Out"
+				+ "\n3. End Ride"
+				+ "\n4. Report Issue");
 	}
 	
 	/**
@@ -746,8 +749,11 @@ public class ValleyBikeSim {
 	 */
 	public static void printAdminMenu() {
 		System.out.println("\nPlease choose from one of the following menu options:\n"
-				+ "0. Quit Program.\n1. View station list.\n2. Add station.\n3. Save station list.\n"
-				+ "4. Resolve ride data.\n5. Equalize stations.\n6. Update Account.\n7. Log Out.");
+				+ "0. Quit Program\t\t5. Equalize stations"
+				+ "\n1. View station list\t6. Update Account"
+				+ "\n2. Add station\t\t7. Log Out"
+				+ "\n3. Save station list"
+				+ "\n4. Resolve ride data");
 	}
 	
 	/**
