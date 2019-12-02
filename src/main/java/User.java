@@ -114,6 +114,7 @@ public class User extends Account{
 	 * @return true if account is active
 	 */
 	public boolean getIsActive() {
+		updateStatus();
 		return isActive;
 	}
 	
@@ -416,11 +417,13 @@ public class User extends Account{
 		this.membership = Membership.NONE;
 	}
 	
+	
+	//TODO(): should check there is valid, non-expired credit card and membership
 	/**
 	 * Checks whether the user should be considered active
-	 * and updates.
+	 * and updates isActive.
 	 */
-	public void updateStatus() {
+	private void updateStatus() {
 		if (!creditCard.isEmpty() && !this.membership.equals(Membership.NONE)) {
 			this.isActive = true;
 		}

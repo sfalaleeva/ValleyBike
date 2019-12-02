@@ -530,34 +530,34 @@ public class ValleyBikeSim {
 	 * change a user's membership, payment info, personal info, or cancel membership.
 	 */
 	public static void updateAccount() {
-		//check for whether admin or not
-		Integer userChangeID = -1; //will be changed
+		int userID = 0; // id is 0 when admin is logged in
 		User userChange; 
 		
-		//TODO: check admin option is working
-		while(userChangeID == -1) {
+		//check if admin is logged in
+		while(userID == 0) {
 			if (currentUserID == 0) {
 				System.out.println("Please enter email of user whose account info you'd like to change: ");
 				String userEmail = inputUtil.getString();
 				if (userRecords.get(userEmail) == null ) {
 					System.out.println("There is no registered account with this email.");
 				} else {
-					userChangeID = userRecords.get(userEmail);
+					userID = userRecords.get(userEmail);
 					System.out.println("For the user you selected--");
 				}
 				
 			} else if (currentUserID > 0) {
-				userChangeID = currentUserID;
+				userID = currentUserID;
 			}
 		}
 		
-		userChange = usersMap.get(userChangeID);
+		userChange = usersMap.get(userID);
 		
 		//put in print update method
 		userChange.printInfo();
 		System.out.println("\nPlease choose from one of the following menu options:\n"
-				+ "0. Back to Main Menu.\n1. Change Membership." 
-				+"\n2. Add payment info.\n3. Change personal info. \n4. Cancel Membership. \n5. Delete Account");
+				+ "0. Back to Main Menu\t3. Change personal info"
+				+ "\n1. Change Membership\t4. Cancel Membership" 
+				+"\n2. Change payment info\t5. Delete Account");
 		System.out.println("Enter a number (0-5): \n");
 		
 		while(true) {
@@ -569,10 +569,6 @@ public class ValleyBikeSim {
 					System.out.println("\nGoing back. "); //isn't necessary? 
 					break;
 				case "1":
-					//change membership
-					// //TODO(): currently changeMembership returns an updated user object
-					// As written, the change isn't stored here.
-					// This might not be the way we want it.
 					UserModifier.changeMembership(userChange);
 					break;
 				case "2":
@@ -581,7 +577,6 @@ public class ValleyBikeSim {
 					break;
 				case "3":
 					//change personal info
-					//TODO(): see above, a copy, not a reference is passed to this method
 					UserModifier.changePersonalInfo(userChange);
 					break;
 				case "4":
@@ -660,7 +655,7 @@ public class ValleyBikeSim {
 				// assume admin has default id 0
 				else if (currentUserID == 0) {
 					printAdminMenu();
-					System.out.println("\nPlease enter a number (0-8): ");
+					System.out.println("\nPlease enter a number (0-7): ");
 					input = userInput.nextLine();
 					switch (input) {
 						case "0": 
@@ -789,8 +784,9 @@ public class ValleyBikeSim {
 
 	private static void reportIssues() {
 		System.out.println("Please select an issue type:\n" + 
-				"1. Station is empty.\n2. Station is full.\n3. A bike is broken or needs maintenance.\n" + 
-				"4. Modify account details.\n5. Other issue.");
+				"1. Station is empty\t4. Modify account details"
+				+ "\n2. Station is full\t5. Other issue"
+				+ "\n3. A bike is broken or needs maintenance");
 		int menuItem = inputUtil.getIntInRange(1, 5, "number");
 		Issue.TypeIssue typeissue = null;
 		
@@ -824,17 +820,14 @@ public class ValleyBikeSim {
 				System.out.println("Thank you for your report!");
 				break;
 			case 4:
+				//TODO() Redundant with update account functionality?
 				typeissue = Issue.TypeIssue.ACCOUNT;
-				System.out.println("Select an option:\n1. Change Membership Type.\n2. Change payment details.\n");
+				System.out.println("Select an option:\n1. Change Membership Type.\t2. Change payment details.\n");
 				int input = inputUtil.getIntInRange(1,2, "selection");
 				if(input == 1) {
-					//TODO(): currently changeMembership returns an updated user object
-					// As written, the change isn't stored here.
-					// This might not be the way we want it.
 					UserModifier.changeMembership(usersMap.get(currentUserID));
 				}
 				if(input == 2) {
-					//TODO(): same as above
 					UserModifier.changePayment(usersMap.get(currentUserID));
 				}
 				break;

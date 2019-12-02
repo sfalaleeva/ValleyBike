@@ -137,13 +137,13 @@ public final class inputUtil {
 			try {
 				int parsedInput = Integer.parseInt(input);
 				if(!list.contains(parsedInput)) {
-					System.out.printf("\nInvalid " + desiredInput + ". Please enter one of the numers in the list: ", list);
+					System.out.printf("\nInvalid " + desiredInput + ". Please enter one of the numbers in the list: ", list);
 					continue;
 				} else {
 					return parsedInput;
 				}
 		} catch(NumberFormatException e) {
-			System.out.printf("Invalid input. Please enter one of the numers in the list: ", list);
+			System.out.printf("Invalid input. Please enter one of the numbers in the list: ", list);
 			continue;
 			}
 		}
@@ -314,7 +314,7 @@ public final class inputUtil {
 		int stationID = getIntInRange(20, ValleyBikeSim.stationsMap.lastKey(), "station ID");
 		Station station = ValleyBikeSim.stationsMap.get(stationID);
 		if(station.getBikes() <= 0) {
-			System.out.println("It looks like there are no bikes at this station. You can try looking for a bike at another station");
+			System.out.println("It looks like there are no bikes at this station. You can try looking for a bike at another station.");
 			return -1;
 		}
 		List<Integer> bikeIDs = ValleyBikeSim.stationToBikeMap.get(stationID).stream().map(b -> b.getID()).collect(Collectors.toList());
