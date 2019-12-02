@@ -492,7 +492,7 @@ public class ValleyBikeSim {
 		// be given the option to register instead.
 		if (userRecords.get(inputEmail) == null ) {
 			System.out.println("There is no registered account with this email.");
-			System.out.println("Would you like to register?");
+			System.out.println("Would you like to register? Enter y/n");
 			boolean wantToRegister = inputUtil.getBool();
 			if (wantToRegister) {
 				addUser();
@@ -562,7 +562,7 @@ public class ValleyBikeSim {
 		
 		while(true) {
 			String input = inputUtil.getString();
-			//TODO(): the menu isn't reprinted after the first selection is made
+			
 			switch (input) {
 				case "0": 
 					//exits to main account menu
