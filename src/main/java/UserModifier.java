@@ -49,9 +49,9 @@ public final class UserModifier {
 		System.out.println("Would you like to continue activiating your account?");
 		if (inputUtil.getBool()) {
 			user = changePayment(user);
-			user = changeMembership(user); 
+			changeMembership(user); 
 		}
-		user.updateStatus();
+		// the status is automatically updated when user.getIsActive() is called.
 		return user;
 	}
 	
@@ -78,14 +78,16 @@ public final class UserModifier {
 	 */
 	public static void changePersonalInfo(User user) {
 		System.out.println("What would you like to change? \n"
-				+"0.Go back. \n1.First and last name. \n2.Address. \n3.Date of Birth."
-				+"\n4.Phone number. \n5.Email. \n6.Password.");
+				+"0. Go back\t\t4. Phone number"
+				+ "\n1. First and last name\t5. Email"
+				+ "\n2. Address\t\t6. Password"
+				+ "\n3. Date of Birth.");
 		
 		while(true) {
 			String input = inputUtil.getString();
 			switch (input) {
 				case "0": 
-					System.out.println("\n Going back. "); //is this print statement necessary? 
+					System.out.println("\n Going back. "); //TODO(): is this print statement necessary? 
 					break;
 				case "1":
 					//names
@@ -139,17 +141,19 @@ public final class UserModifier {
 				default: 
 					System.out.print("\nInvalid input, please select a number within the 0-6 range.\n");
 			}
+			ValleyBikeSim.usersMap.put(user.getUserID(), user);
 		}
 		
 	}
 	
+	//TODO() needs to update the expiration date for the membership
 	/**
 	 * Method for getting user membership choice and 
 	 * updating the user's membership.
 	 * @param user
 	 * @return
 	 */
-	public static User changeMembership(User user) {
+	public static void changeMembership(User user) {
 		Membership m = selectMembership();
 		user.addToBalance(m.getPrice());
 		// charge user for their new membership
@@ -158,7 +162,7 @@ public final class UserModifier {
 		}else {
 			System.out.println("Could not process the payment.");
 		}
-		return user;
+		ValleyBikeSim.usersMap.put(user.getUserID(), user);
 	}
 	
 	/**
