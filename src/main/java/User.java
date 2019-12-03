@@ -417,17 +417,23 @@ public class User extends Account{
 		this.membership = Membership.NONE;
 	}
 	
-	
-	//TODO(): should check there is valid, non-expired credit card and membership
 	/**
 	 * Checks whether the user should be considered active
 	 * and updates isActive.
 	 */
 	private void updateStatus() {
-		if (!creditCard.isEmpty() && !this.membership.equals(Membership.NONE)) {
-			this.isActive = true;
+		// an active user has a valid credit card
+		// TODO(): validate card includes checking card expiration
+		if (!creditCard.isEmpty() && !Payment.validateCard(creditCard)) {
+			// has an active membership
+			// compareTo returns negative if expiration data is before current date,
+			// indicating a valid membership.
+			if (!this.membership.equals(Membership.NONE) && 
+			this.membershipExpirationDate.compareTo(LocalDate.now()) <= 0) {
+					this.isActive = true;
+				}
+			}
 		}
-	}
 	
 	/**
 	 * prints out user's details

@@ -146,7 +146,6 @@ public final class UserModifier {
 		
 	}
 	
-	//TODO() needs to update the expiration date for the membership
 	/**
 	 * Method for getting user membership choice and 
 	 * updating the user's membership.
@@ -158,7 +157,7 @@ public final class UserModifier {
 		user.addToBalance(m.getPrice());
 		// charge user for their new membership
 		if (user.chargeUser()) {
-			user.updateMembership(m);
+			user.updateMembership(m); // also updates expiration date
 		}else {
 			System.out.println("Could not process the payment.");
 		}
