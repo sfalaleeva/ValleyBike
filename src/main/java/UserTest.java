@@ -32,7 +32,7 @@ public class UserTest {
 	@Test
 	public void testCancelMembership() {
 		user.updateMembership(Membership.NONE);
-		assertEquals(user.getIsActive(), false);
+		assertEquals(false, user.getIsActive());
 		assertEquals(Membership.NONE, user.getMembership());
 	}
 	
@@ -58,18 +58,4 @@ public class UserTest {
 		assertNotEquals(user.getMembershipExpirationDate(), null);
 	}
 	
-	@Test
-	public void testUserBalance() {
-		user.updateMembership(Membership.DAY);
-		// user balance updated
-		assertEquals(Membership.DAY.getPrice(), user.getBalance(), 0);
-	}
-	
-	@Test
-	public void testUpdateStatus() {
-		assertEquals(false, user.getIsActive()); // starts false with no membership
-		user.updateMembership(Membership.DAY);
-		user.updateStatus();
-		assertEquals(true, user.getIsActive());
-	}
 }
