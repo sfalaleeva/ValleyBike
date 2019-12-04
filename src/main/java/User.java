@@ -427,8 +427,7 @@ public class User extends Account{
 		// indicating an invalid membership.
 		else if (this.membership.equals(Membership.NONE) || 
 			this.membershipExpirationDate.compareTo(LocalDate.now()) <= 0) {
-					System.out.println("Issue with membership. Expiration date"
-							+ "is " + membershipExpirationDate);
+					System.out.println("Issue with membership.");
 				}
 		else {
 			this.isActive = true;

@@ -148,6 +148,23 @@ public final class inputUtil {
 			}
 		}
 	}
+	
+	/**
+	 * Get the information to create user object.
+	 * @return Address
+	 */
+	public static Address getAddress() {
+		System.out.print("Enter your address:\nStreet: ");
+		String street = inputUtil.getString();
+		System.out.print("City: ");
+		String city = inputUtil.getString();
+		System.out.println("Zip Code: ");
+		String zip = inputUtil.getString();
+		System.out.println("Country: ");
+		String country = inputUtil.getString();
+		return new Address(street, city, zip, country);
+	}
+	
 	/*
 	 * ********* FORMATING FUNCTIONS ***********
 	 */

@@ -23,7 +23,7 @@ public final class UserModifier {
 		System.out.println("Last Name:");
 		String lName = inputUtil.getString();
 		
-		Address userAddress = getAddress();
+		Address userAddress = inputUtil.getAddress();
 		
 		System.out.println("Date of Birth [yyyy-MM-dd]:");
 		Date dob = inputUtil.getDate();
@@ -46,7 +46,7 @@ public final class UserModifier {
 		
 		User user = new User(fName, lName, userAddress, dob, phone, email, pwd);
 		
-		System.out.println("Would you like to continue activiating your account?");
+		System.out.println("Would you like to enter payment information and select a membership?");
 		if (inputUtil.getBool()) {
 			changePayment(user);
 			changeMembership(user); 
@@ -55,21 +55,6 @@ public final class UserModifier {
 		return user;
 	}
 	
-	/**
-	 * Get the information to create user object.
-	 * @return Address
-	 */
-	public static Address getAddress() {
-		System.out.print("Enter your address:\nStreet: ");
-		String street = inputUtil.getString();
-		System.out.print("City: ");
-		String city = inputUtil.getString();
-		System.out.println("Zip Code: ");
-		String zip = inputUtil.getString();
-		System.out.println("Country: ");
-		String country = inputUtil.getString();
-		return new Address(street, city, zip, country);
-	}
 	
 	/**
 	 * Change desired personal information for specific user account
@@ -101,7 +86,7 @@ public final class UserModifier {
 					break;
 				case "2":
 					//address
-					Address userAddress = getAddress();
+					Address userAddress = inputUtil.getAddress();
 					user.setAddress(userAddress);
 					System.out.println("Info saved! \n");
 					break;
