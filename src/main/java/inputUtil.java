@@ -317,7 +317,7 @@ public final class inputUtil {
 			System.out.println("It looks like there are no bikes at this station. You can try looking for a bike at another station.");
 			return -1;
 		}
-		List<Integer> bikeIDs = ValleyBikeSim.stationToBikeMap.get(stationID).stream().map(b -> b.getID()).collect(Collectors.toList());
+		List<Integer> bikeIDs = ValleyBikeSim.stationToBikeMap.get(stationID);
 		System.out.println("These are the bikes that are currently at the station: "+ bikeIDs.toString());  
 		System.out.println("Please enter the ID of the bike you would like to check out: ");
 		Integer bikeID = inputUtil.getIntInList(bikeIDs, "bike ID");

@@ -293,8 +293,9 @@ public class User extends Account{
 	 * Sets the user's credit card number. If invalid and the previous
 	 * credit card is not valid, the credit card is set to null.
 	 * @param cc - credit card number
+	 * @return true if valid card
 	 */
-	public void setCreditCard(String cc) {
+	public boolean setCreditCard(String cc) {
 		if (!cc.isEmpty() && Payment.validateCardNumber(cc) && Payment.validateCard(cc)) {
 			this.creditCard = cc;
 		}
@@ -304,8 +305,9 @@ public class User extends Account{
 		else {
 			// neither option is valid and user account is inactive.
 			this.creditCard = null;
+			return false;
 		}
-		updateStatus();
+		return true;
 	}
 	
 	/**
@@ -314,6 +316,13 @@ public class User extends Account{
 	 */
 	public void addToBalance(float charge) {
 		balance += charge;
+	}
+	
+	/** Remove a charge to the user's balance.
+	 * @param refund - amount to be refunded
+	 */
+	public void refundToBalance(float refund) {
+		balance -= refund;
 	}
 	
 	/**
@@ -352,20 +361,11 @@ public class User extends Account{
 	
 	/**
 	 * Update or change user's membership details. 
-	 * Returns false if credit card isn't valid.
 	 * @param membership - the membership enum
-	 * @return boolean - success of membership update
 	 */
-	public boolean updateMembership(Membership membership) {
-			this.membershipExpirationDate = null; // resets expiration date
+	public void updateMembership(Membership membership) {
 			this.membership = membership; // sets user membership
 			
-		if (!membership.equals(Membership.NONE)) {
-			// check if user's payment information is valid and activates user
-			updateStatus();
-			if (this.isActive) {
-				addToBalance(membership.getPrice()); // update what user owes
-	
 				LocalDate now = LocalDate.now(); // immutable object
 				
 				switch (membership) {
@@ -375,17 +375,12 @@ public class User extends Account{
 					case DAY:
 						this.membershipExpirationDate = now.plusDays(1);
 						break;
+					case NONE:
+						this.membershipExpirationDate = null;
+						break;
 					default: // PAY_PER_RIDE, YEAR, FOUNDER last 1 year
 						this.membershipExpirationDate = now.plusYears(1);
 				}
-			}
-			else {
-				// if the account is not validated, the update fails.
-				this.membership = Membership.NONE;
-				return false;
-			}
-		}
-		return true;
 	}
 	
 	
@@ -424,15 +419,19 @@ public class User extends Account{
 	private void updateStatus() {
 		// an active user has a valid credit card
 		// TODO(): validate card includes checking card expiration
-		if (!creditCard.isEmpty() && !Payment.validateCard(creditCard)) {
-			// has an active membership
-			// compareTo returns negative if expiration data is before current date,
-			// indicating a valid membership.
-			if (!this.membership.equals(Membership.NONE) && 
-			this.membershipExpirationDate.compareTo(LocalDate.now()) <= 0) {
-					this.isActive = true;
+		if (creditCard.isEmpty() || !Payment.validateCard(creditCard)) {
+			System.out.println("Issue processing user credit card.");
+		}
+		// has an active membership
+		// compareTo returns negative if expiration data is before current date,
+		// indicating a valid membership.
+		else if (this.membership.equals(Membership.NONE) && 
+			this.membershipExpirationDate.compareTo(LocalDate.now()) > 0) {
+					System.out.println("Issue with membership.");
 				}
-			}
+		else {
+			this.isActive = true;
+		}
 		}
 	
 	/**

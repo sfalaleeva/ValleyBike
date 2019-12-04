@@ -24,12 +24,12 @@ public final class Payment {
 	// TODO(): will also ensure that the card has not expired
 	/**
 	 * Abstraction of credit card validation. Returns 
-	 * true 90% of the time.
+	 * true 99% of the time.
 	 * @param creditCard
 	 * @return true if valid credit card
 	 */
 	public static boolean validateCard(String creditCard) {
-		if (Math.random() < 0.9) {
+		if (Math.random() < 0.99) {
 			return true;
 		}
 		return false;

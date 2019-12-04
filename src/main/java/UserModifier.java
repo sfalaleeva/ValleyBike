@@ -48,7 +48,7 @@ public final class UserModifier {
 		
 		System.out.println("Would you like to continue activiating your account?");
 		if (inputUtil.getBool()) {
-			user = changePayment(user);
+			changePayment(user);
 			changeMembership(user); 
 		}
 		// the status is automatically updated when user.getIsActive() is called.
@@ -155,18 +155,18 @@ public final class UserModifier {
 	public static void changeMembership(User user) {
 		Membership m = selectMembership();
 		user.addToBalance(m.getPrice());
-		// charge user for their new membership
+		// if able to charge user for their new membership, we update the membership
 		if (user.chargeUser()) {
 			user.updateMembership(m); // also updates expiration date
 		}else {
-			System.out.println("Could not process the payment.");
+			System.out.println("Could not process the payment. Membership not changed.");
+			user.refundToBalance(m.getPrice());
 		}
 		ValleyBikeSim.usersMap.put(user.getUserID(), user);
 	}
 	
 	/**
-	 * Method for getting user membership choice and 
-	 * updating the user's membership.
+	 * Method for getting user payment details.
 	 * @param user
 	 * @return
 	 */
@@ -177,11 +177,10 @@ public final class UserModifier {
 			System.out.println("Invalid. Enter valid credit card number.");
 			cc = inputUtil.getString();
 		}
-		if (Payment.validateCard(cc)) {
-			user.setCreditCard(cc);
-		}else{
+		if (!user.setCreditCard(cc)) {
 			System.out.println("Card validation failed.");
 		}
+		ValleyBikeSim.usersMap.put(user.getUserID(), user);
 		return user;
 	}
 

@@ -104,7 +104,6 @@ public class Station {
 		this.bikes = bikes;
 		//TODO: update available docks
 	}
-
 	
 	/**
 	 * Adds the number of bikes to the total station tally
@@ -118,9 +117,10 @@ public class Station {
 		}
 		
 		//Adds each bike object to the station map list
-		ArrayList<Bike> currentBikesList = ValleyBikeSim.stationToBikeMap.get(ID);
+		ArrayList<Integer > currentBikesList = ValleyBikeSim.stationToBikeMap.get(ID);
+		
 		for(Bike b: bikesAdded) {
-			currentBikesList.add(b);
+			currentBikesList.add(b.getID());
 			bikes ++;
 		}
 		if(bikes != currentBikesList.size()) {
@@ -145,8 +145,8 @@ public class Station {
 			return false;
 		}
 		
-		ArrayList<Bike> currentBikes = ValleyBikeSim.stationToBikeMap.get(ID);
-		currentBikes.add(b);
+		ArrayList<Integer> currentBikes = ValleyBikeSim.stationToBikeMap.get(ID);
+		currentBikes.add(b.getID());
 		ValleyBikeSim.stationToBikeMap.put(ID, currentBikes);
 		bikes ++;
 		availableDocks --;
@@ -156,14 +156,14 @@ public class Station {
 	/**
 	 * Removes a certain number of bikes from a station and returns them as a list
 	 * @param numBikes - number of bikes to remove
-	 * @return - list of bikes removed from the station
+	 * @return - list of bike ids removed from the station
 	 */
-	public ArrayList<Bike> removeBikes(int numBikes) {
+	public ArrayList<Integer> removeBikes(int numBikes) {
 		if(bikes < numBikes) {
 			return null;
 		}
-		ArrayList<Bike> removed = new ArrayList<>();
-		ArrayList<Bike> current = ValleyBikeSim.stationToBikeMap.get(ID);
+		ArrayList<Integer> removed = new ArrayList<>();
+		ArrayList<Integer> current = ValleyBikeSim.stationToBikeMap.get(ID);
 		for(int i = 0; i < numBikes; i ++) {
 			removed.add(current.remove(0));
 		}
@@ -173,9 +173,14 @@ public class Station {
 		return removed;
 	}
 	
-	
+	/**
+	 * Removes a bike from the station and the list of Bikes at
+	 * that station in ValleyBikeSim.
+	 * @param bike to remove from the station
+	 * @return true if successful
+	 */
 	public boolean removeOneBike(Bike b) {
-		ArrayList<Bike> currentBikes = ValleyBikeSim.stationToBikeMap.get(ID);
+		ArrayList<Integer> currentBikes = ValleyBikeSim.stationToBikeMap.get(ID);
 		boolean checkExecution = currentBikes.remove(b);
 		
 		bikes = currentBikes.size();

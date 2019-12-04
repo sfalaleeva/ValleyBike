@@ -27,10 +27,10 @@ public class ValleyBikeSim {
 	/** Map of user ids to user objects. */
 	public static TreeMap<Integer, User> usersMap;
 	
-	/** Map of station ids to a list of bikes at that station. */
-	public static HashMap<Integer, ArrayList<Bike>> stationToBikeMap;
+	/** Map of station ids to a list of bikes ids at that station. */
+	public static HashMap<Integer, ArrayList<Integer>> stationToBikeMap;
 	
-	/** Map of bike ids to Bike objects */
+	/** Map of bike ids to bike objects. */
 	public static TreeMap<Integer, Bike> bikesMap;
 	
 	/** Map of issue id to maintenance requests. */
@@ -282,7 +282,8 @@ public class ValleyBikeSim {
 			}
 	
 	/**
-	 * Given a bike to check out, this function checks out a bike and starts a ride for the logged in user
+	 * Given a bike to check out, this function checks out a bike and 
+	 * starts a ride for the logged in user.
 	 * @param bikeID
 	 */
 	public static void startRide() {
@@ -301,7 +302,8 @@ public class ValleyBikeSim {
 			return;
 		}
 		Bike bike = bikesMap.get(bikeID);
-		bike.checkOut();
+		bike.checkOut(); 
+		//TODO(): should also update the bike object itself
 		
 		currentUser.addToBalance(currentUser.getMembership().getPricePerRide()); //charge per ride according to membership
 		Ride ride = new Ride(currentUserID, bikeID, bike.getStatID(), -1, new Date(), null);
@@ -758,15 +760,16 @@ public class ValleyBikeSim {
 		
 		for (Station station : stationsMap.values()) {
 			int numBikes = station.getBikes();
-			ArrayList<Bike> bikes = new ArrayList<>();
+			ArrayList<Integer> bikeIDs = new ArrayList<>();
+			
 			// initialize all bikes at this station
 			while (numBikes > 0) {
 				Bike bike = new Bike(station.getID());
-				bikes.add(bike);
+				bikeIDs.add(bike.getID());
 				bikesMap.put(bike.getID(), bike);
 				numBikes--;
 			}
-			stationToBikeMap.put(station.getID(), bikes);
+			stationToBikeMap.put(station.getID(), bikeIDs);
 		}
 
 	}
