@@ -61,11 +61,18 @@ public final class inputUtil {
 	 * @return valid string in format yyyy-MM-dd.
 	 */
 	public static String getValidDateString() {	
+		//TODO: check DOB regex, doesn't like 01 for date, but 01 works for month
+		
 		String pattern = "^[1-2]\\d\\d\\d[-](0[1-9]|[1-9]|1[0-2])[-]([1-9]|[1-2][0-9]|3[0-1])";
 		String dateString = getString();
 		while(true) {
 			if (dateString.matches(pattern)) {
-				return dateString;
+				//restrict DOB year to after 1900
+				Integer year = Integer.valueOf(dateString.substring(0, 4)); 
+				System.out.println(year);
+				if (year > 1900) {       
+					return dateString;
+				}
 			}
 			System.out.println("Please enter valid date [yyyy-MM-dd].");
 			dateString = getString();
