@@ -304,8 +304,7 @@ public class ValleyBikeSim {
 			return;
 		}
 		Bike bike = bikesMap.get(bikeID);
-		bike.checkOut(); 
-		//TODO(): should also update the bike object itself
+		bike.checkOut(); // updates station and bike object
 		
 		currentUser.addToBalance(currentUser.getMembership().getPricePerRide()); //charge per ride according to membership
 		Ride ride = new Ride(currentUserID, bikeID, bike.getStatID(), -1, new Date(), null);
@@ -327,13 +326,14 @@ public class ValleyBikeSim {
 		Integer endStationID = inputUtil.getRideEndStationID();
 		Ride currentRide = ongoingRides.get(currentUser.getCurrentRideID());
 		Bike bike = bikesMap.get(currentRide.getBikeID());
-		if (!bike.checkIn(endStationID)) {
+		if (!bike.checkIn(endStationID)) { 
 			return;
 		};
 		//update ride object now that it's complete, remove from ongoing rides
 		currentRide.setEndTime(new Date());
 		currentRide.setToStationID(endStationID);
 		ongoingRides.remove(currentRide.getID());
+		//TODO(): add completed ride to dailyRidesMap
 		
 		//calculate the charge for the ride and charge the user if they've ridden longer than their membership allows for free
 		float overtime = currentRide.getRideDuration() - currentUser.getMembership().getFreeRideDuration();
@@ -419,7 +419,7 @@ public class ValleyBikeSim {
         
         // keeps track of bikes that are in transit between stations
         List<Bike> bikesInTransit = new ArrayList<>();
-        // keeps track of alrea)dy visited stations that still need bikes
+        // keeps track of already visited stations that still need bikes
         HashMap<Integer, Integer> stationsNeedBikesMap = new HashMap<>();
        
         // visits each station, updates number of bikes, and moves bikes between

@@ -83,7 +83,7 @@ public class Bike {
 	
 	
 	/**
-	 * Checks the bike into a station
+	 * Checks the bike into a station and updates stationToBikeMap.
 	 * @param statID - station to be checked into 
 	 * @return - true if everything went all right, false if the bike wasn't out on a ride or other error occurred
 	 */
@@ -125,21 +125,20 @@ public class Bike {
 			System.out.println("This bike has already been checked out.");
 			return false;
 		}
-		onRide = true;
-		
 		//Check if the bike is in maintenance mode. Deny access if it is.
-		if(needsMaintenance) {
+		else if(needsMaintenance) {
 			System.out.println("This bike is damaged and should not be ridden. Please choose another.");
 			return false;
 		}
+		else {
+			onRide = true;
 		
-		//Remove bike from the current station
-		Station station = ValleyBikeSim.stationsMap.get(statID);
-		boolean checkExecution = station.removeOneBike(this);
+			// find current station and remove bike
+			ValleyBikeSim.stationsMap.get(statID).removeSpecificBike(ID);
+			statID = -1; // bike is not at a station anymore
 		
-		
-		return checkExecution;
-		
+			return true;
+		}
 	}
 	
 	/**

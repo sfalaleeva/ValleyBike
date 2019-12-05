@@ -214,20 +214,22 @@ public class Station {
 	}
 	
 	/**
-	 * Removes a bike from the station and the list of Bikes at
+	 * Removes a bike from the station and updates list of Bikes at
 	 * that station in ValleyBikeSim.
 	 * @param bike to remove from the station
 	 * @return true if successful
 	 */
-	public boolean removeOneBike(Bike b) {
+	public void removeSpecificBike(Integer bikeID) {
 		ArrayList<Integer> currentBikes = ValleyBikeSim.stationToBikeMap.get(ID);
-		boolean checkExecution = currentBikes.remove(b);
 		
-		bikes = currentBikes.size();
+		for (int i = 0; i< currentBikes.size(); i++) {
+			if (currentBikes.get(i) == bikeID) {
+				currentBikes.remove(i);
+				bikes--;
+				availableDocks++;
+			}
+		}
 		ValleyBikeSim.stationToBikeMap.put(ID, currentBikes);
-		availableDocks++;
-		
-		return checkExecution;
 	}
 	
 	/**
