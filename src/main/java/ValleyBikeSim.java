@@ -505,8 +505,12 @@ public class ValleyBikeSim {
 		currentUserID = -1; // no user is logged in to start
 		CsvUtil.readStationData();
 		
-		initializeBikes(CsvUtil.readBikeData());
-			
+		if (CsvUtil.readBikeData().isEmpty()) {
+			initializeBikes();
+		}
+		else {
+			reinitializeBikes(CsvUtil.readBikeData());
+		}
 		
 		Scanner userInput = new Scanner(System.in);
 		String input = "";
@@ -653,23 +657,44 @@ public class ValleyBikeSim {
 	 * highestBikeID so that new bikes can be added.
 	 * @param a list of bike from CsvUtil.readBikeData().
 	 */
-	private static void initializeBikes(ArrayList<Bike> bikes) {
+	private static void reinitializeBikes(ArrayList<Bike> bikes) {
 		
 		for (Bike bike: bikes) {
 			// store newly reconstructed bike object
-			ValleyBikeSim.bikesMap.put(bike.getID(), bike);
+			bikesMap.put(bike.getID(), bike);
 		
 			// add new bike to stationToBikeMap if at a station
 			if(bike.getStatID() >= 20) {
-				if (!ValleyBikeSim.stationToBikeMap.containsKey(bike.getStatID()) ) {
-					ValleyBikeSim.stationToBikeMap.put(bike.getStatID(), new ArrayList<>());
+				if (!stationToBikeMap.containsKey(bike.getStatID()) ) {
+					stationToBikeMap.put(bike.getStatID(), new ArrayList<>());
 				}
-				ValleyBikeSim.stationToBikeMap.get(bike.getStatID()).add(bike.getID());
+				stationToBikeMap.get(bike.getStatID()).add(bike.getID());
 			}
 		}
 		
 		// ensures the next bike id is updated 
 		Bike.setNextBikeID();
+	}
+	
+	/**
+	 * Creates new bikes objects based on station data if there is not existing
+	 * bike data.
+	 */
+	private static void initializeBikes() {
+ 		ArrayList<Integer> bikes = new ArrayList<>();
+
+ 		for (Station station : stationsMap.values()) {
+ 			int numBikes = station.getBikes();
+ 			// initialize all bikes at this station
+ 			while (numBikes > 0) {
+ 				Bike bike = new Bike(station.getID());
+ 				bikes.add(bike.getID());
+ 				// add bike to map
+				bikesMap.put(bike.getID(), bike);
+ 				numBikes--;
+ 			}
+ 			stationToBikeMap.put(station.getID(), bikes);
+ 		}
 	}
 	
 	/**
