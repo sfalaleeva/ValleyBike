@@ -185,12 +185,31 @@ public final class CsvUtil {
 	 * Read in the bike.csv to reinitialize all system bike objects and
 	 * reestablish relationships to stations.
 	 */
-	public static void readBikeData() {
-		// TODO(): complete function
+	public static ArrayList<Bike> readBikeData() {
+		ArrayList<Bike> bikesList = new ArrayList<>();
 		
-		// add to stationToBikeMap (ensure matches station bike count)
-		
-		// should set next bike id based on current highest
+		try {
+			String bikeData = "data-files/bike-data.csv";
+			CSVReader bikeDataReader = new CSVReader(new FileReader(bikeData));
+
+			/* to read the CSV data row wise: */
+			List<String[]> allBikeEntries = bikeDataReader.readAll();
+			System.out.println("");
+			int counter = 0;
+			for(String[] array : allBikeEntries) {
+				if(counter == 0) {
+				} else {
+					Bike bike = new Bike(Integer.parseInt(array[0]),Integer.parseInt(array[1]),inputUtil.toBool(array[2]),
+							inputUtil.toBool(array[3]));
+					bikesList.add(bike);
+				}
+				counter++;
+			}
+		}
+		catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+		return bikesList;
 	}
 	
 	/**

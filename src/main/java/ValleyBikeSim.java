@@ -504,8 +504,10 @@ public class ValleyBikeSim {
 		System.out.println("Welcome to the ValleyBike Simulator.");
 		currentUserID = -1; // no user is logged in to start
 		CsvUtil.readStationData();
-		initializeBikes();
-		//CsvUtil.readBikeData();
+		
+		initializeBikes(CsvUtil.readBikeData());
+			
+		
 		Scanner userInput = new Scanner(System.in);
 		String input = "";
 		
@@ -647,24 +649,27 @@ public class ValleyBikeSim {
 	}
 	
 	/**
-	 * Initializes all the bikes at the stations.
+	 * Adds bikes from CSV to bikesMap, adds to stationToBikeMap, and updates the
+	 * highestBikeID so that new bikes can be added.
+	 * @param a list of bike from CsvUtil.readBikeData().
 	 */
-	private static void initializeBikes() {
+	private static void initializeBikes(ArrayList<Bike> bikes) {
 		
-		for (Station station : stationsMap.values()) {
-			int numBikes = station.getBikes();
-			ArrayList<Integer> bikeIDs = new ArrayList<>();
-			
-			// initialize all bikes at this station
-			while (numBikes > 0) {
-				Bike bike = new Bike(station.getID());
-				bikeIDs.add(bike.getID());
-				bikesMap.put(bike.getID(), bike);
-				numBikes--;
+		for (Bike bike: bikes) {
+			// store newly reconstructed bike object
+			ValleyBikeSim.bikesMap.put(bike.getID(), bike);
+		
+			// add new bike to stationToBikeMap if at a station
+			if(bike.getStatID() >= 20) {
+				if (!ValleyBikeSim.stationToBikeMap.containsKey(bike.getStatID()) ) {
+					ValleyBikeSim.stationToBikeMap.put(bike.getStatID(), new ArrayList<>());
+				}
+				ValleyBikeSim.stationToBikeMap.get(bike.getStatID()).add(bike.getID());
 			}
-			stationToBikeMap.put(station.getID(), bikeIDs);
 		}
-
+		
+		// ensures the next bike id is updated 
+		Bike.setNextBikeID();
 	}
 	
 	/**

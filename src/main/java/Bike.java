@@ -38,6 +38,18 @@ public class Bike {
 		nextBikeID++;
 	}
 	
+	/**
+	 * Reconstructs an existing bike object from file.
+	 * @param id - this bike id
+	 * @param statID - ID of the station the bike was initialized at
+	 */
+	public Bike(int bikeID, int statID, boolean isOnRide, boolean needsMaintenance) {
+		ID = bikeID;
+		this.statID = statID;
+		this.onRide = isOnRide;
+		this.needsMaintenance = needsMaintenance;
+	}
+
 	
 	/*
 	 * Accessor Methods
@@ -80,6 +92,13 @@ public class Bike {
 	/*
 	 * Functional methods
 	 */
+	
+	/**
+	 * Sets the nextBikeId based on ValleyBikeSim.bikesMap.
+	 */
+	public static void setNextBikeID() {
+		nextBikeID = ValleyBikeSim.bikesMap.lastKey() + 1;
+	}
 	
 	
 	/**
