@@ -511,9 +511,8 @@ public class ValleyBikeSim {
 		else {
 			reinitializeBikes(CsvUtil.readBikeData());
 		}
-		
-		Scanner userInput = new Scanner(System.in);
-		String input = "";
+	
+		int input;
 		
 		//TODO: for quit program options, create quit() method 
 		//save all relevant info to CSVs when quit
@@ -522,30 +521,30 @@ public class ValleyBikeSim {
 				if (currentUserID > 0) {
 					printUserMenu();
 					System.out.println("\nPlease enter a number (0-7): ");
-					input = userInput.nextLine();
+					input = inputUtil.getIntInRange(0, 7, "menu option");
 					switch (input) {
-						case "0": 
+						case 0: 
 							System.out.println("\nThank you for using Valley Bike Simulator!");
 							break;
-						case "1":
+						case 1:
 							printStationList();
 							break;
-						case "2":
+						case 2:
 							startRide();
 							break;
-						case "3":
+						case 3:
 							endRide();
 							break;
-						case "4":
+						case 4:
 							reportIssues();
 							break;
-						case "5": 
+						case 5: 
 							updateAccount();
 							break;
-						case "6":
+						case 6:
 							viewUserReport();
 							break;
-						case "7":
+						case 7:
 							logout();
 							break;
 						default: 
@@ -556,34 +555,34 @@ public class ValleyBikeSim {
 				else if (currentUserID == 0) {
 					printAdminMenu();
 					System.out.println("\nPlease enter a number (0-7): ");
-					input = userInput.nextLine();
+					input = inputUtil.getIntInRange(0,7, "menu option");
 					switch (input) {
-						case "0": 
+						case 0: 
 							System.out.println("\nThank you for using Valley Bike Simulator!");
 							break;
-						case "1":
+						case 1:
 							printStationList();
 							break;
-						case "2":
+						case 2:
 							addStation();
 							break;
-						case "3":
+						case 3:
 							// also saves bike data for consistency
 							CsvUtil.saveStationList();
 							System.out.println("\nSuccessfully saved station and bike list!");
 							break;
-						case "4":
+						case 4:
 							System.out.println("\nEnter the file name (including extension) of the file located in data-files:");
-							String rideFile = userInput.nextLine();
+							String rideFile = inputUtil.getString();
 							CsvUtil.resolveRideData(rideFile);
 							break;
-						case "5": 
+						case 5: 
 							equalizeStations();
 							break;
-						case "6":
+						case 6:
 							updateAccount();
 							break;
-						case "7":
+						case 7:
 							logout();
 							break;
 						default: 
@@ -593,19 +592,19 @@ public class ValleyBikeSim {
 				else {
 					printMainMenu();
 					System.out.println("\nPlease enter a number (0-3): ");
-					input = userInput.nextLine();
+					input = inputUtil.getIntInRange(0,3, "menu option");
 					switch (input) {
-						case "0": 
+						case 0: 
 							System.out.println("\nThank you for using Valley Bike Simulator!");
 							System.exit(0);
 							break;
-						case "1":
+						case 1:
 							printStationList();
 							break;
-						case "2":
+						case 2:
 							login();
 							break;
-						case "3":
+						case 3:
 							addUser();
 							break;
 						default: 
@@ -761,8 +760,7 @@ public class ValleyBikeSim {
 				typeissue = Issue.TypeIssue.OTHER;
 				System.out.println("Your issue details are being forwarded to a Customer Service representative.\n Thank you for your report.");
 				break;
-		}
-		
+		}	
 		
 	}
 	
@@ -778,6 +776,4 @@ public class ValleyBikeSim {
 		issueMap.clear();
 		bikesNeedMaintenance = 0;
 	}
-
-
 }
