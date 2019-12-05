@@ -62,7 +62,7 @@ public final class inputUtil {
 	 */
 	public static String getValidDateString() {	
 		
-		String pattern = "^[1-2]\\d\\d\\d[-](0[1-9]|[1-9]|1[0-2])[-](0[1-9]|[1-2][0-9]|3[0-1])";
+		String pattern = "^[1-2]\\d\\d\\d[-](0[1-9]|[1-9]|1[0-2])[-]([1-9]|[0-2][0-9]|3[0-1])";
 		String dateString = getString();
 		while(true) {
 			if (dateString.matches(pattern)) {
