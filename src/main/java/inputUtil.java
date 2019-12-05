@@ -223,6 +223,20 @@ public final class inputUtil {
 		Date dateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(s);
 		return dateTime;
 	}
+	
+	/**
+	 * Returns a list of bike objects
+	 * @param station id
+	 * @return list of bike objects
+	 */
+	public static ArrayList<Bike> getBikeListFromIds(Integer stationId) {
+		ArrayList<Integer> bikeIDs = ValleyBikeSim.stationToBikeMap.get(stationId);
+		ArrayList<Bike> bikes = new ArrayList<>();
+		for (int id: bikeIDs) {
+			bikes.add(ValleyBikeSim.bikesMap.get(id));
+		}
+		return bikes;
+	}
 
 	/*
 	 * User Account Detail Validation
