@@ -186,6 +186,8 @@ public class ValleyBikeSim {
 
 		System.out.println("Enter the number of total bikes at this station (range: 0-" + newStation.getCapacity() + "): ");
 		int bikesParsed = inputUtil.getIntInRange(0, newStation.getCapacity(), "number of bikes entered");
+		
+		// creates bike objects and updates Station and stationToBikeMap
 		newStation.setBikes(bikesParsed);
 		
 		// Available docks are set by the setBike function.
@@ -417,7 +419,7 @@ public class ValleyBikeSim {
         
         // keeps track of bikes that are in transit between stations
         List<Bike> bikesInTransit = new ArrayList<>();
-        // keeps track of already visited stations that still need bikes
+        // keeps track of alrea)dy visited stations that still need bikes
         HashMap<Integer, Integer> stationsNeedBikesMap = new HashMap<>();
        
         // visits each station, updates number of bikes, and moves bikes between

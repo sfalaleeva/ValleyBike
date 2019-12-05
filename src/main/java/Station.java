@@ -97,13 +97,31 @@ public class Station {
 
 	
 	/**
-	 * Sets the number of bikes at the station
+	 * Sets the number of bikes at the station and ensures that the
+	 * bikes are created and reflected in the ValleyBikeSim data structures.
 	 * @param bikes - # bikes at the station
 	 */
 	public void setBikes(int bikes) {
 		this.bikes = bikes;
 		this.availableDocks = this.capacity - this.bikes;
-		
+		createStationBikes(bikes, ID);
+	}
+	
+
+	/**
+	 * Adds new bikes to a station and updates stationToBikeMap and bikesMap.
+	 * @param numBikes
+	 * @param stationId
+	 */
+	private static void createStationBikes(int numBikes, int stationId) {
+		ArrayList<Integer> addedBikes = new ArrayList<>();
+		while (numBikes > 0 ) {
+			Bike bike = new Bike(stationId);
+			ValleyBikeSim.bikesMap.put(bike.getID(), bike);
+			addedBikes.add(bike.getID());
+			numBikes--;
+		}
+		ValleyBikeSim.stationToBikeMap.put(stationId, addedBikes);
 	}
 	
 	/**
