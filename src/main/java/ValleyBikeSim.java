@@ -402,43 +402,73 @@ public class ValleyBikeSim {
 	 * over-occupied and some stations to be under-occupied.
 	 */
 	public static void equalizeStations() {
-
-
 		//sort stations by capacity to help with distributing left over bikes to stations with higher capacity instead of by ID
 		List<Integer> stationIdsSortedByCapacity = stationsMap.values().stream().sorted(
 				Comparator.comparingInt(Station::getCapacity).reversed()
 				).map(s -> s.getID()).collect(Collectors.toList());
+		
         int totalBikes = 0;
         int totalCapacity = 0;
         
-		for (Station station : stationsMap.values()) {
+        for (Station station : stationsMap.values()) {
 			totalBikes += station.getBikes();
 			totalCapacity += station.getCapacity();
 		}
-		
-		int bikesLeftUnassigned = totalBikes; //keeps track of how many bikes have yet to be distributed
+        
+        // keeps track of bikes that are in transit between stations
+        List<Bike> bikesInTransit = new ArrayList<>();
+        // keeps track of already visited stations that still need bikes
+        HashMap<Integer, Integer> stationsNeedBikesMap = new HashMap<>();
+       
+        // visits each station, updates number of bikes, and moves bikes between
+        // station and bikes in transit or from bikes in transit to that station.
 		for (Station station : stationsMap.values()) {
-			int bikes = station.getBikes();
+			ArrayList<Integer> bikeIDsAtStation = ValleyBikeSim.stationToBikeMap.get(station.getID());
+		
 			int capacity = station.getCapacity();
 			// totalBikes/totalCapacity = percentage of the docks that should be filled at each station
 			// multiply by each station's capacity to get an exact number of bikes that should be at that station
-			bikes = (int) Math.floor(capacity * totalBikes / totalCapacity);
-			station.setBikes(bikes);
-			bikesLeftUnassigned -= bikes;
-		}
-
-		//what if after equalizing, we still have bikes left over
-
-		// TODO: revisit using list of station IDs and then retrieving stations from the map instead of
-		// just keeping a list of Station objects to begin with
-		if (bikesLeftUnassigned != 0) {
-			for (Integer stationID: stationIdsSortedByCapacity) {
-				Station station = stationsMap.get(stationID);
-				if (bikesLeftUnassigned > 0) {
-					int bikes = station.getBikes() + 1; // delete
-					station.setBikes(bikes); // change setBikes to addBikes
+			int bikes = (int) Math.floor(capacity * totalBikes / totalCapacity);
+			
+			// update stored data connecting bikes to specific stations
+			// if the station had too many bikes
+			while (bikes < bikeIDsAtStation.size()) {
+				// remove the first bike from the station and add to bikesInTransit
+				bikesInTransit.add(station.removeOneBike());
+			}
+			// if the station needs bikes
+			while (bikes > bikeIDsAtStation.size()) {
+				if (!bikesInTransit.isEmpty()) {
+					// bike transfered from in transit to new station
+					station.addOneBike(bikesInTransit.remove(0));
 				}
-				bikesLeftUnassigned--;
+				else {
+					// if there are currently no available bikes in transit, keep track
+					// of the number of bikes this station still needs.
+					int remainingBikes = bikes - bikeIDsAtStation.size();
+					stationsNeedBikesMap.put(station.getID(),remainingBikes);
+					break;
+				}
+			}
+		}
+		
+		// place bikes at stations that still need bikes based on first visit
+		for (int id: stationsNeedBikesMap.keySet()) {
+			int bikesNeeded = stationsNeedBikesMap.get(id);
+			while (bikesNeeded > 0 && !bikesInTransit.isEmpty()) {
+					stationsMap.get(id).addOneBike(bikesInTransit.remove(0));					
+					bikesNeeded--;
+			}
+		}
+			
+		// Deal with bikes left over after initial equalize process by adding to the largest stations.
+		if (!bikesInTransit.isEmpty()) {
+			Station station;
+			for (Integer stationID: stationIdsSortedByCapacity) {
+				station = stationsMap.get(stationID);
+				if (!bikesInTransit.isEmpty()) {
+					station.addOneBike(bikesInTransit.remove(0));
+				}
 			}
 		}
 
@@ -671,7 +701,7 @@ public class ValleyBikeSim {
 							break;
 						case "3":
 							saveStationList();
-							System.out.println("\nSuccessfylly saved station list!");
+							System.out.println("\nSuccessfully saved station list!");
 							break;
 						case "4":
 							System.out.println("\nEnter the file name (including extension) of the file located in data-files:");

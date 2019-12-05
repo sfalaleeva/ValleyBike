@@ -102,7 +102,8 @@ public class Station {
 	 */
 	public void setBikes(int bikes) {
 		this.bikes = bikes;
-		//TODO: update available docks
+		this.availableDocks = this.capacity - this.bikes;
+		
 	}
 	
 	/**
@@ -135,7 +136,7 @@ public class Station {
 	}
 	
 	/**
-	 * Adds one single bike to a station
+	 * Adds one single bike to a station and maintains StationToBikeMap.
 	 * @param bike - the bike object added
 	 * @return true: operation completed successfully, false if there was a problem
 	 */
@@ -152,6 +153,27 @@ public class Station {
 		availableDocks --;
 		return true;
 	}
+	
+	/**
+	 * Removes one single bike to a station and maintains stationToBikeMap.
+	 * @param bike - the bike object added
+	 * @return true: operation completed successfully, false if there was a problem
+	 */
+	public Bike removeOneBike() {
+		ArrayList<Integer> currentBikeIDs = ValleyBikeSim.stationToBikeMap.get(ID);
+		
+		if(currentBikeIDs.isEmpty()) {
+			System.out.println("There is no bike to remove!");
+			return null;
+		}
+		
+		Bike bikeRemoved = ValleyBikeSim.bikesMap.get(currentBikeIDs.remove(0));
+		ValleyBikeSim.stationToBikeMap.put(ID, currentBikeIDs);
+		bikes --;
+		availableDocks ++;
+		return bikeRemoved;
+	}
+
 
 	/**
 	 * Removes a certain number of bikes from a station and returns them as a list
