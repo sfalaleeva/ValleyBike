@@ -68,7 +68,6 @@ public final class inputUtil {
 			if (dateString.matches(pattern)) {
 				//restrict DOB year to after 1900
 				Integer year = Integer.valueOf(dateString.substring(0, 4)); 
-				System.out.println(year);
 				if (year > 1900) {       
 					return dateString;
 				}

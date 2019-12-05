@@ -586,6 +586,7 @@ public class ValleyBikeSim {
 		
 		//put in print update method
 		//TODO: update print info with info about payment or card
+		//TODO: update printInfo() with better display of DOB 
 		userChange.printInfo();
 		System.out.println("\nPlease choose from one of the following menu options:\n"
 				+ "0. Back to Main Menu\t3. Change personal info"
@@ -607,10 +608,8 @@ public class ValleyBikeSim {
 						System.out.print("\nYou need to provide valid card info before you can pick a membership."
 								+ "\nNavigate to the 'Change payment info' option to do this.\n");
 					} else {
-						//TODO: check changeMembership see if it allows user with NONE membership to access? 
-						//If so then we can get rid of this if else statement and just have below line 
-						UserModifier.changeMembership(userChange);
-						
+						//TODO: check why changeMembership by itself allows user with no card info to to choose a membership? 
+						UserModifier.changeMembership(userChange);	
 					}
 					break;
 				case "2":
