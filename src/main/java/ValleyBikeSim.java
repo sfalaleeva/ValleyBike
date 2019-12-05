@@ -562,8 +562,9 @@ public class ValleyBikeSim {
 							addStation();
 							break;
 						case "3":
+							// also saves bike data for consistency
 							CsvUtil.saveStationList();
-							System.out.println("\nSuccessfully saved station list!");
+							System.out.println("\nSuccessfully saved station and bike list!");
 							break;
 						case "4":
 							System.out.println("\nEnter the file name (including extension) of the file located in data-files:");
@@ -641,7 +642,7 @@ public class ValleyBikeSim {
 				+ "0. Quit Program\t\t5. Equalize stations"
 				+ "\n1. View station list\t6. Update Account"
 				+ "\n2. Add station\t\t7. Log Out"
-				+ "\n3. Save station list"
+				+ "\n3. Save station and bike list"
 				+ "\n4. Resolve ride data");
 	}
 	

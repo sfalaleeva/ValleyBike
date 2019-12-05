@@ -65,6 +65,7 @@ public final class CsvUtil {
 
 	/**
 	 * Save the updated station list to the CSV file, by overwriting all the entries and adding new entries for the new stations.
+	 * Also involves call to saveBikeData to ensure consistency in stored data.
 	 */
 	public static void saveStationList() {
 
@@ -85,14 +86,15 @@ public final class CsvUtil {
 
 		//loops through and saves all stations
 		for (Station station : ValleyBikeSim.stationsMap.values()) {
-			saveAll(station);
+			saveStation(station);
 		}
+		saveBikeData();
 	}
 	
 	/**
 	 * Ancillary function to assist the saveStationList() function.
 	 */
-	private static void saveAll(Station station) {
+	private static void saveStation(Station station) {
 		try {
 			csvWriter = new FileWriter("data-files/station-data.csv",true);
 
@@ -127,7 +129,7 @@ public final class CsvUtil {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-			}
+	}
 	
 	/* Ride data functions. */
 	
@@ -192,10 +194,55 @@ public final class CsvUtil {
 	}
 	
 	/**
-	 * 
+	 * Saves the bike list into a CSV file.
 	 */
 	public static void saveBikeData() {
 		//TODO(): complete
+		
+		try {
+			  //overwrites existing file with new data
+			  csvWriter = new FileWriter("data-files/bike-data.csv");
+			  writer = new CSVWriter(csvWriter);
+		      String [] record = "Bike ID,Station ID,Is On Ride,Needs Maintenance".split(",");
+
+		      writer.writeNext(record);
+
+		      writer.close();
+
+		} catch (IOException e) {
+			
+			e.printStackTrace();
+		}
+
+		//loops through and saves all stations
+		for (Bike bike : ValleyBikeSim.bikesMap.values()) {
+			saveBike(bike);
+		}
+	}
+	
+	/**
+	 * Ancillary function to assist the saveBikeData() function.
+	 */
+	private static void saveBike(Bike bike) {
+		try {
+			csvWriter = new FileWriter("data-files/bike-data.csv",true);
+
+			//adding all the bike details into the csv
+			csvWriter.append(Integer.toString(bike.getID()));
+		    csvWriter.append(',');
+			csvWriter.append(Integer.toString(bike.getStatID()));
+			csvWriter.append(',');
+			csvWriter.append(inputUtil.fromBool(bike.getOnRide()));
+			csvWriter.append(',');
+			csvWriter.append(inputUtil.fromBool(bike.getMaintenance()));
+			csvWriter.append("\n");
+
+			csvWriter.flush();
+			csvWriter.close();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 }
