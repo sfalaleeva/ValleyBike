@@ -390,6 +390,14 @@ public class User extends Account{
 	 * 
 	 */
 	
+	public boolean hasValidCardInfo() {
+		if (creditCard.isEmpty() || !Payment.validateCard(creditCard)) {
+			return false; 	
+		} else {
+			return true; 
+		}
+		
+	}
 	
 	/**
 	 * Charge user money for a ride taken, set balance to zero

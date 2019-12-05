@@ -555,6 +555,7 @@ public class ValleyBikeSim {
 		userChange = usersMap.get(userID);
 		
 		//put in print update method
+		//TODO: update print info with info about payment or card
 		userChange.printInfo();
 		System.out.println("\nPlease choose from one of the following menu options:\n"
 				+ "0. Back to Main Menu\t3. Change personal info"
@@ -571,7 +572,16 @@ public class ValleyBikeSim {
 					System.out.println("\nGoing back. "); //isn't necessary? 
 					break;
 				case "1":
-					UserModifier.changeMembership(userChange);
+					//check they have card info before allow to change membership
+					if (userChange.hasValidCardInfo() == false) {
+						System.out.print("\nYou need to provide valid card info before you can pick a membership."
+								+ "\nNavigate to the 'Change payment info' option to do this.\n");
+					} else {
+						//TODO: check changeMembership see if it allows user with NONE membership to access? 
+						//If so then we can get rid of this if else statement and just have below line 
+						UserModifier.changeMembership(userChange);
+						
+					}
 					break;
 				case "2":
 					//add payment info

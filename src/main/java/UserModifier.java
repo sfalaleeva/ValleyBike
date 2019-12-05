@@ -126,7 +126,10 @@ public final class UserModifier {
 				default: 
 					System.out.print("\nInvalid input, please select a number within the 0-6 range.\n");
 			}
+			//TODO: why is the following line here/necessary? 
 			ValleyBikeSim.usersMap.put(user.getUserID(), user);
+			
+			break;
 		}
 		
 	}
