@@ -16,6 +16,11 @@ public class Address {
 	private String city;
 	
 	/**
+	 * String for address state.
+	 */
+	private String state;
+	
+	/**
 	 * String for address zip code.
 	 */
 	private String zip;
@@ -36,11 +41,14 @@ public class Address {
 	 * @param street
 	 * @param city
 	 * @param zip
+	 * @param state
 	 * @param country
+	 * @param country2 
 	 */
-	public Address(String street, String city, String zip, String country) {
+	public Address(String street, String city, String state, String zip, String country) {
 		this.street = street;
 		this.city = city;
+		this.state = state;
 		this.zip = zip;
 		this.country = country;
 	}
@@ -64,6 +72,15 @@ public class Address {
 	public String getCity() {
 		return city;
 	}
+	
+	/**
+	 * Gets state.
+	 * @return - state
+	 */
+	public String getState() {
+		return state;
+	}
+	
 	
 	/**
 	 * Gets zip code.
@@ -94,7 +111,7 @@ public class Address {
 	 * @return - string of address
 	 */
 	public String getAddress() {
-		String addr = this.street +", " + this.city +", " + this.zip +", " + this.country;
+		String addr = this.street +", " + this.city +", " + this.state +", " + this.zip +", " + this.country;
 		return addr;
 	}
 	
@@ -119,11 +136,21 @@ public class Address {
 	}
 	
 	/**
+	 * Sets the state.
+	 * @param city
+	 */
+	public void setState(String state) {
+		this.state = state;
+	}
+	
+	/**
 	 * Sets the zip.
 	 * @param zip
 	 */
 	public void setZip(String zip) {
-		this.zip = zip;
+		if (inputUtil.validateWithRegex(zip, inputUtil.VALID_ZIPCODE_REGEX)) {
+			this.zip = zip;	
+		}
 	}
 	
 	/**
@@ -152,7 +179,7 @@ public class Address {
 	 */
 	
 	public void printAddress() {
-		System.out.print(this.street +", " + this.city +", " + this.zip +", " + this.country);
+		System.out.print(this.street +", " + this.city +", " + this.state +", " + this.zip +", " + this.country);
 	}
 	
 	

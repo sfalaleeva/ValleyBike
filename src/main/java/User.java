@@ -258,7 +258,7 @@ public class User extends Account{
 	 * @param email - email address of user
 	 */
 	public void setEmail(String email) {
-		if (inputUtil.validateEmail(email)) {
+		if (inputUtil.validateWithRegex(email, inputUtil.VALID_EMAIL_ADDRESS_REGEX)) {
 			this.email = email;
 		}
 	}
@@ -276,7 +276,7 @@ public class User extends Account{
 	 * @param phone - phone number
 	 */
 	public void setPhone(String phone) {
-		if (inputUtil.validatePhone(phone)) {
+		if (inputUtil.validateWithRegex(phone, inputUtil.VALID_PHONE_REGEX)) {
 			this.phone = phone;
 		}
 	}

@@ -26,9 +26,7 @@ public final class UserModifier {
 		
 		Address userAddress = inputUtil.getAddress();
 		
-		System.out.println("Date of Birth [yyyy-MM-dd]:");
-		String dobString = inputUtil.getValidDateString();
-		LocalDate dob = inputUtil.toDate(dobString, "yyyy-MM-dd");
+		LocalDate dob = getDOB();
 	
 		System.out.println("Phone [10 digits, no spaces or extra characters:]");
 		String phone = inputUtil.getValidPhone();
@@ -57,6 +55,15 @@ public final class UserModifier {
 		return user;
 	}
 	
+	/**
+	 * Gets DOB from user.
+	 * @return DOB
+	 */
+	private static LocalDate getDOB() {
+		System.out.println("Date of Birth [yyyy-[m]m-[d]d]:");
+		String dobString = inputUtil.getValidDateString();
+		return inputUtil.toDate(dobString, "y-M-d");
+	}
 	
 	/**
 	 * Change desired personal information for specific user account
@@ -71,12 +78,12 @@ public final class UserModifier {
 				+ "\n3. Date of Birth.");
 		
 		while(true) {
-			String input = inputUtil.getString();
+			int input = inputUtil.getIntInRange(0,6, "menu option");
 			switch (input) {
-				case "0": 
+				case 0: 
 					System.out.println("\n Going back. "); //TODO(): is this print statement necessary? 
 					break;
-				case "1":
+				case 1:
 					//names
 					System.out.println("First Name:");
 					String fName = inputUtil.getString();
@@ -86,33 +93,31 @@ public final class UserModifier {
 					user.setLastName(lName);
 					System.out.println("Info saved! \n");
 					break;
-				case "2":
+				case 2:
 					//address
 					Address userAddress = inputUtil.getAddress();
 					user.setAddress(userAddress);
 					System.out.println("Info saved! \n");
 					break;
-				case "3":
+				case 3:
 					//DOB
-					System.out.println("Date of Birth [yyyy-MM-dd]:");
-					String dobString = inputUtil.getValidDateString();
-					LocalDate dob = inputUtil.toDate(dobString, "yyy-MM-dd");
+					LocalDate dob = getDOB();
 					user.setDOB(dob);
 					System.out.println("Info saved! \n");
 					break;
-				case "4":
+				case 4:
 					//Phone
 					System.out.println("Phone [10 digits, no spaces or extra characters:]");
 					String phone = inputUtil.getValidPhone();
 					user.setPhone(phone);
 					break;
-				case "5":
+				case 5:
 					//email
 					System.out.println("Email:");
 					String email = inputUtil.getValidEmail();
 					user.setEmail(email);
 					break;
-				case "6":
+				case 6:
 					//Pwd
 					System.out.println("Password:");
 					String pwd = inputUtil.getValidPassword();
@@ -128,10 +133,7 @@ public final class UserModifier {
 					break;
 				default: 
 					System.out.print("\nInvalid input, please select a number within the 0-6 range.\n");
-			}
-			//TODO: why is the following line here/necessary? 
-			ValleyBikeSim.usersMap.put(user.getUserID(), user);
-			
+			}	
 			break;
 		}
 		
@@ -153,7 +155,6 @@ public final class UserModifier {
 			System.out.println("Could not process the payment. Membership not changed.");
 			user.refundToBalance(m.getPrice());
 		}
-		//ValleyBikeSim.usersMap.put(user.getUserID(), user);
 	}
 	
 	/**
@@ -168,13 +169,12 @@ public final class UserModifier {
 			System.out.println("Invalid. Enter valid credit card number.");
 			cc = inputUtil.getString();
 		}
-		System.out.println("Enter credit card expiration date. [MM/YYYY]");
+		System.out.println("Enter credit card expiration date. [yyyy-[m]m]");
 		String expirationString = inputUtil.getValidExpirationDateString();
-		LocalDate expirationDate = inputUtil.toDate(expirationString, "MM/yyyy");
+		LocalDate expirationDate = inputUtil.toDate(expirationString, "y-M-d");
 		if (!user.setCreditCard(cc, expirationDate)) {
 			System.out.println("Card validation failed.");
 		}
-		//ValleyBikeSim.usersMap.put(user.getUserID(), user);
 		return user;
 	}
 
@@ -199,19 +199,18 @@ public final class UserModifier {
 		}
 		
 			System.out.println("Pick a membership.");
-			String selection = "";
 			while(true) {
-				selection = inputUtil.getString();
+				int selection = inputUtil.getIntInRange(0,4,"membership option");
 				switch (selection) {
-					case "0":
+					case 0:
 						return Membership.PAY_PER_RIDE;
-					case "1":
+					case 1:
 						return Membership.DAY;
-					case "2":
+					case 2:
 						return Membership.MONTH;
-					case "3":
+					case 3:
 						return Membership.YEAR;
-					case "4":
+					case 4:
 						return Membership.FOUNDER;
 					default: 
 						System.out.println("Enter number in range [0-4]");

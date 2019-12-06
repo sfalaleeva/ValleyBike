@@ -27,6 +27,12 @@ public final class inputUtil {
 	public static final Pattern VALID_PASSWORD_REGEX = 
 			Pattern.compile("((?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,16})");
 	
+	/** Regex for validating zipcode strings. */
+	public static final Pattern VALID_ZIPCODE_REGEX = Pattern.compile("^\\d{5}(?:[-\\s]\\d{4})?$");
+	
+	/** Regex for validating phone number. */
+	public static final Pattern VALID_PHONE_REGEX = Pattern.compile("\\d{10}");
+	
 	/** Scanner for obtaining user input.*/
 	private static Scanner userInput = new Scanner(System.in);
 	
@@ -65,11 +71,11 @@ public final class inputUtil {
 			if (dateString.matches(pattern)) {
 				//restrict DOB year to after 1900
 				Integer year = Integer.valueOf(dateString.substring(0, 4)); 
-				if (year > 1900) {       
+				if (year > 1900) {    
 					return dateString;
 				}
 			}
-			System.out.println("Please enter valid date [yyyy-MM-dd].");
+			System.out.println("Please enter valid date [yyyy-[m]m-[d]d].");
 			dateString = getString();
 			continue;
 		}
@@ -77,26 +83,26 @@ public final class inputUtil {
 	
 	/**
 	 * Returns valid expiration date string.
-	 * @return valid string in format yyyy-MM-dd.
+	 * @return valid string in format yyyy-[m]m.
 	 */
 	public static String getValidExpirationDateString() {
 		String dateString = getString();
 		boolean valid = isValidExpirationDate(dateString);
 		while(!valid) {
-			System.out.println("Please enter valid expiration date [MM/yyyy].");
+			System.out.println("Please enter valid expiration date [yyyy-[m]m].");
 			dateString = getString();
 			valid = isValidExpirationDate(dateString);
 		}
-		return dateString;
+		return dateString + "-01"; // day needed to parse local date string
 	}
 	
 	public static boolean isValidExpirationDate(String expirationDate) {
-		String pattern = "^(0[1-9]|[1-9]|1[0-2])[/][2]\\d\\d\\d";
+		String pattern = "^([2]\\d\\d\\d)[-](0[1-9]|[1-9]|1[0-2])";
 		if (expirationDate.matches(pattern)) {
 			//restrict expiration data to a future date
-			Integer year = Integer.valueOf(expirationDate.substring(3)); 
-			Integer month = Integer.valueOf(expirationDate.substring(0,2));
-			if (year >= LocalDate.now().getYear() && month >= LocalDate.now().getMonthValue()) { 
+			Integer year = Integer.valueOf(expirationDate.substring(0,4)); 
+			Integer month = Integer.valueOf(expirationDate.substring(5));
+			if (year > LocalDate.now().getYear() || (year == LocalDate.now().getYear() && month > LocalDate.now().getMonthValue())) { 
 				return true;
 			}
 		}
@@ -168,15 +174,17 @@ public final class inputUtil {
 	 * @return Address
 	 */
 	public static Address getAddress() {
-		System.out.print("Enter your address:\nStreet: ");
+		System.out.print("Enter your address.\nStreet: ");
 		String street = inputUtil.getString();
 		System.out.print("City: ");
 		String city = inputUtil.getString();
-		System.out.println("Zip Code: ");
-		String zip = inputUtil.getString();
-		System.out.println("Country: ");
+		System.out.print("State: ");
+		String state = inputUtil.getString();
+		System.out.print("Zip Code in [xxxxx (xxxx)] format: ");
+		String zip = inputUtil.getValidZipCode();
+		System.out.print("Country: ");
 		String country = inputUtil.getString();
-		return new Address(street, city, zip, country);
+		return new Address(street, city, state, zip, country);
 	}
 	
 	/*
@@ -234,13 +242,6 @@ public final class inputUtil {
 	}
 	
 	/**
-	
-	public static Date toDate(String s) throws ParseException {
-		Date dateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(s);
-		return dateTime;
-	}*/
-	
-	/**
 	 * Returns a list of bike objects
 	 * @param station id
 	 * @return list of bike objects
@@ -266,7 +267,7 @@ public final class inputUtil {
 		String phone = "";
 		while(true) {
 			phone = getString();
-			if (validatePhone(phone)) {
+			if (validateWithRegex(phone, VALID_PHONE_REGEX)) {
 				break;
 			}
 			else {
@@ -276,14 +277,24 @@ public final class inputUtil {
 		}
 		return phone;
 	}
-	
+
 	/**
-	 * True if string is a valid phone number.
-	 * @param phone
-	 * @return boolean
+	 * Get valid zipcode.
+	 * @return String
 	 */
-	public static boolean validatePhone(String phone) {
-		return phone.matches("\\d{10}");
+	public static String getValidZipCode() {
+		String zipcode = "";
+		while (true) {
+			zipcode = getString();
+			if (validateWithRegex(zipcode, VALID_ZIPCODE_REGEX)) {
+				break;
+			}
+			else {
+				System.out.println("Invalid zipcode. Try [xxxxx (xxxxx)]");
+				continue;
+			}
+		}
+		return zipcode;
 	}
 
 	/**
@@ -294,7 +305,7 @@ public final class inputUtil {
 		String email = "";
 		while(true) {
 			email = getString();
-			if (validateEmail(email)) {
+			if (validateWithRegex(email, VALID_EMAIL_ADDRESS_REGEX)) {
 				break;
 			}
 			else {
@@ -306,12 +317,12 @@ public final class inputUtil {
 	}
 	
 	/**
-	 * True if string is a valid email.
-	 * @param regex Matcher for email
+	 * True if string matches given regex.
+	 * @param regex Matcher for string
 	 * @return boolean
 	 */
-	public static boolean validateEmail(String email) {
-		Matcher matcher = VALID_EMAIL_ADDRESS_REGEX .matcher(email);
+	public static boolean validateWithRegex(String s, Pattern regex) {
+		Matcher matcher = regex .matcher(s);
 		return matcher.find();
 	}
 
@@ -323,7 +334,7 @@ public final class inputUtil {
 		String pwd = "";
 		while(true) {
 			pwd = getString();
-			if (validatePwd(pwd)) {
+			if (validateWithRegex(pwd, VALID_PASSWORD_REGEX)) {
 				break;
 			}
 			else {
@@ -334,17 +345,6 @@ public final class inputUtil {
 			}
 		}
 		return pwd;
-	}
-	
-	/**
-	 * True if string is a valid password.
-	 * @param regex Matcher for pwd
-	 * @return boolean
-	 */
-	public static boolean validatePwd(String pwd) {
-		//return pwd.matches(".{8}");
-		Matcher matcher = VALID_PASSWORD_REGEX .matcher(pwd);
-		return matcher.find();
 	}
 	
 	/**

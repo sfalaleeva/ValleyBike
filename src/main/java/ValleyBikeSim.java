@@ -18,6 +18,7 @@ import com.opencsv.CSVWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 //import com.sun.tools.javac.code.TypeMetadata.Entry;
+import java.time.LocalDate;
 
 public class ValleyBikeSim {
 
@@ -61,8 +62,8 @@ public class ValleyBikeSim {
 	private static ValleyBikeSim valleyBike = new ValleyBikeSim();
 	
 	/**FAKE USER use to check user menu stuff without registering, TODO: delete when useless/before A5 submit */
-	private static User fakeUser = new User("Sarah", "Pong", new Address("123 silver st","Holyoke", "01040", "USA"), 
-			new Date(), "4135555555", "sarah@gmail.com", "Pwd123");
+	private static User fakeUser = new User("Sarah", "Pong", new Address("123 silver st","Holyoke", "MA", "01040", "USA"), 
+			LocalDate.now(), "4135555555", "sarah@gmail.com", "Pwd123");
 	
 	
 	
