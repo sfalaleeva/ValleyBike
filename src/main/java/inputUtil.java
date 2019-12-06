@@ -1,12 +1,11 @@
-import java.text.ParseException;
 
 import java.util.*;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 //Cite: https://www.mkyong.com/regular-expressions/how-to-validate-password-with-regular-expression/
 
@@ -195,10 +194,25 @@ public final class inputUtil {
 	 * Turn provided string into date in specified format.
 	 * @return Date
 	 */
-	public static LocalDate toDate(String dateString, String format) {
+	public static LocalDate toLocalDate(String dateString, String format) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
 		LocalDate date = LocalDate.parse(dateString, formatter);
 		return date;
+	}
+	
+	/**
+	 * Turn provided string into date in specified format.
+	 * @return Date
+	 */
+	public static Date toDate(String dateString, String format) {
+		Date dateTime = new Date();
+		try {
+			dateTime = new SimpleDateFormat(format).parse(dateString);
+		}
+		catch(ParseException e) {
+			System.out.println("Issue handling date.");
+		}
+		return dateTime;
 	}
 	
 	/**

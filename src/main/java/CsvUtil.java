@@ -157,7 +157,7 @@ public final class CsvUtil {
 					//TODO() change what gets read/written in from ride.csv files
 					// current the bike id of existing rides is hard coded to 0
 					ridesList.add(new Ride(Integer.parseInt(array[0]), 0, Integer.parseInt(array[1]),
-							Integer.parseInt(array[2]), inputUtil.toDate(array[3]), inputUtil.toDate(array[4])));
+							Integer.parseInt(array[2]), inputUtil.toDate(array[3], "yyyy-MM-dd HH:mm:ss"), inputUtil.toDate(array[4],"yyyy-MM-dd HH:mm:ss")));
 				}
 				counter++;
 

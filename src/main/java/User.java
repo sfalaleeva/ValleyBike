@@ -1,8 +1,5 @@
-import java.text.SimpleDateFormat;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class User extends Account{
 	
