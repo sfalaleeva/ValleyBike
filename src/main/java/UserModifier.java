@@ -1,5 +1,4 @@
 import java.time.LocalDate;
-import java.util.Date;
 
 /**
  * Contains methods for creating, editing, and
@@ -62,7 +61,7 @@ public final class UserModifier {
 	private static LocalDate getDOB() {
 		System.out.println("Date of Birth [yyyy-[m]m-[d]d]:");
 		String dobString = inputUtil.getValidDateString();
-		return inputUtil.toDate(dobString, "y-M-d");
+		return inputUtil.toLocalDate(dobString, "y-M-d");
 	}
 	
 	/**
@@ -171,7 +170,7 @@ public final class UserModifier {
 		}
 		System.out.println("Enter credit card expiration date. [yyyy-[m]m]");
 		String expirationString = inputUtil.getValidExpirationDateString();
-		LocalDate expirationDate = inputUtil.toDate(expirationString, "y-M-d");
+		LocalDate expirationDate = inputUtil.toLocalDate(expirationString, "y-M-d");
 		if (!user.setCreditCard(cc, expirationDate)) {
 			System.out.println("Card validation failed.");
 		}
