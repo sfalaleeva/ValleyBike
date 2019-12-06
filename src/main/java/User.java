@@ -45,7 +45,7 @@ public class User extends Account{
 	/**
 	 * User's credit card number for billing purposes
 	 */
-	private String creditCard;
+	private CreditCard creditCard;
 	
 	/**
 	 * User's outstanding balance 
@@ -93,7 +93,7 @@ public class User extends Account{
 		this.dob = dob;
 		this.phone = phone;
 		this.email = email;
-		creditCard = "";
+		creditCard = new CreditCard("", "");
 		balance = 0f;
 		totalRideTime = 0;
 		totalDistance = 0;
@@ -171,7 +171,7 @@ public class User extends Account{
 	 * Gets the user's credit card number
 	 * @return - credit card number
 	 */
-	public String getCreditCard() {
+	public CreditCard getCreditCard() {
 		return creditCard;
 	}
 	
@@ -295,19 +295,8 @@ public class User extends Account{
 	 * @param cc - credit card number
 	 * @return true if valid card
 	 */
-	public boolean setCreditCard(String cc) {
-		if (!cc.isEmpty() && Payment.validateCardNumber(cc) && Payment.validateCard(cc)) {
-			this.creditCard = cc;
-		}
-		else if (Payment.validateCard(this.creditCard)) {
-			// keep existing valid card
-		}
-		else {
-			// neither option is valid and user account is inactive.
-			this.creditCard = null;
-			return false;
-		}
-		return true;
+	public boolean setCreditCard(String number, String expiration) {
+		return this.creditCard.updateCard(number, expiration);
 	}
 	
 	/**
@@ -391,7 +380,7 @@ public class User extends Account{
 	 */
 	
 	public boolean hasValidCardInfo() {
-		if (creditCard.isEmpty() || !Payment.validateCard(creditCard)) {
+		if (creditCard == null || !Payment.validateCard(creditCard.getCreditCardNumber(), creditCard.getExpirationDate())) {
 			return false; 	
 		} else {
 			return true; 
@@ -427,7 +416,7 @@ public class User extends Account{
 	private void updateStatus() {
 		// an active user has a valid credit card
 		// TODO(): validate card includes checking card expiration
-		if (creditCard.isEmpty() || !Payment.validateCard(creditCard)) {
+		if (creditCard == null || !Payment.validateCard(creditCard.getCreditCardNumber(), creditCard.getExpirationDate())) {
 			System.out.println("Issue processing user credit card.");
 		}
 		// has an active membership

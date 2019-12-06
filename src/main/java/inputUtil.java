@@ -2,6 +2,7 @@ import java.text.ParseException;
 
 import java.util.*;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -34,50 +35,7 @@ public final class inputUtil {
 	/*
 	 * ********* INPUT FUNCTIONS ***********
 	 */
-	
-	/**
-	 * Gets a date from the user in format
-	 * yyyy-MM-dd.
-	 * @return Date
-	 */
-	public static Date getDate() {
-		Date date = new Date();
-		while(true) {
-			String dateString = getValidDateString();
-				try {
-					date = new SimpleDateFormat("yyyy-MM-dd").parse(dateString);
-					break;
-				}
-				catch(ParseException e){
-					System.out.println("Please enter valid date [yyyy-MM-dd].");
-					continue;
-				}
-			}
-		return date;
-	}
-	
-	/**
-	 * Returns valid date string.
-	 * @return valid string in format yyyy-MM-dd.
-	 */
-	public static String getValidDateString() {	
-		
-		String pattern = "^[1-2]\\d\\d\\d[-](0[1-9]|[1-9]|1[0-2])[-]([1-9]|[0-2][0-9]|3[0-1])";
-		String dateString = getString();
-		while(true) {
-			if (dateString.matches(pattern)) {
-				//restrict DOB year to after 1900
-				Integer year = Integer.valueOf(dateString.substring(0, 4)); 
-				if (year > 1900) {       
-					return dateString;
-				}
-			}
-			System.out.println("Please enter valid date [yyyy-MM-dd].");
-			dateString = getString();
-			continue;
-		}
-	}
-	
+
 	/**
 	 * Gets a non-empty string from the user.
 	 * @return string
@@ -96,12 +54,61 @@ public final class inputUtil {
 	}
 	
 	/**
+	 * Returns valid date string.
+	 * @return valid string in format yyyy-MM-dd.
+	 */
+	public static String getValidDateString() {		
+		String pattern = "^[1-2]\\d\\d\\d[-](0[1-9]|[1-9]|1[0-2])[-]([1-9]|[0-2][0-9]|3[0-1])";
+		String dateString = getString();
+		while(true) {
+			if (dateString.matches(pattern)) {
+				//restrict DOB year to after 1900
+				Integer year = Integer.valueOf(dateString.substring(0, 4)); 
+				if (year > 1900) {       
+					return dateString;
+				}
+			}
+			System.out.println("Please enter valid date [yyyy-MM-dd].");
+			dateString = getString();
+			continue;
+		}
+	}
+	
+	/**
+	 * Returns valid expiration date string.
+	 * @return valid string in format yyyy-MM-dd.
+	 */
+	public static String getValidExpirationDateString() {
+		String dateString = getString();
+		boolean valid = isValidExpirationDate(dateString);
+		while(!valid) {
+			System.out.println("Please enter valid expiration date [MM/yyyy].");
+			dateString = getString();
+			valid = isValidExpirationDate(dateString);
+		}
+		return dateString;
+	}
+	
+	public static boolean isValidExpirationDate(String expirationDate) {
+		String pattern = "^(0[1-9]|[1-9]|1[0-2])[/][2]\\d\\d\\d";
+		if (expirationDate.matches(pattern)) {
+			//restrict expiration data to a future date
+			Integer year = Integer.valueOf(expirationDate.substring(3)); 
+			Integer month = Integer.valueOf(expirationDate.substring(0,2));
+			if (year >= LocalDate.now().getYear() && month >= LocalDate.now().getMonthValue()) { 
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
 	 * gets boolean from user.
 	 * @return boolean
 	 */
 	public static boolean getBool() {
 		while (true) {
-			String input = userInput.nextLine();
+			String input = getString();
 			input = input.toLowerCase();
 			if(input.charAt(0) == 'y') {
 				return true;
@@ -120,7 +127,7 @@ public final class inputUtil {
 	 */
 	public static int getIntInRange(int min, int max, String desiredInput) {
 		while(true) {
-			String input = userInput.nextLine();
+			String input = getString();
 			try {
 				int parsedInput = Integer.parseInt(input);
 				if(parsedInput < min | parsedInput > max) {
@@ -138,7 +145,7 @@ public final class inputUtil {
 	
 	public static int getIntInList(List<Integer> list, String desiredInput) {
 		while(true) {
-			String input = userInput.nextLine();
+			String input = getString();
 			try {
 				int parsedInput = Integer.parseInt(input);
 				if(!list.contains(parsedInput)) {
@@ -153,6 +160,7 @@ public final class inputUtil {
 			}
 		}
 	}
+	
 	
 	/**
 	 * Get the information to create user object.
@@ -173,6 +181,21 @@ public final class inputUtil {
 	/*
 	 * ********* FORMATING FUNCTIONS ***********
 	 */
+
+	/**
+	 * Turn provided string into date in specified format.
+	 * @return Date
+	 */
+	public static Date toDate(String dateString, String format) {
+		Date date = new Date();
+				try {
+					date = new SimpleDateFormat(format).parse(dateString);
+				}
+				catch(ParseException e){
+					System.out.printf("Please enter valid date %s.\n", format);
+				}
+		return date;
+	}
 	
 	/**
 	 * Interpret the boolean given as argument and return a number.
@@ -215,13 +238,11 @@ public final class inputUtil {
 	}
 	
 	/**
-	 * Convert a string to Date java object.
-	 * @throws ParseException
-	 */
+	
 	public static Date toDate(String s) throws ParseException {
 		Date dateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(s);
 		return dateTime;
-	}
+	}*/
 	
 	/**
 	 * Returns a list of bike objects

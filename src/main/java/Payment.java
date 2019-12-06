@@ -21,15 +21,14 @@ public final class Payment {
 		return false;
 	}
 	
-	// TODO(): will also ensure that the card has not expired
 	/**
-	 * Abstraction of credit card validation. Returns 
+	 * Abstraction of credit card validation. Check if card has expired. Returns 
 	 * true 99% of the time.
 	 * @param creditCard
 	 * @return true if valid credit card
 	 */
-	public static boolean validateCard(String creditCard) {
-		if (Math.random() < 0.99) {
+	public static boolean validateCard(String creditCard, String expirationDate) {
+		if (inputUtil.isValidExpirationDate(expirationDate) && Math.random() < 0.99) {
 			return true;
 		}
 		return false;
@@ -40,7 +39,7 @@ public final class Payment {
 	 * @param creditCard
 	 * @return true if charge succeeds.
 	 */
-	public static boolean chargeCard(String creditCard) {
-		return validateCard(creditCard);
+	public static boolean chargeCard(CreditCard card) {
+		return validateCard(card.getCreditCardNumber(), card.getExpirationDate());
 	}
 }
