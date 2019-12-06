@@ -786,10 +786,7 @@ public class ValleyBikeSim {
 			int[] xy = {station.getX(), station.getY()};
 			GraphicUtil.setRawLocation(ID, xy);
 		}
-		System.out.println("Setting up the map!");
-		System.out.println("1");
 		JFrame frame = new JFrame("Valley Bike Map");
-		System.out.println("2");
 		GraphicUtil.setParams(inputMap);
 		frame.add(graphic);
 		frame.setVisible(true);

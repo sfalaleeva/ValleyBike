@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -8,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 /**
@@ -42,16 +44,24 @@ public class GraphicUtil extends JPanel {
 	        System.out.println("Error: Map image could not be found.");
 	       
 	    }
+		
+		
 	}
 	
 	
 	public void paint(Graphics g) {
 		super.paint(g);
+		g.setFont(new Font("TimesRoman", Font.PLAIN, 10)); 
 		g.setColor(Color.black);
 		g.drawImage(map, 0, 0, 600, 400, this);
 		for(Map.Entry<Integer, int[]> entry: locationsMap.entrySet()) {
 			int[] xy = entry.getValue();
-			g.fillRect(xy[0]/2, xy[1]/2, 10, 10);
+			int x = xy[0]/2;
+			int y = xy[1]/2;
+			String stationName = ValleyBikeSim.stationsMap.get(entry.getKey()).getName();
+			//g.fillRect(xy[0]/2, xy[1]/2, 10, 10);
+			g.fillOval(x, y, 5, 5);
+			g.drawString(stationName, x, y);
 			
 		}
 		
@@ -62,7 +72,6 @@ public class GraphicUtil extends JPanel {
 	 * @param inputMap - Station Id mapped to a list of two integers, the number of bikes and available docks at the station.
 	 */
 	public static void setParams(HashMap<Integer,int[]> inputMap) {
-		System.out.println("Setting parameters.");
 		internalStationMap = inputMap;
 	}
 	
