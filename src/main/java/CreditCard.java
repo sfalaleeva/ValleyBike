@@ -1,3 +1,5 @@
+import java.time.LocalDate;
+
 /**
  * Basic representation of a user's credit card.
  */
@@ -11,16 +13,16 @@ public class CreditCard {
 	/**
 	 * Expiration Date in mm/yyyy format.
 	 */
-	private String expirationDate;
+	private LocalDate expirationDate;
 	
 	/**
 	 * Create new credit card.
 	 * @param cc
 	 * @param expirationDate
 	 */
-	public CreditCard(String cc, String expirationDate) {
+	public CreditCard(String cc, LocalDate expirationDate) {
 		this.creditCardNumber = "";
-		this.expirationDate = "";
+		this.expirationDate = null;
 	}
 	
 	/* Accessors */
@@ -29,7 +31,7 @@ public class CreditCard {
 	 * Gets credit card expiration date.
 	 * @return expirationDate as string
 	 */
-	public String getExpirationDate() {
+	public LocalDate getExpirationDate() {
 		return expirationDate;
 	}
 	
@@ -47,7 +49,7 @@ public class CreditCard {
 	 * Sets new credit card.
 	 * @return true if successful
 	 */
-	public boolean updateCard(String cc, String expirationDate) {
+	public boolean updateCard(String cc, LocalDate expirationDate) {
 			if (!cc.isEmpty() && Payment.validateCardNumber(cc) && Payment.validateCard(cc, expirationDate)) {
 				this.creditCardNumber = cc;
 				this.expirationDate = expirationDate;

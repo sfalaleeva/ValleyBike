@@ -21,7 +21,8 @@ public class UserTest {
 	
 	private User user;
 	private Boolean expectedResult;
-	private String creditCard;
+	private String creditCardNumber;
+	private LocalDate expirationDate;
 	private Membership membership;
 	
 	
@@ -33,9 +34,10 @@ public class UserTest {
 	// Each parameter is an argument in the constructor
 	// Every time runner trigger, it will pass arguments from 
 	// parameters defined in userTest() method.
-	public UserTest(String creditCard, Membership membership, Boolean expectedResult) {
+	public UserTest(String creditCard, LocalDate expirationDate, Membership membership, Boolean expectedResult) {
 		user = new User(null, null, null, null, null, null, "pwd"); // empty user object
-		this.creditCard = creditCard;
+		this.creditCardNumber = creditCard;
+		this.expirationDate = expirationDate;
 		this.membership = membership;
 		this.expectedResult = expectedResult;
 	}
@@ -43,17 +45,25 @@ public class UserTest {
 	@Parameterized.Parameters
 	public static Collection getTestData() {	
 		return Arrays.asList(new Object[][] {
-			{ "1212121212123456", Membership.NONE, false },
-			{ "invalid", Membership.NONE, false },
-			{ "invalid", Membership.YEAR, false },
-			{ "1212321212121234", Membership.FOUNDER, true },
+			// valid card number, invalid expiration, no membership -> FALSe
+			{ "1212121212123456", LocalDate.now().minusMonths(1), Membership.NONE, false },
+			// valid card number, valid expiration, no membership -> FALSE
+			{ "1212121212123456", LocalDate.now().plusMonths(1), Membership.NONE, false },
+			// invalid card number, invalid expiration, no membership -> FALSE
+			{ "invalid", LocalDate.now().minusMonths(1), Membership.NONE, false },
+			// invalid card number, invalid expiration, valid membership -> FALSE
+			{ "invalid", LocalDate.now().minusMonths(1), Membership.YEAR, false },
+			// invalid card number, valid expiration, valid membership -> FALSE
+			{ "invalid", LocalDate.now().plusMonths(1), Membership.YEAR, false },
+			// valid card number, valid expiration, valid membership -> TRUE
+			{ "1212321212121234", LocalDate.now().plusMonths(1), Membership.FOUNDER, true },
 		});
 	}
 	
-	// will run four times
+	// will run for each test case
 	@Test
 	public void testAccountActivated() {
-		user.setCreditCard(creditCard);
+		user.setCreditCard(creditCardNumber, expirationDate);
 		user.updateMembership(membership);
 		assertEquals(expectedResult, user.getIsActive());
 	}
@@ -61,9 +71,9 @@ public class UserTest {
 	// will run four times, an invalid card does not replace a valid card
 	@Test
 	public void testUpdateInvalidCard() {
-		user.setCreditCard(creditCard);
+		user.setCreditCard(creditCardNumber, expirationDate);
 		user.updateMembership(membership);
-		user.setCreditCard("invalid");
+		//user.setCreditCard("invalid", LocalDate.now().plusMonths(1));
 		assertEquals(expectedResult, user.getIsActive());
 		}	
 

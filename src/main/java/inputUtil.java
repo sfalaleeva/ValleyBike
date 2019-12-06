@@ -3,6 +3,7 @@ import java.text.ParseException;
 import java.util.*;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -186,14 +187,9 @@ public final class inputUtil {
 	 * Turn provided string into date in specified format.
 	 * @return Date
 	 */
-	public static Date toDate(String dateString, String format) {
-		Date date = new Date();
-				try {
-					date = new SimpleDateFormat(format).parse(dateString);
-				}
-				catch(ParseException e){
-					System.out.printf("Please enter valid date %s.\n", format);
-				}
+	public static LocalDate toDate(String dateString, String format) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+		LocalDate date = LocalDate.parse(dateString, formatter);
 		return date;
 	}
 	

@@ -30,7 +30,7 @@ public class User extends Account{
 	/**
 	 * User's date of birth: Must be over eighteen to ride.
 	 */
-	private Date dob;
+	private LocalDate dob;
 	
 	/**
 	 * User's phone number
@@ -85,7 +85,7 @@ public class User extends Account{
 	/**
 	 * Instantiates an inactive user object. 
 	 */
-	public User(String firstName, String lastName, Address address, Date dob, String phone, String email, String pwd) {
+	public User(String firstName, String lastName, Address address, LocalDate dob, String phone, String email, String pwd) {
 		super(pwd);
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -93,7 +93,7 @@ public class User extends Account{
 		this.dob = dob;
 		this.phone = phone;
 		this.email = email;
-		creditCard = new CreditCard("", "");
+		creditCard = new CreditCard("", null);
 		balance = 0f;
 		totalRideTime = 0;
 		totalDistance = 0;
@@ -147,7 +147,7 @@ public class User extends Account{
 	 * Gets date of birth
 	 * @return - date of birth of user
 	 */
-	public Date getDOB() {
+	public LocalDate getDOB() {
 		return dob;
 	}
 	
@@ -267,7 +267,7 @@ public class User extends Account{
 	 * Sets user's date of birth
 	 * @param birth - user's date of birth
 	 */
-	public void setDOB(Date birth) {
+	public void setDOB(LocalDate birth) {
 		dob = birth;
 	}
 	
@@ -295,7 +295,7 @@ public class User extends Account{
 	 * @param cc - credit card number
 	 * @return true if valid card
 	 */
-	public boolean setCreditCard(String number, String expiration) {
+	public boolean setCreditCard(String number, LocalDate expiration) {
 		return this.creditCard.updateCard(number, expiration);
 	}
 	
@@ -345,7 +345,7 @@ public class User extends Account{
 		this.rideHistory.add(ride);
 		addToRideTime(ride.getRideDuration()); 
 		addToDistance(ride.getRideDuration()*0.2f); //calculates distance based on time
-												   //assumes bike goes on avergae 0.2 miles per minute
+												   //assumes bike goes on average 0.2 miles per minute
 	}
 	
 	/**

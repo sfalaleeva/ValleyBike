@@ -1,3 +1,4 @@
+import java.time.LocalDate;
 import java.util.Date;
 
 /**
@@ -27,7 +28,7 @@ public final class UserModifier {
 		
 		System.out.println("Date of Birth [yyyy-MM-dd]:");
 		String dobString = inputUtil.getValidDateString();
-		Date dob = inputUtil.toDate(dobString, "yyyy-MM-dd");
+		LocalDate dob = inputUtil.toDate(dobString, "yyyy-MM-dd");
 	
 		System.out.println("Phone [10 digits, no spaces or extra characters:]");
 		String phone = inputUtil.getValidPhone();
@@ -95,7 +96,7 @@ public final class UserModifier {
 					//DOB
 					System.out.println("Date of Birth [yyyy-MM-dd]:");
 					String dobString = inputUtil.getValidDateString();
-					Date dob = inputUtil.toDate(dobString, "yyy-MM-dd");
+					LocalDate dob = inputUtil.toDate(dobString, "yyy-MM-dd");
 					user.setDOB(dob);
 					System.out.println("Info saved! \n");
 					break;
@@ -152,7 +153,7 @@ public final class UserModifier {
 			System.out.println("Could not process the payment. Membership not changed.");
 			user.refundToBalance(m.getPrice());
 		}
-		ValleyBikeSim.usersMap.put(user.getUserID(), user);
+		//ValleyBikeSim.usersMap.put(user.getUserID(), user);
 	}
 	
 	/**
@@ -168,11 +169,12 @@ public final class UserModifier {
 			cc = inputUtil.getString();
 		}
 		System.out.println("Enter credit card expiration date. [MM/YYYY]");
-		String expirationDate = inputUtil.getValidExpirationDateString();
+		String expirationString = inputUtil.getValidExpirationDateString();
+		LocalDate expirationDate = inputUtil.toDate(expirationString, "MM/yyyy");
 		if (!user.setCreditCard(cc, expirationDate)) {
 			System.out.println("Card validation failed.");
 		}
-		ValleyBikeSim.usersMap.put(user.getUserID(), user);
+		//ValleyBikeSim.usersMap.put(user.getUserID(), user);
 		return user;
 	}
 

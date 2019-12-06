@@ -1,5 +1,7 @@
 import static org.junit.Assert.*;
 
+import java.time.LocalDate;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -38,7 +40,7 @@ public class PaymentTest {
 	
 	@Test
 	public void testAbstractValidation() {
-		boolean valid = Payment.validateCard("12342342322323232");
+		boolean valid = Payment.validateCard("12342342322323232", LocalDate.now().plusMonths(1));
 		assertTrue(valid);
 	}
 

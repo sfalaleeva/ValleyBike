@@ -1,3 +1,5 @@
+import java.time.LocalDate;
+
 /**
  * Abstraction of payment related functionality
  * such as validating a credit card and a credit 
@@ -27,8 +29,8 @@ public final class Payment {
 	 * @param creditCard
 	 * @return true if valid credit card
 	 */
-	public static boolean validateCard(String creditCard, String expirationDate) {
-		if (inputUtil.isValidExpirationDate(expirationDate) && Math.random() < 0.99) {
+	public static boolean validateCard(String creditCard, LocalDate expirationDate) {
+		if (expirationDate != null && LocalDate.now().isBefore(expirationDate) && Math.random() < 0.99) {
 			return true;
 		}
 		return false;
