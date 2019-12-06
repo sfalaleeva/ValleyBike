@@ -54,6 +54,16 @@ public class Station {
 	 * Address of the station
 	 */
 	private String address;
+	
+	/**
+	 * Pixel location X
+	 */
+	private int x;
+	
+	/**
+	 * Pixel location y
+	 */
+	private int y;
 
 	/**
 	 * Creates a station
@@ -67,7 +77,7 @@ public class Station {
 	 * @param address - Address of the station
 	 */
 	public Station(int ID, String name, int bikes, int aDocks, int mReq, int capacity,
-			boolean hasKiosk, String address) {
+			boolean hasKiosk, String address, int x, int y) {
 		this.ID = ID;
 		this.name = name;
 		this.bikes = bikes;
@@ -76,6 +86,9 @@ public class Station {
 		this.capacity = capacity;
 		this.hasKiosk = hasKiosk;
 		this.address = address;
+		this.x = x;
+		this.y = y;
+				
 	}
 
 	/**
@@ -275,6 +288,11 @@ public class Station {
 	public void setAddress(String address) {
 		this.address = address;
 	}
+	
+	public void setXY(int x, int y) {
+		this.x = x;
+		this.y = y;
+	}
 
 
 	/**
@@ -346,6 +364,22 @@ public class Station {
 	 */
 	public String getAddress() {
 		return this.address;
+	}
+	
+	/**
+	 * Gets the pixel x
+	 * @return - x
+	 */
+	public int getX() {
+		return this.x;
+	}
+	
+	/**
+	 * Gets pixel y
+	 * @return - y
+	 */
+	public int getY() {
+		return this.y;
 	}
 
 	/**

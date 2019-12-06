@@ -45,7 +45,7 @@ public class ValleyBikeSim {
 	
 	public static Map<Integer, Ride> ongoingRides;
 	
-	public static GraphicUtil graphic;
+	public static GraphicUtil graphic = new GraphicUtil();
 	
 	/** The logged in user id. 
 	 * 	-1 if no user. */
@@ -135,7 +135,7 @@ public class ValleyBikeSim {
 	 * Create a station as prompted by the user.
 	 */
 	public static void addStation() {
-		Station newStation = new Station(0, null, 0, 0, 0, 0, false, null);
+		Station newStation = new Station(0, null, 0, 0, 0, 0, false, null,-1,-1);
 		
 		// Determines station id based on the current largest station id.
 		int highestID = stationsMap.lastKey();
@@ -162,8 +162,14 @@ public class ValleyBikeSim {
 		Boolean hasKiosk = inputUtil.getBool();
 		newStation.setHasKiosk(hasKiosk);
 		
-		System.out.println("Lastly, please enter the address for the new station:\n");
+		System.out.println("Please enter the address for the new station:\n");
 		newStation.setAddress(inputUtil.getString());
+		
+		System.out.println("Please enter the coordinates for the map. If you do not know, write -1.\n");
+		int x = inputUtil.getIntInRange(-1, 600, "value");
+		int y = inputUtil.getIntInRange(-1, 400, "value");
+		newStation.setXY(x,y);
+		
 
 		// Assumes a new station doesn't require maintenance requests and hence setting them to 0.
 
@@ -526,8 +532,8 @@ public class ValleyBikeSim {
 			while(true) {	
 				if (currentUserID > 0) {
 					printUserMenu();
-					System.out.println("\nPlease enter a number (0-7): ");
-					input = inputUtil.getIntInRange(0, 7, "menu option");
+					System.out.println("\nPlease enter a number (0-8): ");
+					input = inputUtil.getIntInRange(0, 8, "menu option");
 					switch (input) {
 						case 0: 
 							System.out.println("\nThank you for using Valley Bike Simulator!");
@@ -553,6 +559,9 @@ public class ValleyBikeSim {
 						case 7:
 							logout();
 							break;
+						case 8:
+							displayMap();
+							break;
 						default: 
 							System.out.print("\nInvalid input, please select a number within the 0-7 range.\n");
 					}
@@ -560,8 +569,8 @@ public class ValleyBikeSim {
 				// assume admin has default id 0
 				else if (currentUserID == 0) {
 					printAdminMenu();
-					System.out.println("\nPlease enter a number (0-7): ");
-					input = inputUtil.getIntInRange(0,7, "menu option");
+					System.out.println("\nPlease enter a number (0-8): ");
+					input = inputUtil.getIntInRange(0,8, "menu option");
 					switch (input) {
 						case 0: 
 							System.out.println("\nThank you for using Valley Bike Simulator!");
@@ -590,6 +599,9 @@ public class ValleyBikeSim {
 							break;
 						case 7:
 							logout();
+							break;
+						case 8: 
+							displayMap();
 							break;
 						default: 
 							System.out.print("\nInvalid input, please select a number within the 0-7 range.\n");
@@ -641,8 +653,9 @@ public class ValleyBikeSim {
 				+ "0. Quit Program\t\t5. View Account Details and Update Account"
 				+ "\n1. View station list\t6. View User Report"
 				+ "\n2. Unlock Bike\t\t7. Log Out"
-				+ "\n3. End Ride"
-				+ "\n4. Report Issue");
+				+ "\n3. End Ride\t\t8. Show station map."
+				+ "\n4. Report Issue"
+				+ "\n5. Show station map");
 	}
 	
 	/**
@@ -654,7 +667,7 @@ public class ValleyBikeSim {
 				+ "\n1. View station list\t6. Update Account"
 				+ "\n2. Add station\t\t7. Log Out"
 				+ "\n3. Save station and bike list"
-				+ "\n4. Resolve ride data");
+				+ "\n4. Resolve ride data\t\t8. Show station map.");
 	}
 	
 	/**
@@ -713,6 +726,9 @@ public class ValleyBikeSim {
 		currentUserID = -1;
 	}
 
+	/**
+	 * Enters the user dialog for reporting problems
+	 */
 	private static void reportIssues() {
 		System.out.println("Please select an issue type:\n" + 
 				"1. Station is empty\t4. Modify account details"
@@ -769,14 +785,10 @@ public class ValleyBikeSim {
 		}	
 		
 	}
-	
+	/**
+	 * Shows the map of the stations
+	 */
 	public static void displayMap() {
-		JFrame frame = new JFrame("Valley Bike Map");
-		frame.add(graphic);
-		frame.setVisible(true);
-		frame.setSize(600,400);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setResizable(false);
 		HashMap<Integer, int[]> inputMap = new HashMap<>();
 		for(Map.Entry<Integer, Station> entry: stationsMap.entrySet()) {
 			int ID = entry.getKey();
@@ -785,9 +797,18 @@ public class ValleyBikeSim {
 			int docknum = station.getAvailableDocks();
 			int numArray[] = {bikenum,docknum};
 			inputMap.put(ID, numArray);
+			int[] xy = {station.getX(), station.getY()};
+			GraphicUtil.setRawLocation(ID, xy);
 		}
-		
+		System.out.println("Setting up the map!");
+		JFrame frame = new JFrame("Valley Bike Map");
 		GraphicUtil.setParams(inputMap);
+		frame.add(graphic);
+		frame.setVisible(true);
+		frame.setSize(600,400);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setResizable(false);
+		
 		graphic.repaint();
 		
 		

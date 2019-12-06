@@ -52,7 +52,8 @@ public final class CsvUtil {
 				} else {
 					// the pedelec category of data array[3] is saved in Station.bike 
 					Station station = new Station(Integer.parseInt(array[0]), array[1], Integer.parseInt(array[3]), Integer.parseInt(array[4]),
-							Integer.parseInt(array[5]), Integer.parseInt(array[6]), inputUtil.toBool(array[7]), array[8]);
+							Integer.parseInt(array[5]), Integer.parseInt(array[6]), inputUtil.toBool(array[7]), array[8],Integer.parseInt(array[9]),
+							Integer.parseInt(array[10]));
 					ValleyBikeSim.stationsMap.put(station.getID(), station);
 				}
 				counter++;
@@ -73,7 +74,7 @@ public final class CsvUtil {
 			  //overwrites existing file with new data
 			  csvWriter = new FileWriter("data-files/station-data.csv");
 			  writer = new CSVWriter(csvWriter);
-		      String [] record = "ID,Name,Bikes,Pedelacs,Available Docks,Maintainence Request,Capacity,Kiosk,Address".split(",");
+		      String [] record = "ID,Name,Bikes,Pedelacs,Available Docks,Maintainence Request,Capacity,Kiosk,Address,X,Y".split(",");
 
 		      writer.writeNext(record);
 
@@ -117,6 +118,10 @@ public final class CsvUtil {
 			csvWriter.append(inputUtil.fromBool(station.getHasKiosk()));
 			csvWriter.append(',');
 			csvWriter.append(station.getAddress());
+			csvWriter.append(',');
+			csvWriter.append(Integer.toString(station.getX()));
+			csvWriter.append(',');
+			csvWriter.append(Integer.toString(station.getY()));
 
 
 			csvWriter.append("\n");
