@@ -49,11 +49,9 @@ public class GraphicUtil extends JPanel {
 		super.paint(g);
 		g.setColor(Color.black);
 		g.drawImage(map, 0, 0, 600, 400, this);
-		System.out.println("Map size: " + Integer.toString(internalStationMap.size()));
-		for(Map.Entry<Integer, int[]> entry: internalStationMap.entrySet()) {
-			
-			
-			System.out.println("Filling at x ");
+		for(Map.Entry<Integer, int[]> entry: locationsMap.entrySet()) {
+			int[] xy = entry.getValue();
+			g.fillRect(xy[0]/2, xy[1]/2, 10, 10);
 			
 		}
 		
@@ -64,10 +62,8 @@ public class GraphicUtil extends JPanel {
 	 * @param inputMap - Station Id mapped to a list of two integers, the number of bikes and available docks at the station.
 	 */
 	public static void setParams(HashMap<Integer,int[]> inputMap) {
-		for(Map.Entry<Integer, int[]> entry: inputMap.entrySet()) {
-			internalStationMap.put(entry.getKey(), entry.getValue());
-			System.out.println("Stations map size: " + internalStationMap.size());
-		}
+		System.out.println("Setting parameters.");
+		internalStationMap = inputMap;
 	}
 	
 	

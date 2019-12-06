@@ -154,7 +154,7 @@ public class ValleyBikeSim {
 		System.out.println("Please enter the coordinates for the map. If you do not know, write -1.\n");
 		int x = inputUtil.getIntInRange(-1, 600, "value");
 		int y = inputUtil.getIntInRange(-1, 400, "value");
-		newStation.setXY(x,y);
+		newStation.setXY(x*2,y*2);
 		
 
 		// Assumes a new station doesn't require maintenance requests and hence setting them to 0.
@@ -787,7 +787,9 @@ public class ValleyBikeSim {
 			GraphicUtil.setRawLocation(ID, xy);
 		}
 		System.out.println("Setting up the map!");
+		System.out.println("1");
 		JFrame frame = new JFrame("Valley Bike Map");
+		System.out.println("2");
 		GraphicUtil.setParams(inputMap);
 		frame.add(graphic);
 		frame.setVisible(true);
