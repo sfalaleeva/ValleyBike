@@ -1,6 +1,9 @@
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
+import javax.swing.JFrame;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -40,6 +43,8 @@ public class ValleyBikeSim {
 	public static Map<Date, ArrayList<Ride>> dailyRidesMap;
 	
 	public static Map<Integer, Ride> ongoingRides;
+	
+	public static GraphicUtil graphic;
 	
 	/** The logged in user id. 
 	 * 	-1 if no user. */
@@ -761,6 +766,29 @@ public class ValleyBikeSim {
 				System.out.println("Your issue details are being forwarded to a Customer Service representative.\n Thank you for your report.");
 				break;
 		}	
+		
+	}
+	
+	public static void displayMap() {
+		JFrame frame = new JFrame("Valley Bike Map");
+		frame.add(graphic);
+		frame.setVisible(true);
+		frame.setSize(600,400);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setResizable(false);
+		HashMap<Integer, int[]> inputMap = new HashMap<>();
+		for(Map.Entry<Integer, Station> entry: stationsMap.entrySet()) {
+			int ID = entry.getKey();
+			Station station = entry.getValue();
+			int bikenum = station.getBikes();
+			int docknum = station.getAvailableDocks();
+			int numArray[] = {bikenum,docknum};
+			inputMap.put(ID, numArray);
+		}
+		
+		GraphicUtil.setParams(inputMap);
+		graphic.repaint();
+		
 		
 	}
 	
