@@ -1,8 +1,11 @@
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Map.Entry;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
@@ -14,7 +17,7 @@ import com.opencsv.CSVWriter;
  * because it should never be instantiated.
  */
 public final class CsvUtil {
-	
+
 	/**
 	 * For use in writing data to files.
 	 */
@@ -24,6 +27,19 @@ public final class CsvUtil {
 	 * For writing data to CSV files.
 	 */
 	private static CSVWriter writer;
+	
+	/** 
+	 * Saves temporary rides, users, bikes, station, and 
+	 * completed ride data.
+	 */
+	public static void saveData() {
+		saveOngoingRides();
+		saveStationList();
+		saveBikeData();
+		saveCompletedRides();
+		// TODO(): save user data
+		
+	}
 	
 
 	/* Station Data Functions */
@@ -126,8 +142,6 @@ public final class CsvUtil {
 
 			csvWriter.append("\n");
 
-
-
 			csvWriter.flush();
 			csvWriter.close();
 
@@ -137,6 +151,127 @@ public final class CsvUtil {
 	}
 	
 	/* Ride data functions. */
+	
+	/** Save rides that havn't been completed into temporary file. */
+	public static void saveOngoingRides() {
+		String filePath = "data-files/temp-ride-data.csv";
+		File file = new File(filePath);
+		try {
+			  //overwrites existing file with new data
+			  csvWriter = new FileWriter(file);
+			  writer = new CSVWriter(csvWriter);
+		      String [] record = "Ride ID,User ID,Bike ID,Start Station,End Station,Start Time,End Time,Duration".split(",");
+
+		      writer.writeNext(record);
+
+		      writer.close();
+
+		 } catch (IOException e) {
+			
+			e.printStackTrace();
+		}
+
+		//loops through and saves all ongoing rides
+		for (Ride ride : ValleyBikeSim.ongoingRides.values()) {
+			saveRide(ride, filePath);
+		}
+		
+	}
+	
+	/** Save rides that have been completed into files based on the date.
+	 *  It will create a file if a file doesn't exist or append to existing
+	 *  file. */
+	public static void saveCompletedRides(String dateToSave) {
+		String filePath = "data-files/" + dateToSave + ".csv";
+		File file = new File(filePath);
+		if (!file.exists()) {
+			try {
+				//overwrites existing file with new data
+				csvWriter = new FileWriter(file);
+				writer = new CSVWriter(csvWriter);
+				String [] record = "Ride ID,User ID,Bike ID,Start Station,End Station,Start Time,End Time,Duration".split(",");
+					
+				writer.writeNext(record);
+					
+				writer.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+			
+			for (Ride ride: ValleyBikeSim.dailyRidesMap.get(dateToSave)) {
+				saveRide(ride, filePath);
+			}	
+	}
+	
+	/** Save rides that have been completed into files based on the date.
+	 *  It will create a file if a file doesn't exist or append to existing
+	 *  file. */
+	public static void saveCompletedRides() {
+		String filePath = "data-files/";
+		//loops through and saves all completed rides by day
+		for (Entry<String, ArrayList<Ride>> entry : ValleyBikeSim.dailyRidesMap.entrySet()) {
+			filePath += entry.getKey() + ".csv";
+			File file = new File(filePath);
+			if (!file.exists()) {
+				try {
+					//overwrites existing file with new data
+					csvWriter = new FileWriter(file);
+					writer = new CSVWriter(csvWriter);
+					String [] record = "Ride ID,User ID,Bike ID,Start Station,End Station,Start Time,End Time,Duration".split(",");
+					
+					writer.writeNext(record);
+					
+					writer.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			for (Ride ride: entry.getValue()) {
+				saveRide(ride, filePath);
+			}
+		}	
+	}
+	
+	/**
+	 * Ancillary function to assist the saveOngoingRide() and saveCompletedRides() functions.
+	 */
+	private static void saveRide(Ride ride, String filePath) {
+		
+		try {
+			csvWriter = new FileWriter(filePath,true);
+
+			//adding all the station details into the csv
+			csvWriter.append(Integer.toString(ride.getID()));
+		    csvWriter.append(',');
+			csvWriter.append(Integer.toString(ride.getUserID()));
+			csvWriter.append(',');
+			csvWriter.append(Integer.toString(ride.getBikeID()));
+			csvWriter.append(',');
+			csvWriter.append(Integer.toString(ride.getFromStationID()));
+			csvWriter.append(',');
+			csvWriter.append(Integer.toString(ride.getToStationID()));
+			csvWriter.append(',');
+			
+			csvWriter.append(inputUtil.dateToString(ride.getStartTime(), inputUtil.RIDE_DATE_TIME_FORMAT));
+			csvWriter.append(',');
+			
+			String endTime = "";
+			if (ride.getEndTime() != null) {
+				endTime = inputUtil.dateToString(ride.getEndTime(), inputUtil.RIDE_DATE_TIME_FORMAT);
+			} 
+			csvWriter.append(endTime);
+			
+			csvWriter.append("\n");
+
+			csvWriter.flush();
+			csvWriter.close();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	/**
 	 * Manages to read the ride data, record all the rides in the ridesList and then calculates the average
@@ -162,7 +297,7 @@ public final class CsvUtil {
 					//TODO() change what gets read/written in from ride.csv files
 					// current the bike id of existing rides is hard coded to 0
 					ridesList.add(new Ride(Integer.parseInt(array[0]), 0, Integer.parseInt(array[1]),
-							Integer.parseInt(array[2]), inputUtil.toDate(array[3], "yyyy-MM-dd HH:mm:ss"), inputUtil.toDate(array[4],"yyyy-MM-dd HH:mm:ss")));
+							Integer.parseInt(array[2]), inputUtil.toDate(array[3], inputUtil.RIDE_DATE_TIME_FORMAT), inputUtil.toDate(array[4],inputUtil.RIDE_DATE_FORMAT)));
 				}
 				counter++;
 
@@ -173,7 +308,6 @@ public final class CsvUtil {
 			}
 			int averageDuration = totalDuration / ridesList.size();
 			System.out.println("The ride list contains " + ridesList.size() + " rides and the average ride time is " + averageDuration + " minutes.\n");
-
 
 		}
 

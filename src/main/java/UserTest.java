@@ -73,7 +73,7 @@ public class UserTest {
 	public void testUpdateInvalidCard() {
 		user.setCreditCard(creditCardNumber, expirationDate);
 		user.updateMembership(membership);
-		//user.setCreditCard("invalid", LocalDate.now().plusMonths(1));
+		user.setCreditCard("invalid", LocalDate.now().plusMonths(1));
 		assertEquals(expectedResult, user.getIsActive());
 		}	
 

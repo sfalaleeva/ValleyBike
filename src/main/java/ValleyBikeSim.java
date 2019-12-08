@@ -27,8 +27,9 @@ public class ValleyBikeSim {
 	public static Map<Integer, Issue> issueMap;
 	
 	/** Map of date to rides that have't been saved to files yet. */
-	public static Map<Date, ArrayList<Ride>> dailyRidesMap;
+	public static Map<String, ArrayList<Ride>> dailyRidesMap;
 	
+	/** Map of ride ids to rides that have not been ended. */
 	public static Map<Integer, Ride> ongoingRides;
 	
 	public static GraphicUtil graphic = new GraphicUtil();
@@ -51,8 +52,7 @@ public class ValleyBikeSim {
 	private static User fakeUser = new User("Sarah", "Pong", new Address("123 silver st","Holyoke", "MA", "01040", "USA"), 
 			LocalDate.now(), "4135555555", "sarah@gmail.com", "Pwd123");
 	
-	
-	
+
 	/** 
 	 * Private ValleyBike constructor.
 	 */
@@ -179,10 +179,12 @@ public class ValleyBikeSim {
 	
 	/**
 	 * Given a bike to check out, this function checks out a bike and 
-	 * starts a ride for the logged in user.
+	 * starts a ride for the logged in user. After the ride is added, it is 
+	 * added to the temporary file for temp-ride-data.csv for ongoing rides.
 	 * @param bikeID
 	 */
 	public static void startRide() {
+	
 		User currentUser = usersMap.get(currentUserID);
 		if (!currentUser.getIsActive()) {
 			System.out.println("You must have active membership and valid credit card information to check out a bike.");
@@ -198,18 +200,22 @@ public class ValleyBikeSim {
 			return;
 		}
 		Bike bike = bikesMap.get(bikeID);
-		bike.checkOut(); // updates station and bike object
 		
 		currentUser.addToBalance(currentUser.getMembership().getPricePerRide()); //charge per ride according to membership
 		Ride ride = new Ride(currentUserID, bikeID, bike.getStatID(), -1, new Date(), null);
 		currentUser.setCurrentRide(ride.getID());
 		ongoingRides.put(ride.getID(), ride);
+		
+		bike.checkOut(); // updates station to -1 and bike object
 		System.out.println("Your ride has been started successfully!");
+		
+		CsvUtil.saveOngoingRides();
 	}
 	
 	/**
 	 * Function gets called when user wants to end their ride and provides the ID of the station,
-	 * which they want to return their bike to
+	 * which they want to return their bike to. When the ride is completed, the csv file for the
+	 * day that ride started is appended to.
 	 * @param endStationID
 	 */
 	public static void endRide() {
@@ -217,7 +223,7 @@ public class ValleyBikeSim {
 		if (currentUser.getCurrentRideID() == -1) {
 			System.out.println("It looks like you are not currently on a ride");
 		}
-		Integer endStationID = inputUtil.getRideEndStationID();
+		int endStationID = inputUtil.getRideEndStationID();
 		Ride currentRide = ongoingRides.get(currentUser.getCurrentRideID());
 		Bike bike = bikesMap.get(currentRide.getBikeID());
 		if (!bike.checkIn(endStationID)) { 
@@ -226,8 +232,12 @@ public class ValleyBikeSim {
 		//update ride object now that it's complete, remove from ongoing rides
 		currentRide.setEndTime(new Date());
 		currentRide.setToStationID(endStationID);
+		
+		System.out.println("The end station: " + endStationID);
+		
 		ongoingRides.remove(currentRide.getID());
-		//TODO(): add completed ride to dailyRidesMap
+		
+		addCurrentRideToMap(currentRide);
 		
 		//calculate the charge for the ride and charge the user if they've ridden longer than their membership allows for free
 		float overtime = currentRide.getRideDuration() - currentUser.getMembership().getFreeRideDuration();
@@ -238,6 +248,27 @@ public class ValleyBikeSim {
 		currentUser.addRideToHistory(currentRide);
 		currentUser.setCurrentRide(-1);
 		System.out.println("Your ride was ended successfully! We hope you ride again soon!");
+		
+		// save rides for that day
+		String dateKey = inputUtil.dateToString(currentRide.getStartTime(), inputUtil.RIDE_DATE_FORMAT);
+		CsvUtil.saveCompletedRides(dateKey);
+	}
+	
+	/**
+	 * Helper for adding a completed ride to the dailyRideMap.
+	 * @param the ride to add
+	 */
+	public static void addCurrentRideToMap(Ride ride) {
+		// gets date string without time
+		String dateString = inputUtil.dateToString(ride.getStartTime(), inputUtil.RIDE_DATE_FORMAT);
+		// if it exists, we append the new ride
+		if (dailyRidesMap.containsKey(dateString)) {
+			dailyRidesMap.get(dateString).add(ride);
+		} else {
+			ArrayList<Ride> rides = new ArrayList<>();
+			rides.add(ride);
+			dailyRidesMap.put(dateString, rides);
+		}
 	}
 	
 	/**
@@ -685,13 +716,14 @@ public class ValleyBikeSim {
 	 * bike data.
 	 */
 	private static void initializeBikes() {
- 		ArrayList<Integer> bikes = new ArrayList<>();
-
  		for (Station station : stationsMap.values()) {
+ 			ArrayList<Integer> bikes = new ArrayList<>();
+
  			int numBikes = station.getBikes();
+ 			Bike bike;
  			// initialize all bikes at this station
  			while (numBikes > 0) {
- 				Bike bike = new Bike(station.getID());
+ 				bike = new Bike(station.getID());
  				bikes.add(bike.getID());
  				// add bike to map
 				bikesMap.put(bike.getID(), bike);

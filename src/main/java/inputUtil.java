@@ -16,6 +16,16 @@ import java.util.regex.Pattern;
  */
 public final class inputUtil {
 	
+	/** The format for a local date used by DOB and expiration date. */
+	public static final String LOCALDATE_FORMAT = "y-M-d";
+
+	/** The format for ride start and end time. */
+	public static final String RIDE_DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+	
+	/** Simple date format. */
+	public static final String RIDE_DATE_FORMAT = "yyyy-MM-dd";
+
+	
 	/** Regex for validating email strings. */
 	public static final Pattern VALID_EMAIL_ADDRESS_REGEX = 
 		    Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
@@ -189,6 +199,17 @@ public final class inputUtil {
 	/*
 	 * ********* FORMATING FUNCTIONS ***********
 	 */
+	
+	/**
+	 * Converts date into a String in form of RIDE_DATE_FORMAT [yyyy-MM-dd HH:mm:ss]
+	 * @param date
+	 * @return Date object as a String
+	 */
+	public static String dateToString(Date date, String format) {
+		SimpleDateFormat formatter = new SimpleDateFormat(format);
+		String dateString = formatter.format(date);
+		return dateString;
+	}
 
 	/**
 	 * Turn provided string into date in specified format.

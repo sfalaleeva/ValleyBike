@@ -61,7 +61,7 @@ public final class UserModifier {
 	private static LocalDate getDOB() {
 		System.out.println("Date of Birth [yyyy-[m]m-[d]d]:");
 		String dobString = inputUtil.getValidDateString();
-		return inputUtil.toLocalDate(dobString, "y-M-d");
+		return inputUtil.toLocalDate(dobString, inputUtil.LOCALDATE_FORMAT);
 	}
 	
 	/**
@@ -170,7 +170,7 @@ public final class UserModifier {
 		}
 		System.out.println("Enter credit card expiration date. [yyyy-[m]m]");
 		String expirationString = inputUtil.getValidExpirationDateString();
-		LocalDate expirationDate = inputUtil.toLocalDate(expirationString, "y-M-d");
+		LocalDate expirationDate = inputUtil.toLocalDate(expirationString, inputUtil.LOCALDATE_FORMAT);
 		if (!user.setCreditCard(cc, expirationDate)) {
 			System.out.println("Card validation failed.");
 		}
