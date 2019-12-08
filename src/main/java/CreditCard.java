@@ -37,7 +37,7 @@ public class CreditCard {
 	
 	/**
 	 * Gets credit card number.
-	 * @return credit card number
+	 * @return String - credit card number
 	 */
 	public String getCreditCardNumber() {
 		return creditCardNumber;

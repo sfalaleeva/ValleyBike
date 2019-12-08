@@ -84,9 +84,9 @@ public final class UserModifier {
 					break;
 				case 1:
 					//names
-					System.out.println("First Name:");
+					System.out.println("New First Name:");
 					String fName = inputUtil.getString();
-					System.out.println("Last Name:");
+					System.out.println("New Last Name:");
 					String lName = inputUtil.getString();
 					user.setFirstName(fName);
 					user.setLastName(lName);
@@ -106,26 +106,26 @@ public final class UserModifier {
 					break;
 				case 4:
 					//Phone
-					System.out.println("Phone [10 digits, no spaces or extra characters:]");
+					System.out.println("New Phone [10 digits, no spaces or extra characters:]");
 					String phone = inputUtil.getValidPhone();
 					user.setPhone(phone);
 					break;
 				case 5:
 					//email
-					System.out.println("Email:");
+					System.out.println("New Email:");
 					String email = inputUtil.getValidEmail();
 					user.setEmail(email);
 					break;
 				case 6:
 					//Pwd
-					System.out.println("Password:");
+					System.out.println("New Password:");
 					String pwd = inputUtil.getValidPassword();
-					System.out.println("Retype Password:");
+					System.out.println("Retype New Password:");
 					
 					String pwdRetype = inputUtil.getString();
 					// check passwords match
 					while (!pwd.equals(pwdRetype)) {
-						System.out.println("Passwords do not match." + "\nRetype Password:");
+						System.out.println("Passwords do not match." + "\nRetype New Password:");
 						pwdRetype = inputUtil.getString();
 					}
 					user.setPassword(pwd);

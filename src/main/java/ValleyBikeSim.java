@@ -243,7 +243,7 @@ public class ValleyBikeSim {
 		float overtime = currentRide.getRideDuration() - currentUser.getMembership().getFreeRideDuration();
 		if (overtime > 0) {
 			currentUser.addToBalance(Membership.overtimePrice * overtime);
-		}
+		} 
 		currentUser.chargeUser();
 		currentUser.addRideToHistory(currentRide);
 		currentUser.setCurrentRide(-1);
@@ -465,10 +465,9 @@ public class ValleyBikeSim {
 		
 		userChange = usersMap.get(userID);
 		
-		//put in print update method
-		//TODO: update print info with info about payment or card
-		//TODO: update printInfo() with better display of DOB 
+		//print user account details before menu options
 		userChange.printInfo();
+		
 		System.out.println("\nPlease choose from one of the following menu options:\n"
 				+ "0. Back to Main Menu\t3. Change personal info"
 				+ "\n1. Change Membership\t4. Cancel Membership" 
@@ -481,7 +480,7 @@ public class ValleyBikeSim {
 			switch (input) {
 				case "0": 
 					//exits to main account menu
-					System.out.println("\nGoing back. "); //isn't necessary? 
+					System.out.println("\nGoing back. "); 
 					break;
 				case "1":
 					//check they have card info before allow to change membership
@@ -510,7 +509,8 @@ public class ValleyBikeSim {
 					deleteAcct(userChange);
 					break;
 				default: 
-					System.out.print("\nInvalid input, please select a number within the 0-5 range.\n");
+					System.out.print("Invalid input, please select a number within the 0-5 range.\n");
+					continue;
 						
 			}
 			break; //exit out of while loop

@@ -376,6 +376,11 @@ public class User extends Account{
 	 * 
 	 */
 	
+	/**
+	 * false if user doesn't credit card info saved, or card validation fails. 
+	 * Otherwise have valid card info and returns true.
+	 * @return false if invalid card info, true if valid
+	 */
 	public boolean hasValidCardInfo() {
 		if (creditCard == null || !Payment.validateCard(creditCard.getCreditCardNumber(), creditCard.getExpirationDate())) {
 			return false; 	
@@ -432,13 +437,8 @@ public class User extends Account{
 	 * prints out user's details
 	 */
 	public void printInfo() {
-		//TODO: create censoring helper in InputUtil ?
-		//public static String censorString( String str , Integer numOfCharToCensor ) { ... return censoredString } 
 		
-		String censoredPwd = String.format("%.2s", this.password);  //gets first 2 characters of pwd
-		for (int i = 0; i < this.password.length()-2; i++) { 		//replace rest of characters with *
-			censoredPwd += "*";
-		}
+		String censoredPwd = inputUtil.censorString(this.password, 2, true);
 		String format = "%-18s%s%n";
 		System.out.println("");
 		System.out.printf(format, "Name:", this.firstName + " " + this.lastName);
@@ -448,7 +448,14 @@ public class User extends Account{
 		System.out.printf(format, "Date of Birth:", this.dob);
 		System.out.printf(format, "Phone number:", this.phone);
 		System.out.printf(format, "Membership:", this.membership);
-		//System.out.printf(format, "Payment Info:", this.email);
+		
+		if (hasValidCardInfo()) {
+			String censoredCC = inputUtil.censorString(creditCard.getCreditCardNumber(), 4, false);
+			System.out.printf(format, "Credit Card:", censoredCC); 
+		} else {
+			System.out.printf(format, "Credit Card:", "NONE"); 
+		}
+		
 		
 	}
 	

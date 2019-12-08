@@ -63,7 +63,7 @@ public final class inputUtil {
 			if (input.isEmpty()) {
 				System.out.println("Please enter a response.");
 				continue;
-			}
+			} 
 			break;
 		}
 		return input;
@@ -234,6 +234,33 @@ public final class inputUtil {
 			System.out.println("Issue handling date.");
 		}
 		return dateTime;
+	}
+	
+	/**
+	 * Censor a given string. Censor marks are asterisks and visible characters can 
+	 * be at the beginning or end of string - i.e. abc**** or ****abc
+	 * @param toCensor - String - word that will be censored
+	 * @param numVisible - Integer - num of characters needed to be visible 
+	 * @param atBeginning - Boolean - true if visible characters are at beginning of string 
+	 * @return censored string
+	 */
+	public static String censorString(String toCensor, Integer numVisible, Boolean atBeginning ) {
+		String censoredStr = "";
+		String subStr = "";
+		String censors = "";
+		
+		for (int i = 0; i < toCensor.length()- numVisible; i++) { 	
+			 censors += "*";
+		}
+		
+		if (atBeginning) {
+			subStr = toCensor.substring(0, numVisible);
+			censoredStr = subStr + censors; 
+		} else {
+			subStr = toCensor.substring(toCensor.length()-numVisible);
+			censoredStr = censors + subStr;
+		}
+		return censoredStr;
 	}
 	
 	/**

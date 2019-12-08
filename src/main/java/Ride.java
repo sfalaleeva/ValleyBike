@@ -48,7 +48,7 @@ public class Ride {
 		
 		
 		/**
-		 * Duration of the ride
+		 * Duration of the ride in minutes
 		 */
 		private long rideDuration;
 		
@@ -141,8 +141,8 @@ public class Ride {
 		
 		
 		/**
-		 * Gets the ride duration
-		 * @return - ride duration
+		 * Gets the ride duration in minutes
+		 * @return - ride duration in minutes
 		 */
 		public long getRideDuration() {
 			return this.rideDuration;
@@ -207,7 +207,7 @@ public class Ride {
 		
 		
 		/**
-		 * Calculate the duration of the ride 
+		 * Calculate the duration of the ride in minutes
 		 */
 		private void calculateDuration() {
 			//if ride is incomplete, end time will be null
