@@ -4,12 +4,10 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 /**
@@ -35,12 +33,16 @@ public class GraphicUtil extends JPanel {
 	 */
 	private BufferedImage map;
 	
-	
+	/**
+	 * Whether or not the graphic is open: governs repaint() calls in ValleyBikeSim
+	 */
 	public static boolean running = false;
 	
-	
+	/**
+	 * Utility that deals with painting and updating the map
+	 */
 	public GraphicUtil() {
-		
+		//Attempt to read in the image
 		try {   
 			map = ImageIO.read(new File("data-files/VBMap.png"));
 		} catch (IOException ex) {
@@ -51,22 +53,29 @@ public class GraphicUtil extends JPanel {
 		
 	}
 	
-	
+	/**
+	 * Method that actually repaints the window
+	 */
 	public void paint(Graphics g) {
 		super.paint(g);
 		running = true;
 		g.setFont(new Font("TimesRoman", Font.PLAIN, 10)); 
+		
+		//Draw the map image in the background
 		g.drawImage(map, 0, 0, 600, 400, this);
+		
+		//For every station on the map, draw a dot and a label
 		for(Map.Entry<Integer, int[]> entry: locationsMap.entrySet()) {
 			int[] xy = entry.getValue();
 			int x = xy[0]/2;
 			int y = xy[1]/2;
 			String stationName = ValleyBikeSim.stationsMap.get(entry.getKey()).getName();
-			//g.fillRect(xy[0]/2, xy[1]/2, 10, 10);
 			g.setColor(Color.black);
 			g.fillOval(x, y, 5, 5);
 			
 			int stringSize = g.getFontMetrics().stringWidth(stationName);
+			
+			//Move the labels so they don't overlap too badly
 			int[] xyAdj = getModified(x,y,stringSize);
 			g.setColor(new Color(255,255,255,127));
 			g.fillRect(xyAdj[0], xyAdj[1] - 10, stringSize, 12);
@@ -74,6 +83,7 @@ public class GraphicUtil extends JPanel {
 			
 			g.drawString(stationName, xyAdj[0], xyAdj[1]);
 			
+			//Draw a helper line if the label is too far from the dot
 			if(Math.abs(xyAdj[1] - y) > 15) {
 				g.drawLine(x, y, xyAdj[0] + stringSize/2, xyAdj[1]);
 			}
@@ -85,6 +95,9 @@ public class GraphicUtil extends JPanel {
 			int[] bikesDocks = internalStationMap.get(entry.getKey());
 			Color bikesColor;
 			Color docksColor;
+			
+			// Draws two green or red dots for each station, corresponding to the availability
+			// of at least one bike and dock respectively
 			if(bikesDocks[0] < 1) {
 				bikesColor = Color.red;
 			} else { bikesColor = Color.green; }
@@ -97,8 +110,7 @@ public class GraphicUtil extends JPanel {
 			g.fillOval(docksX, dotsY, 5, 5);
 			
 			
-			//10,380
-			//10,360
+			//Puts a key in the bottom left for the dots
 			g.setColor(Color.black);
 			g.drawString("Availability:",10,360);
 			g.drawString("Bikes:", 10, 370);
@@ -124,11 +136,22 @@ public class GraphicUtil extends JPanel {
 		internalStationMap = inputMap;
 	}
 	
-	
+	/**
+	 * Adds location pixel data to the map
+	 * @param ID - station id
+	 * @param location - [x,y] pixel location
+	 */
 	public static void setRawLocation(Integer ID, int[] location) {
 		locationsMap.put(ID,location);
 	}
 	
+	/**
+	 * Moves label x and y to be further from congested areas, for maximum readability
+	 * @param x - original x
+	 * @param y - original y
+	 * @param sSize - pixel length of the string label
+	 * @return - [x,y] modified coordinates to draw the label at
+	 */
 	private static int[] getModified(int x, int y, int sSize) {
 		int centerX = 375;
 		int centerY = 265;
