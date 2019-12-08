@@ -133,7 +133,7 @@ public class ValleyBikeSim {
 		newStation.setName(inputUtil.getString());
 
 		System.out.println("Specify the capacity for the new station (range: 0-20):");			
-		int inputCapacity = inputUtil.getIntInRange(0, 20, "capacity");
+		int inputCapacity = inputUtil.getIntInRange(5, 27, "capacity");
 		newStation.setCapacity(inputCapacity);
 
 		System.out.println("Enter the number of total bikes at this station (range: 0-" + newStation.getCapacity() + "): ");
