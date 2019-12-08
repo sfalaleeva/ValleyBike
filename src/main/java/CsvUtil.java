@@ -28,6 +28,7 @@ public final class CsvUtil {
 	 */
 	private static CSVWriter writer;
 	
+	
 	/** 
 	 * Saves temporary rides, users, bikes, station, and 
 	 * completed ride data.
@@ -178,6 +179,8 @@ public final class CsvUtil {
 		
 	}
 	
+	//TODO: there's two saveCompletedRide methods? Does one need to be deleted? 
+	
 	/** Save rides that have been completed into files based on the date.
 	 *  It will create a file if a file doesn't exist or append to existing
 	 *  file. */
@@ -305,6 +308,7 @@ public final class CsvUtil {
 			int totalDuration = 0;
 			for(Ride ride : ridesList) {
 				totalDuration += ride.getRideDuration();
+			
 			}
 			int averageDuration = totalDuration / ridesList.size();
 			System.out.println("The ride list contains " + ridesList.size() + " rides and the average ride time is " + averageDuration + " minutes.\n");

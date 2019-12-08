@@ -207,7 +207,7 @@ public class Ride {
 		
 		
 		/**
-		 * Calculate the duration of the ride in minutes
+		 * If ride is complete, calculate the duration of the ride in minutes.
 		 */
 		private void calculateDuration() {
 			//if ride is incomplete, end time will be null
@@ -218,6 +218,18 @@ public class Ride {
 			long duration = this.endTime.getTime() - this.startTime.getTime();
 			long intoMinutes = TimeUnit.MINUTES.convert(duration, TimeUnit.MILLISECONDS);
 			this.rideDuration = intoMinutes;
+		}
+		
+		/**
+		 * calculate the duration of an ongoing ride
+		 * mainly used to check if bike has been out over 24 hours and still not returned. 
+		 * @return - long - returns in minutes how long the ongoing ride is 
+		 */
+		public long calculateOngoingRide() {
+			Date now = new Date();
+			long duration = now.getTime() - this.startTime.getTime();
+			long intoMinutes = TimeUnit.MINUTES.convert(duration, TimeUnit.MILLISECONDS);
+			return intoMinutes;
 		}
 		
 	}
