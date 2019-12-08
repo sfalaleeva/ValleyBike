@@ -241,9 +241,14 @@ public class ValleyBikeSim {
 		
 		//calculate the charge for the ride and charge the user if they've ridden longer than their membership allows for free
 		float overtime = currentRide.getRideDuration() - currentUser.getMembership().getFreeRideDuration();
-		if (overtime > 0) {
+		if (overtime > 0 && overtime < 1440) {
 			currentUser.addToBalance(Membership.overtimePrice * overtime);
-		} 
+		} else if (overtime >= 1440) { //1440 minutes = 24 hours 
+			//system checks for bike being out over 24 hours both here when user ends ride and 
+			//periodically with checkOver24Hours() in case it is never returned 
+			currentUser.addToBalance(2000); //TODO: 2000 + overtime price or just 2000? 
+			
+		}
 		currentUser.chargeUser();
 		currentUser.addRideToHistory(currentRide);
 		currentUser.setCurrentRide(-1);
@@ -395,9 +400,6 @@ public class ValleyBikeSim {
 	public static void login() {
 		//Needs to be case sensitive for pswd and not for email. 
 		
-		//I added a getPwd() method to Account class, not sure if we want 
-		//to keep forever for security reasons? Or if it should be in User class? 
-		
 		System.out.println("Please enter your email: ");
 		String inputEmail = inputUtil.getString();
 		
@@ -548,6 +550,7 @@ public class ValleyBikeSim {
 		try {
 			while(true) {	
 				if (currentUserID > 0) {
+					checkOver24Hours();
 					printUserMenu();
 					System.out.println("\nPlease enter a number (0-8): ");
 					input = inputUtil.getIntInRange(0, 8, "menu option");
@@ -585,6 +588,7 @@ public class ValleyBikeSim {
 				}
 				// assume admin has default id 0
 				else if (currentUserID == 0) {
+					checkOver24Hours();
 					printAdminMenu();
 					System.out.println("\nPlease enter a number (0-8): ");
 					input = inputUtil.getIntInRange(0,8, "menu option");
@@ -733,11 +737,12 @@ public class ValleyBikeSim {
  		}
 	}
 	
+	
 	/**
 	 * deletes account
+	 * @param user - user account to be deleted
 	 */
 	private static void deleteAcct(User user) {
-		//TODO: change IDs once someone deletes acct? elaborate on this?
 		usersMap.remove(user.getUserID());
 		userRecords.remove(user.getEmail());
 		System.out.println("Deleted");
@@ -829,6 +834,22 @@ public class ValleyBikeSim {
 		graphic.repaint();
 		
 		
+	}
+	
+	/**
+	 * check if within list of ongoing rides there's one that's been going 
+	 * on for >=24 hours. If so, charge the user $2000
+	 */
+	public static void checkOver24Hours() {
+		//TODO: notify user they've been charged?
+		for (Map.Entry<Integer, Ride> rideEntry: ongoingRides.entrySet()) {
+			Ride ride = rideEntry.getValue();
+			
+			if (ride.calculateOngoingRide() >= 1440) { //1440 min = 24 hrs
+				User userToCharge = usersMap.get(ride.getUserID());
+				userToCharge.addToBalance(2000);
+			}
+		}
 	}
 	
 	/**
