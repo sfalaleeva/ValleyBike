@@ -560,9 +560,11 @@ public class ValleyBikeSim {
 							break;
 						case 2:
 							startRide();
+							sendMapInfo();
 							break;
 						case 3:
 							endRide();
+							sendMapInfo();
 							break;
 						case 4:
 							reportIssues();
@@ -597,6 +599,7 @@ public class ValleyBikeSim {
 							break;
 						case 2:
 							addStation();
+							sendMapInfo();
 							break;
 						case 3:
 							// also saves bike data for consistency
@@ -610,6 +613,7 @@ public class ValleyBikeSim {
 							break;
 						case 5: 
 							equalizeStations();
+							sendMapInfo();
 							break;
 						case 6:
 							updateAccount();
@@ -807,6 +811,23 @@ public class ValleyBikeSim {
 	 * Shows the map of the stations
 	 */
 	public static void displayMap() {
+		sendMapInfo();
+		JFrame frame = new JFrame("Valley Bike Map");
+		frame.add(graphic);
+		frame.setVisible(true);
+		frame.setSize(600,400);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setResizable(false);
+		
+		graphic.repaint();
+		
+		
+	}
+	
+	/**
+	 * Sends updated information to the visual map and repaints it if it is running
+	 */
+	public static void sendMapInfo() {
 		HashMap<Integer, int[]> inputMap = new HashMap<>();
 		for(Map.Entry<Integer, Station> entry: stationsMap.entrySet()) {
 			int ID = entry.getKey();
@@ -817,18 +838,12 @@ public class ValleyBikeSim {
 			inputMap.put(ID, numArray);
 			int[] xy = {station.getX(), station.getY()};
 			GraphicUtil.setRawLocation(ID, xy);
+			
 		}
-		JFrame frame = new JFrame("Valley Bike Map");
 		GraphicUtil.setParams(inputMap);
-		frame.add(graphic);
-		frame.setVisible(true);
-		frame.setSize(600,400);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setResizable(false);
-		
-		graphic.repaint();
-		
-		
+		if(GraphicUtil.running) {
+			graphic.repaint();
+		}
 	}
 	
 	/**
