@@ -5,6 +5,7 @@ import javax.swing.JFrame;
 
 //import com.sun.tools.javac.code.TypeMetadata.Entry;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class ValleyBikeSim {
 
@@ -202,7 +203,7 @@ public class ValleyBikeSim {
 		Bike bike = bikesMap.get(bikeID);
 		
 		currentUser.addToBalance(currentUser.getMembership().getPricePerRide()); //charge per ride according to membership
-		Ride ride = new Ride(currentUserID, bikeID, bike.getStatID(), -1, new Date(), null);
+		Ride ride = new Ride(currentUserID, bikeID, bike.getStatID(), -1, LocalDateTime.now(), null);
 		currentUser.setCurrentRide(ride.getID());
 		ongoingRides.put(ride.getID(), ride);
 		
@@ -230,10 +231,8 @@ public class ValleyBikeSim {
 			return;
 		};
 		//update ride object now that it's complete, remove from ongoing rides
-		currentRide.setEndTime(new Date());
+		currentRide.setEndTime(LocalDateTime.now());
 		currentRide.setToStationID(endStationID);
-		
-		System.out.println("The end station: " + endStationID);
 		
 		ongoingRides.remove(currentRide.getID());
 		
@@ -255,7 +254,9 @@ public class ValleyBikeSim {
 		System.out.println("Your ride was ended successfully! We hope you ride again soon!");
 		
 		// save rides for that day
-		String dateKey = inputUtil.dateToString(currentRide.getStartTime(), inputUtil.RIDE_DATE_FORMAT);
+		String dateKey = 
+				inputUtil.localDateTimeToString(currentRide.getStartTime(), 
+						inputUtil.LOCAL_DATE_FORMAT);
 		CsvUtil.saveCompletedRides(dateKey);
 	}
 	
@@ -265,7 +266,8 @@ public class ValleyBikeSim {
 	 */
 	public static void addCurrentRideToMap(Ride ride) {
 		// gets date string without time
-		String dateString = inputUtil.dateToString(ride.getStartTime(), inputUtil.RIDE_DATE_FORMAT);
+		String dateString = inputUtil.localDateTimeToString(ride.getStartTime(), 
+				inputUtil.LOCAL_DATE_FORMAT);
 		// if it exists, we append the new ride
 		if (dailyRidesMap.containsKey(dateString)) {
 			dailyRidesMap.get(dateString).add(ride);
@@ -579,13 +581,13 @@ public class ValleyBikeSim {
 							viewUserReport();
 							break;
 						case 7:
-							logout();
-							break;
-						case 8:
 							displayMap();
 							break;
+						case 8:
+							logout();
+							break;
 						default: 
-							System.out.print("\nInvalid input, please select a number within the 0-7 range.\n");
+							System.out.print("\nInvalid input, please select a number within the 0-8 range.\n");
 					}
 				}
 				// assume admin has default id 0
@@ -623,19 +625,19 @@ public class ValleyBikeSim {
 							updateAccount();
 							break;
 						case 7:
-							logout();
-							break;
-						case 8: 
 							displayMap();
 							break;
+						case 8: 
+							logout();
+							break;
 						default: 
-							System.out.print("\nInvalid input, please select a number within the 0-7 range.\n");
+							System.out.print("\nInvalid input, please select a number within the 0-8 range.\n");
 					}
 				}
 				else {
 					printMainMenu();
-					System.out.println("\nPlease enter a number (0-3): ");
-					input = inputUtil.getIntInRange(0,3, "menu option");
+					System.out.println("\nPlease enter a number (0-4): ");
+					input = inputUtil.getIntInRange(0,4, "menu option");
 					switch (input) {
 						case 0: 
 							System.out.println("\nThank you for using Valley Bike Simulator!");
@@ -645,13 +647,16 @@ public class ValleyBikeSim {
 							printStationList();
 							break;
 						case 2:
-							login();
+							displayMap();
 							break;
 						case 3:
+							login();
+							break;
+						case 4:
 							addUser();
 							break;
 						default: 
-							System.out.print("\nInvalid input, please select a number within the 0-3 range.\n");
+							System.out.print("\nInvalid input, please select a number within the 0-4 range.\n");
 					}
 				}
 			}
@@ -667,7 +672,9 @@ public class ValleyBikeSim {
 	 */
 	public static void printMainMenu() {
 		System.out.println("\nPlease choose from one of the following menu options:\n"
-				+ "0. Quit Program\t\t3. Register\n1. View station list\n2. Login");
+				+ "0. Quit Program\t\t3. Login"
+				+ "\n1. View station list\t4. Register"
+				+ "\n2. Show Station Map");
 				}
 	
 	/**
@@ -677,8 +684,8 @@ public class ValleyBikeSim {
 		System.out.println("\nPlease choose from one of the following menu options:\n"
 				+ "0. Quit Program\t\t5. View Account Details and Update Account"
 				+ "\n1. View station list\t6. View User Report"
-				+ "\n2. Unlock Bike\t\t7. Log Out"
-				+ "\n3. End Ride\t\t8. Show station map."
+				+ "\n2. Unlock Bike\t\t7. Show Station Map"
+				+ "\n3. End Ride\t\t8. Logout"
 				+ "\n4. Report Issue"
 				+ "\n5. Show station map");
 	}
@@ -688,11 +695,11 @@ public class ValleyBikeSim {
 	 */
 	public static void printAdminMenu() {
 		System.out.println("\nPlease choose from one of the following menu options:\n"
-				+ "0. Quit Program\t\t5. Equalize stations"
-				+ "\n1. View station list\t6. Update Account"
-				+ "\n2. Add station\t\t7. Log Out"
-				+ "\n3. Save station and bike list"
-				+ "\n4. Resolve ride data\t\t8. Show station map.");
+				+ "0. Quit Program\t\t\t5. Equalize stations"
+				+ "\n1. View station list\t\t6. Update Account"
+				+ "\n2. Add station\t\t\t7. Show Station Map"
+				+ "\n3. Save station and bike list\t8. Logout"
+				+ "\n4. Resolve ride data");
 	}
 	
 	/**

@@ -1,5 +1,6 @@
 import static org.junit.Assert.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -48,8 +49,8 @@ public class ValleyBikeSimTest {
 	 *  Additional rides in the same day end up in the same mapping. */
 	public void testAddCurrentRideToMap() {
 		String date = "2019-3-4 12:12:12";
-		Date formattedDate = inputUtil.toDate(date, inputUtil.RIDE_DATE_TIME_FORMAT);
-		String key = inputUtil.dateToString(formattedDate, inputUtil.RIDE_DATE_FORMAT);
+		LocalDateTime formattedDate = inputUtil.toLocalDateTime(date, inputUtil.LOCAL_DATE_TIME_FORMAT);
+		String key = inputUtil.localDateTimeToString(formattedDate, inputUtil.LOCAL_DATE_FORMAT);
 		Ride ride = new Ride(1,1,1,1,formattedDate, formattedDate);
 		Ride ride2 = new Ride(2,1,1,1,formattedDate, formattedDate);
 		

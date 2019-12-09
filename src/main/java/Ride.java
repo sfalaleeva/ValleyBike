@@ -1,3 +1,4 @@
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 public class Ride {
@@ -38,13 +39,13 @@ public class Ride {
 		/**
 		 * Start time of the ride
 		 */
-		private Date startTime;
+		private LocalDateTime startTime;
 		
 		
 		/**
 		 * End time of the ride
 		 */
-		private Date endTime;
+		private LocalDateTime endTime;
 		
 		
 		/**
@@ -61,7 +62,7 @@ public class Ride {
 		 * @param startTime - start time of the ride
 		 * @param endTime - end time of the ride
 		 */
-		public Ride(int userID, int bikeID, int fromStationID, int toStationID, Date startTime, Date endTime) {
+		public Ride(int userID, int bikeID, int fromStationID, int toStationID, LocalDateTime startTime, LocalDateTime endTime) {
 			this.rideID = nextRideID;
 			this.userID = userID;
 			this.bikeID = bikeID;
@@ -127,7 +128,7 @@ public class Ride {
 		 * Gets the start time of the ride
 		 * @return - ride start time
 		 */
-		public Date getStartTime() {
+		public LocalDateTime getStartTime() {
 			return this.startTime;
 		}
 		
@@ -135,7 +136,7 @@ public class Ride {
 		 * Gets the end time of the ride
 		 * @return - ride end time
 		 */
-		public Date getEndTime() {
+		public LocalDateTime getEndTime() {
 			return this.endTime;
 		}
 		
@@ -192,7 +193,7 @@ public class Ride {
 		 * Sets the start time of the ride
 		 * @param newStartTime - start time of the ride
 		 */
-		public void setStartTime(Date newStartTime) {
+		public void setStartTime(LocalDateTime newStartTime) {
 			this.startTime = newStartTime;
 		}
 		
@@ -200,14 +201,14 @@ public class Ride {
 		 * Sets end time of the ride
 		 * @param newEndTime - new end time of the ride
 		 */
-		public void setEndTime(Date newEndTime) {
+		public void setEndTime(LocalDateTime newEndTime) {
 			this.endTime = newEndTime;
 			calculateDuration();
 		}
 		
 		
 		/**
-		 * If ride is complete, calculate the duration of the ride in minutes.
+		 * If ride is complete, calculate the duration of the ride in seconds.
 		 */
 		private void calculateDuration() {
 			//if ride is incomplete, end time will be null
@@ -215,21 +216,18 @@ public class Ride {
 				this.rideDuration = 0;
 				return;
 			}
-			long duration = this.endTime.getTime() - this.startTime.getTime();
-			long intoMinutes = TimeUnit.MINUTES.convert(duration, TimeUnit.MILLISECONDS);
-			this.rideDuration = intoMinutes;
+			long duration = java.time.Duration.between(this.startTime, this.endTime).getSeconds();
+			this.rideDuration = duration;
 		}
 		
 		/**
-		 * calculate the duration of an ongoing ride
+		 * calculate the duration of an ongoing ride in milliseconds
 		 * mainly used to check if bike has been out over 24 hours and still not returned. 
 		 * @return - long - returns in minutes how long the ongoing ride is 
 		 */
 		public long calculateOngoingRide() {
-			Date now = new Date();
-			long duration = now.getTime() - this.startTime.getTime();
-			long intoMinutes = TimeUnit.MINUTES.convert(duration, TimeUnit.MILLISECONDS);
-			return intoMinutes;
+			long duration = java.time.Duration.between(this.startTime, LocalDateTime.now()).getSeconds();
+			return duration;
 		}
 		
 	}

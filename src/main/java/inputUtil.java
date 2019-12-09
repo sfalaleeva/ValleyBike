@@ -3,6 +3,7 @@ import java.util.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,14 +18,16 @@ import java.util.regex.Pattern;
 public final class inputUtil {
 	
 	/** The format for a local date used by DOB and expiration date. */
-	public static final String LOCALDATE_FORMAT = "y-M-d";
+	public static final String LOCAL_DATE_FORMAT = "y-M-d";
 
 	/** The format for ride start and end time. */
-	public static final String RIDE_DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
-	
-	/** Simple date format. */
-	public static final String RIDE_DATE_FORMAT = "yyyy-MM-dd";
+	public static final String LOCAL_DATE_TIME_FORMAT = "y-M-d H:m:s";
 
+	/** Regex for valid expiration date. */
+	public static final Pattern EXPIRATION_REGEX = Pattern.compile("^([2]\\d\\d\\d)[-](0[1-9]|[1-9]|1[0-2])");
+	
+	/** Regex for valid date [yyyy-MM-dd]. */
+	public static final Pattern GENERAL_DATE_REGEX = Pattern.compile("^[1-2]\\d\\d\\d[-](0[1-9]|[1-9]|1[0-2])[-]([1-9]|[0-2][0-9]|3[0-1])");
 	
 	/** Regex for validating email strings. */
 	public static final Pattern VALID_EMAIL_ADDRESS_REGEX = 
@@ -70,14 +73,23 @@ public final class inputUtil {
 	}
 	
 	/**
+	 * True if string matches given regex.
+	 * @param regex Matcher for string
+	 * @return boolean
+	 */
+	public static boolean validateWithRegex(String s, Pattern regex) {
+		Matcher matcher = regex .matcher(s);
+		return matcher.find();
+	}
+	
+	/**
 	 * Returns valid date string.
 	 * @return valid string in format yyyy-MM-dd.
 	 */
 	public static String getValidDateString() {		
-		String pattern = "^[1-2]\\d\\d\\d[-](0[1-9]|[1-9]|1[0-2])[-]([1-9]|[0-2][0-9]|3[0-1])";
 		String dateString = getString();
 		while(true) {
-			if (dateString.matches(pattern)) {
+			if (validateWithRegex(dateString, GENERAL_DATE_REGEX)) {
 				//restrict DOB year to after 1900
 				Integer year = Integer.valueOf(dateString.substring(0, 4)); 
 				if (year > 1900) {    
@@ -89,6 +101,7 @@ public final class inputUtil {
 			continue;
 		}
 	}
+
 	
 	/**
 	 * Returns valid expiration date string.
@@ -96,18 +109,17 @@ public final class inputUtil {
 	 */
 	public static String getValidExpirationDateString() {
 		String dateString = getString();
-		boolean valid = isValidExpirationDate(dateString);
+		boolean valid = isValidExpirationDate(dateString, EXPIRATION_REGEX);
 		while(!valid) {
 			System.out.println("Please enter valid expiration date [yyyy-[m]m].");
 			dateString = getString();
-			valid = isValidExpirationDate(dateString);
+			valid = isValidExpirationDate(dateString, EXPIRATION_REGEX);
 		}
 		return dateString + "-01"; // day needed to parse local date string
 	}
 	
-	public static boolean isValidExpirationDate(String expirationDate) {
-		String pattern = "^([2]\\d\\d\\d)[-](0[1-9]|[1-9]|1[0-2])";
-		if (expirationDate.matches(pattern)) {
+	public static boolean isValidExpirationDate(String expirationDate, Pattern pattern) {
+		if (validateWithRegex(expirationDate, pattern)) {
 			//restrict expiration data to a future date
 			Integer year = Integer.valueOf(expirationDate.substring(0,4)); 
 			Integer month = Integer.valueOf(expirationDate.substring(5));
@@ -177,7 +189,6 @@ public final class inputUtil {
 		}
 	}
 	
-	
 	/**
 	 * Get the information to create user object.
 	 * @return Address
@@ -201,39 +212,56 @@ public final class inputUtil {
 	 */
 	
 	/**
-	 * Converts date into a String in form of RIDE_DATE_FORMAT [yyyy-MM-dd HH:mm:ss]
+	 * Converts date into a String in specified format. If the format or 
+	 * date are invalid it will return an empty String.
 	 * @param date
-	 * @return Date object as a String
+	 * @return LocalDateTime object as a String
 	 */
-	public static String dateToString(Date date, String format) {
-		SimpleDateFormat formatter = new SimpleDateFormat(format);
-		String dateString = formatter.format(date);
-		return dateString;
+	public static String localDateTimeToString(LocalDateTime date, String format) {
+		try {
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+			String dateString = formatter.format(date);
+			return dateString;
+		}
+		catch(Exception e) {
+			System.out.printf("The date could not be formatted into string of %s.", format);
+			return "";
+		}
 	}
 
 	/**
-	 * Turn provided string into date in specified format.
+	 * Turn provided string into date of specified format. If String
+	 * cannot be formatted with the given string, the LocalDate.MAX is
+	 * returned.
 	 * @return Date
 	 */
 	public static LocalDate toLocalDate(String dateString, String format) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
-		LocalDate date = LocalDate.parse(dateString, formatter);
-		return date;
+		try {
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+			LocalDate date = LocalDate.parse(dateString, formatter);
+			return date;
+		}
+		catch (Exception e) {
+			System.out.printf("String %s could not be formatted into date of %s.", dateString, format);
+			return LocalDate.MAX;
+		}
 	}
 	
 	/**
-	 * Turn provided string into date in specified format.
+	 * Turn provided string into date in specified format. Returns largest
+	 * LocalDateTime if unable to format.
 	 * @return Date
 	 */
-	public static Date toDate(String dateString, String format) {
-		Date dateTime = new Date();
+	public static LocalDateTime toLocalDateTime(String dateString, String format) {
 		try {
-			dateTime = new SimpleDateFormat(format).parse(dateString);
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+			LocalDateTime date = LocalDateTime.parse(dateString, formatter);
+			return date;
 		}
-		catch(ParseException e) {
-			System.out.println("Issue handling date.");
+		catch(Exception e) {
+			System.out.printf("Issue formatting date into %s.", format);
+			return LocalDateTime.MAX;
 		}
-		return dateTime;
 	}
 	
 	/**
@@ -378,15 +406,6 @@ public final class inputUtil {
 		return email;
 	}
 	
-	/**
-	 * True if string matches given regex.
-	 * @param regex Matcher for string
-	 * @return boolean
-	 */
-	public static boolean validateWithRegex(String s, Pattern regex) {
-		Matcher matcher = regex .matcher(s);
-		return matcher.find();
-	}
 
 	/** 
 	 * Get valid user password of at 8 characters

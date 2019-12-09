@@ -257,12 +257,12 @@ public final class CsvUtil {
 			csvWriter.append(Integer.toString(ride.getToStationID()));
 			csvWriter.append(',');
 			
-			csvWriter.append(inputUtil.dateToString(ride.getStartTime(), inputUtil.RIDE_DATE_TIME_FORMAT));
+			csvWriter.append(inputUtil.localDateTimeToString(ride.getStartTime(), inputUtil.LOCAL_DATE_TIME_FORMAT));
 			csvWriter.append(',');
 			
 			String endTime = "";
 			if (ride.getEndTime() != null) {
-				endTime = inputUtil.dateToString(ride.getEndTime(), inputUtil.RIDE_DATE_TIME_FORMAT);
+				endTime = inputUtil.localDateTimeToString(ride.getEndTime(), inputUtil.LOCAL_DATE_TIME_FORMAT);
 			} 
 			csvWriter.append(endTime);
 			
@@ -284,7 +284,9 @@ public final class CsvUtil {
 	 */
 	public static void resolveRideData(String ridesFileName) {
 		String rideData = "data-files/" + ridesFileName;
-
+		//toLocalDateTime returns LocalDateTime.MAX if unable to format appropriately
+		// according to inputUti.LOCAL_DATE_TIME_FORMAT
+		// TODO(): validate time inputs from file
 		try {
 			CSVReader rideDataReader = new CSVReader(new FileReader(rideData));
 			List<Ride> ridesList = new ArrayList<>();
@@ -300,7 +302,7 @@ public final class CsvUtil {
 					//TODO() change what gets read/written in from ride.csv files
 					// current the bike id of existing rides is hard coded to 0
 					ridesList.add(new Ride(Integer.parseInt(array[0]), 0, Integer.parseInt(array[1]),
-							Integer.parseInt(array[2]), inputUtil.toDate(array[3], inputUtil.RIDE_DATE_TIME_FORMAT), inputUtil.toDate(array[4],inputUtil.RIDE_DATE_FORMAT)));
+							Integer.parseInt(array[2]), inputUtil.toLocalDateTime(array[3], inputUtil.LOCAL_DATE_TIME_FORMAT), inputUtil.toLocalDateTime(array[4],inputUtil.LOCAL_DATE_TIME_FORMAT)));
 				}
 				counter++;
 
@@ -359,8 +361,6 @@ public final class CsvUtil {
 	 * Saves the bike list into a CSV file.
 	 */
 	public static void saveBikeData() {
-		//TODO(): complete
-		
 		try {
 			  //overwrites existing file with new data
 			  csvWriter = new FileWriter("data-files/bike-data.csv");
