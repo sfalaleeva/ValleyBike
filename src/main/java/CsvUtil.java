@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -229,7 +230,7 @@ public final class CsvUtil {
 			csvWriter.append(',');
 			
 			String endTime = "";
-			if (ride.getEndTime() != null) {
+			if (ride.getEndTime() != LocalDateTime.MAX) {
 				endTime = inputUtil.localDateTimeToString(ride.getEndTime(), inputUtil.LOCAL_DATE_TIME_FORMAT);
 			} 
 			csvWriter.append(endTime);
