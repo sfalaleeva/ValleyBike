@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 public class ValleyBikeSim {
 
-	/** Temporary admin email login bypass */
+	/** Admin email for login bypass */
 	private static final String ADMIN = "admin";
 
 	/** Map of station ids to station objects. */
@@ -49,7 +49,7 @@ public class ValleyBikeSim {
 	/** Private static instance of class. */
 	private static ValleyBikeSim valleyBike = new ValleyBikeSim();
 	
-	/**FAKE USER use to check user menu stuff without registering, TODO: delete when useless/before A5 submit */
+	/** A sample user to use to use as needed*/
 	private static User fakeUser = new User("Sarah", "Pong", new Address("123 silver st","Holyoke", "MA", "01040", "USA"), 
 			LocalDate.now(), "4135555555", "sarah@gmail.com", "Pwd123");
 	
@@ -245,7 +245,7 @@ public class ValleyBikeSim {
 		} else if (overtime >= 1440) { //1440 minutes = 24 hours 
 			//system checks for bike being out over 24 hours both here when user ends ride and 
 			//periodically with checkOver24Hours() in case it is never returned 
-			currentUser.addToBalance(2000); //TODO: 2000 + overtime price or just 2000? 
+			currentUser.addToBalance(2000); 
 			
 		}
 		currentUser.chargeUser();
@@ -369,8 +369,6 @@ public class ValleyBikeSim {
 		
 		usersMap.put(user.getUserID(), user);
 		
-		// for use when logging in
-		//TODO(): maintain when account is deleted or changed
 		userRecords.put(user.getEmail(), user.getUserID());
 		
 		currentUserID = user.getUserID();
@@ -490,7 +488,6 @@ public class ValleyBikeSim {
 						System.out.print("\nYou need to provide valid card info before you can pick a membership."
 								+ "\nNavigate to the 'Change payment info' option to do this.\n");
 					} else {
-						//TODO: check why changeMembership by itself allows user with no card info to to choose a membership? 
 						UserModifier.changeMembership(userChange);	
 					}
 					break;
@@ -526,11 +523,10 @@ public class ValleyBikeSim {
 		// add admin to map of emails to user ids.
 		userRecords.put(ADMIN, 0);
 		
-		//TODO: delete these when fakeUser is no longer needed 
+		//add sample user 
 		usersMap.put(fakeUser.getUserID(), fakeUser);
 		userRecords.put(fakeUser.getEmail(), fakeUser.getUserID());
 		
-		//TODO:() initialize an admin object
 
 		System.out.println("Welcome to the ValleyBike Simulator.");
 		currentUserID = -1; // no user is logged in to start
@@ -540,8 +536,7 @@ public class ValleyBikeSim {
 	
 		int input;
 		
-		//TODO: for quit program options, create quit() method 
-		//save all relevant info to CSVs when quit
+		//TODO: save all relevant info to CSVs when quit
 		try {
 			while(true) {	
 				if (currentUserID > 0) {
@@ -807,7 +802,6 @@ public class ValleyBikeSim {
 				System.out.println("Thank you for your report!");
 				break;
 			case 4:
-				//TODO() Redundant with update account functionality?
 				typeissue = Issue.TypeIssue.ACCOUNT;
 				System.out.println("Select an option:\n1. Change Membership Type.\t2. Change payment details.\n");
 				int input = inputUtil.getIntInRange(1,2, "selection");
@@ -869,7 +863,6 @@ public class ValleyBikeSim {
 	 * on for >=24 hours. If so, charge the user $2000
 	 */
 	public static void checkOver24Hours() {
-		//TODO: notify user they've been charged?
 		for (Map.Entry<Integer, Ride> rideEntry: ongoingRides.entrySet()) {
 			Ride ride = rideEntry.getValue();
 			

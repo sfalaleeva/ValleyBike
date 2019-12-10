@@ -417,7 +417,6 @@ public class User extends Account{
 	 */
 	private void updateStatus() {
 		// an active user has a valid credit card
-		// TODO(): validate card includes checking card expiration
 		if (creditCard == null || !Payment.validateCard(creditCard.getCreditCardNumber(), creditCard.getExpirationDate())) {
 			System.out.println("Issue processing user credit card.");
 		}

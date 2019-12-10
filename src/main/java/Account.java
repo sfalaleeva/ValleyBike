@@ -34,7 +34,6 @@ public class Account {
 	 * @param pwd - new password
 	 */
 	public void setPassword(String pwd) {
-		//TODO: needs to match regex
 		password = pwd; 
 	}
 	

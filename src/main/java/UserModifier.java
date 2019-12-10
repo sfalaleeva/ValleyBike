@@ -80,7 +80,7 @@ public final class UserModifier {
 			int input = inputUtil.getIntInRange(0,6, "menu option");
 			switch (input) {
 				case 0: 
-					System.out.println("\n Going back. "); //TODO(): is this print statement necessary? 
+					System.out.println("\n Going back. "); 
 					break;
 				case 1:
 					//names

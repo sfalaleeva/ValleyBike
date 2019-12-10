@@ -289,6 +289,11 @@ public class Station {
 		this.address = address;
 	}
 	
+	/**
+	 * Set pixel location x and y
+	 * @param x - pixel location x
+	 * @param y - pixel location y
+	 */
 	public void setXY(int x, int y) {
 		this.x = x;
 		this.y = y;
