@@ -432,9 +432,9 @@ public final class inputUtil {
 	 * Prompts user for StationID to return their bike to, validates that ID is valid
 	 * @return station ID
 	 */
-	public static Integer getRideEndStationID() {
+	public static int getRideEndStationID() {
 		System.out.println("Please tell us ID of the station you are returning this bike to: ");
-		Integer stationID = getIntInRange(20, ValleyBikeSim.stationsMap.lastKey(), "station ID");
+		int stationID = getIntInRange(20, ValleyBikeSim.stationsMap.lastKey(), "station ID");
 		return stationID;
 	}
 	
@@ -443,7 +443,7 @@ public final class inputUtil {
 	 * at a given station and validating that user entered one of the numbers in that list
 	 * @return bike ID
 	 */
-	public static Integer getValidBikeIdAtStation() {
+	public static int getValidBikeIdAtStation() {
 		System.out.println("First, enter the ID of the station you want to start your ride from:");
 		int stationID = getIntInRange(20, ValleyBikeSim.stationsMap.lastKey(), "station ID");
 		Station station = ValleyBikeSim.stationsMap.get(stationID);
@@ -454,7 +454,7 @@ public final class inputUtil {
 		List<Integer> bikeIDs = ValleyBikeSim.stationToBikeMap.get(stationID);
 		System.out.println("These are the bikes that are currently at the station: "+ bikeIDs.toString());  
 		System.out.println("Please enter the ID of the bike you would like to check out: ");
-		Integer bikeID = inputUtil.getIntInList(bikeIDs, "bike ID");
+		int bikeID = inputUtil.getIntInList(bikeIDs, "bike ID");
 	
 		return bikeID;
 	}

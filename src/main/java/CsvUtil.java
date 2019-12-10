@@ -37,7 +37,6 @@ public final class CsvUtil {
 		saveOngoingRides();
 		saveStationList();
 		saveBikeData();
-		saveCompletedRides();
 		// TODO(): save user data
 		
 	}
@@ -178,8 +177,7 @@ public final class CsvUtil {
 		}
 		
 	}
-	
-	//TODO: there's two saveCompletedRide methods? Does one need to be deleted? 
+
 	
 	/** Save rides that have been completed into files based on the date.
 	 *  It will create a file if a file doesn't exist or append to existing
@@ -192,7 +190,7 @@ public final class CsvUtil {
 				//overwrites existing file with new data
 				csvWriter = new FileWriter(file);
 				writer = new CSVWriter(csvWriter);
-				String [] record = "Ride ID,User ID,Bike ID,Start Station,End Station,Start Time,End Time,Duration".split(",");
+				String [] record = "Ride ID,User ID,Bike ID,Start Station,End Station,Start Time,End Time".split(",");
 					
 				writer.writeNext(record);
 					
@@ -205,36 +203,6 @@ public final class CsvUtil {
 			for (Ride ride: ValleyBikeSim.dailyRidesMap.get(dateToSave)) {
 				saveRide(ride, filePath);
 			}	
-	}
-	
-	/** Save rides that have been completed into files based on the date.
-	 *  It will create a file if a file doesn't exist or append to existing
-	 *  file. */
-	public static void saveCompletedRides() {
-		String filePath = "data-files/";
-		//loops through and saves all completed rides by day
-		for (Entry<String, ArrayList<Ride>> entry : ValleyBikeSim.dailyRidesMap.entrySet()) {
-			filePath += entry.getKey() + ".csv";
-			File file = new File(filePath);
-			if (!file.exists()) {
-				try {
-					//overwrites existing file with new data
-					csvWriter = new FileWriter(file);
-					writer = new CSVWriter(csvWriter);
-					String [] record = "Ride ID,User ID,Bike ID,Start Station,End Station,Start Time,End Time,Duration".split(",");
-					
-					writer.writeNext(record);
-					
-					writer.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-			
-			for (Ride ride: entry.getValue()) {
-				saveRide(ride, filePath);
-			}
-		}	
 	}
 	
 	/**
@@ -265,7 +233,7 @@ public final class CsvUtil {
 				endTime = inputUtil.localDateTimeToString(ride.getEndTime(), inputUtil.LOCAL_DATE_TIME_FORMAT);
 			} 
 			csvWriter.append(endTime);
-			
+		
 			csvWriter.append("\n");
 
 			csvWriter.flush();
@@ -287,6 +255,7 @@ public final class CsvUtil {
 		//toLocalDateTime returns LocalDateTime.MAX if unable to format appropriately
 		// according to inputUti.LOCAL_DATE_TIME_FORMAT
 		// TODO(): validate time inputs from file
+		// csv rides might contain a duration (in seconds) that could be used instead of the start/end time (.
 		try {
 			CSVReader rideDataReader = new CSVReader(new FileReader(rideData));
 			List<Ride> ridesList = new ArrayList<>();

@@ -49,7 +49,7 @@ public class Ride {
 		
 		
 		/**
-		 * Duration of the ride in minutes
+		 * Duration of the ride in seconds
 		 */
 		private long rideDuration;
 		
@@ -78,8 +78,8 @@ public class Ride {
 		/**
 		 * Getter methods for the Ride objects.
 		 */
-		
-		
+
+
 		/**
 		 * Gets ID of the ride
 		 * @return - ride ID for this ride
@@ -142,8 +142,8 @@ public class Ride {
 		
 		
 		/**
-		 * Gets the ride duration in minutes
-		 * @return - ride duration in minutes
+		 * Gets the ride duration in second
+		 * @return - ride duration in seconds
 		 */
 		public long getRideDuration() {
 			return this.rideDuration;

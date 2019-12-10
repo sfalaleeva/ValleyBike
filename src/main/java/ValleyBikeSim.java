@@ -196,14 +196,14 @@ public class ValleyBikeSim {
 			return;
 		}
 
-		Integer bikeID = inputUtil.getValidBikeIdAtStation();
+		int bikeID = inputUtil.getValidBikeIdAtStation();
 		if (bikeID == -1) {
 			return;
 		}
 		Bike bike = bikesMap.get(bikeID);
 		
 		currentUser.addToBalance(currentUser.getMembership().getPricePerRide()); //charge per ride according to membership
-		Ride ride = new Ride(currentUserID, bikeID, bike.getStatID(), -1, LocalDateTime.now(), null);
+		Ride ride = new Ride(currentUserID, bikeID, bike.getStatID(), -1, LocalDateTime.now(), LocalDateTime.MAX);
 		currentUser.setCurrentRide(ride.getID());
 		ongoingRides.put(ride.getID(), ride);
 		
@@ -254,9 +254,7 @@ public class ValleyBikeSim {
 		System.out.println("Your ride was ended successfully! We hope you ride again soon!");
 		
 		// save rides for that day
-		String dateKey = 
-				inputUtil.localDateTimeToString(currentRide.getStartTime(), 
-						inputUtil.LOCAL_DATE_FORMAT);
+		String dateKey = inputUtil.localDateTimeToString(currentRide.getStartTime(), inputUtil.LOCAL_DATE_FORMAT);
 		CsvUtil.saveCompletedRides(dateKey);
 	}
 	
@@ -266,8 +264,7 @@ public class ValleyBikeSim {
 	 */
 	public static void addCurrentRideToMap(Ride ride) {
 		// gets date string without time
-		String dateString = inputUtil.localDateTimeToString(ride.getStartTime(), 
-				inputUtil.LOCAL_DATE_FORMAT);
+		String dateString = inputUtil.localDateTimeToString(ride.getStartTime(), inputUtil.LOCAL_DATE_FORMAT);
 		// if it exists, we append the new ride
 		if (dailyRidesMap.containsKey(dateString)) {
 			dailyRidesMap.get(dateString).add(ride);
@@ -387,6 +384,7 @@ public class ValleyBikeSim {
 					+ "\nUpdate your account to start riding.");
 		}
 	}
+	
 	/**
 	 * Logs out a user that is currently logged in
 	 */
@@ -538,12 +536,7 @@ public class ValleyBikeSim {
 		currentUserID = -1; // no user is logged in to start
 		CsvUtil.readStationData();
 		
-		if (CsvUtil.readBikeData().isEmpty()) {
-			initializeBikes();
-		}
-		else {
-			reinitializeBikes(CsvUtil.readBikeData());
-		}
+		reinitializeBikes(CsvUtil.readBikeData());
 	
 		int input;
 		
@@ -675,7 +668,7 @@ public class ValleyBikeSim {
 				+ "0. Quit Program\t\t3. Login"
 				+ "\n1. View station list\t4. Register"
 				+ "\n2. Show Station Map");
-				}
+	}
 	
 	/**
 	 * Prints the user menu for the Valley Bike Simulator to the console.
@@ -709,45 +702,58 @@ public class ValleyBikeSim {
 	 */
 	private static void reinitializeBikes(ArrayList<Bike> bikes) {
 		
-		for (Bike bike: bikes) {
-			// store newly reconstructed bike object
-			bikesMap.put(bike.getID(), bike);
-		
-			// add new bike to stationToBikeMap if at a station
-			if(bike.getStatID() >= 20) {
-				if (!stationToBikeMap.containsKey(bike.getStatID()) ) {
-					stationToBikeMap.put(bike.getStatID(), new ArrayList<>());
+			for (Bike bike: bikes) {
+				// store newly reconstructed bike object
+				bikesMap.put(bike.getID(), bike);
+			
+				// add new bike to stationToBikeMap if at a station
+				if(bike.getStatID() >= 20) {
+					if (!stationToBikeMap.containsKey(bike.getStatID()) ) {
+						stationToBikeMap.put(bike.getStatID(), new ArrayList<>());
+					}
+					stationToBikeMap.get(bike.getStatID()).add(bike.getID());
 				}
-				stationToBikeMap.get(bike.getStatID()).add(bike.getID());
+				// ensures the next bike id is updated 
+				Bike.setNextBikeID();
 			}
-		}
 		
-		// ensures the next bike id is updated 
-		Bike.setNextBikeID();
-	}
+			
+			// if there were no bikes, or the stations have bikes that were not
+			// found in bike-data.csv, initialize these bikes
+			initializeBikes();
+		}
+
 	
 	/**
-	 * Creates new bikes objects based on station data if there is not existing
+	 * Creates new bike objects based on station data if there is not existing
 	 * bike data.
 	 */
 	private static void initializeBikes() {
  		for (Station station : stationsMap.values()) {
- 			ArrayList<Integer> bikes = new ArrayList<>();
+ 			ArrayList<Bike> bikes = new ArrayList<>();
 
  			int numBikes = station.getBikes();
- 			Bike bike;
- 			// initialize all bikes at this station
- 			while (numBikes > 0) {
- 				bike = new Bike(station.getID());
- 				bikes.add(bike.getID());
- 				// add bike to map
-				bikesMap.put(bike.getID(), bike);
- 				numBikes--;
+ 			
+ 			// if the station id is a key in stationToBikeMap
+ 			if (stationToBikeMap.containsKey(station.getID())) {
+ 				int difference = numBikes - stationToBikeMap.get(station.getID()).size();
+ 				if (difference > 0) {
+ 					Bike bike = new Bike(station.getID());
+ 					bikes.add(bike);
+ 					difference--;
+ 				}
+ 				// adds a list of bike objects to the station + ValleyBikeSim
+ 				station.addBikes(bikes);	
  			}
- 			stationToBikeMap.put(station.getID(), bikes);
+ 			// there are no bikes for the stations yet
+ 			else {
+ 				// initialize all missing bikes at this station
+ 				if (numBikes > 0) {
+ 					station.setBikes(numBikes);
+ 				}
+ 			}
  		}
 	}
-	
 	
 	/**
 	 * deletes account
@@ -819,6 +825,7 @@ public class ValleyBikeSim {
 		}	
 		
 	}
+	
 	/**
 	 * Shows the map of the stations
 	 */
@@ -832,8 +839,7 @@ public class ValleyBikeSim {
 		frame.setResizable(false);
 		
 		graphic.repaint();
-		
-		
+			
 	}
 	
 	/**
