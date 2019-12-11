@@ -173,6 +173,7 @@ public class ValleyBikeSim {
 		 * Save this newly created station to the stations map.
 		 */
 		stationsMap.put(newStation.getID(), newStation);
+		CsvUtil.saveStationList();
 		System.out.println("Station successfully added. Choose 'View station list' in menu to view the station.\n");
 	}
 
@@ -210,7 +211,7 @@ public class ValleyBikeSim {
 		bike.checkOut(); // updates station to -1 and bike object
 		System.out.println("Your ride has been started successfully!");
 		
-		CsvUtil.saveOngoingRides();
+		CsvUtil.saveData();
 	}
 	
 	/**
@@ -235,7 +236,6 @@ public class ValleyBikeSim {
 		currentRide.setToStationID(endStationID);
 		
 		ongoingRides.remove(currentRide.getID());
-		
 		addCurrentRideToMap(currentRide);
 		
 		//calculate the charge for the ride and charge the user if they've ridden longer than their membership allows for free
@@ -256,6 +256,7 @@ public class ValleyBikeSim {
 		// save rides for that day
 		String dateKey = inputUtil.localDateTimeToString(currentRide.getStartTime(), inputUtil.LOCAL_DATE_FORMAT);
 		CsvUtil.saveCompletedRides(dateKey);
+		CsvUtil.saveData();
 	}
 	
 	/**
@@ -381,6 +382,7 @@ public class ValleyBikeSim {
 			System.out.println("You havn't selected a membership or payment method yet. "
 					+ "\nUpdate your account to start riding.");
 		}
+		CsvUtil.saveUserData();
 	}
 	
 	/**
@@ -514,6 +516,7 @@ public class ValleyBikeSim {
 			}
 			break; //exit out of while loop
 		}
+		CsvUtil.saveUserData();
 	}
 	
 	/**
@@ -523,20 +526,23 @@ public class ValleyBikeSim {
 		// add admin to map of emails to user ids.
 		userRecords.put(ADMIN, 0);
 		
-		//add sample user 
+		//add sample user
+		/**
 		usersMap.put(fakeUser.getUserID(), fakeUser);
 		userRecords.put(fakeUser.getEmail(), fakeUser.getUserID());
-		
+		**/
 
 		System.out.println("Welcome to the ValleyBike Simulator.");
 		currentUserID = -1; // no user is logged in to start
+		
 		CsvUtil.readStationData();
+		CsvUtil.readUserData();
+		CsvUtil.readOngoingRideData();
 		
 		reinitializeBikes(CsvUtil.readBikeData());
 	
 		int input;
-		
-		//TODO: save all relevant info to CSVs when quit
+
 		try {
 			while(true) {	
 				if (currentUserID > 0) {
@@ -546,7 +552,7 @@ public class ValleyBikeSim {
 					input = inputUtil.getIntInRange(0, 8, "menu option");
 					switch (input) {
 						case 0: 
-							System.out.println("\nThank you for using Valley Bike Simulator!");
+							quit();
 							break;
 						case 1:
 							printStationList();
@@ -586,7 +592,7 @@ public class ValleyBikeSim {
 					input = inputUtil.getIntInRange(0,8, "menu option");
 					switch (input) {
 						case 0: 
-							System.out.println("\nThank you for using Valley Bike Simulator!");
+							quit();
 							break;
 						case 1:
 							printStationList();
@@ -628,8 +634,7 @@ public class ValleyBikeSim {
 					input = inputUtil.getIntInRange(0,4, "menu option");
 					switch (input) {
 						case 0: 
-							System.out.println("\nThank you for using Valley Bike Simulator!");
-							System.exit(0);
+							quit();
 							break;
 						case 1:
 							printStationList();
@@ -651,6 +656,12 @@ public class ValleyBikeSim {
 		} catch(Exception e){
 
 		}
+	}
+	
+	public static void quit() {
+		CsvUtil.saveData();
+		System.out.println("\nThank you for using Valley Bike Simulator!");
+		System.exit(0);
 	}
 
 
@@ -757,6 +768,7 @@ public class ValleyBikeSim {
 	private static void deleteAcct(User user) {
 		usersMap.remove(user.getUserID());
 		userRecords.remove(user.getEmail());
+		CsvUtil.saveUserData();
 		System.out.println("Deleted");
 		currentUserID = -1;
 	}

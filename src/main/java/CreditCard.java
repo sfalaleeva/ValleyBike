@@ -21,8 +21,8 @@ public class CreditCard {
 	 * @param expirationDate
 	 */
 	public CreditCard(String cc, LocalDate expirationDate) {
-		this.creditCardNumber = "";
-		this.expirationDate = null;
+		this.creditCardNumber = cc;
+		this.expirationDate = expirationDate;
 	}
 	
 	/* Accessors */

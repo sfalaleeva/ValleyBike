@@ -100,6 +100,32 @@ public class User extends Account{
 		isActive = false;
 	}
 	
+	/**
+	 * Second constructor for loading existing users from CSV files into the system 
+	 */
+	public User(Integer ID, String firstName, String lastName, Address address, 
+			LocalDate dob, String phone, String email, String pwd, String creditCard,
+		    LocalDate ccExpDate,Float balance, long rideTime, Float distance, 
+		    Membership membership, LocalDate expDate, boolean status, Integer currentRideId) {
+		  super(pwd);
+		  this.setUserID(ID);
+		  this.firstName = firstName;
+		  this.lastName = lastName;
+		  this.address = address;
+		  this.dob = dob;
+		  this.phone = phone;
+		  this.email = email;
+		  this.creditCard = new CreditCard(creditCard, ccExpDate);
+		  this.balance = balance;
+		  this.totalRideTime = rideTime;
+		  this.totalDistance = distance;
+		  this.membership = membership;
+		  this.membershipExpirationDate = expDate;
+		  this.isActive = status;
+		  this.currentRideID = currentRideId;
+		  rideHistory = new ArrayList<>();
+	}
+	
 	/*
 	 * 
 	 * Accessor Methods
@@ -454,7 +480,7 @@ public class User extends Account{
 		} else {
 			System.out.printf(format, "Credit Card:", "NONE"); 
 		}
-		
+		System.out.printf(format, "Account balance:", this.balance);
 		
 	}
 	

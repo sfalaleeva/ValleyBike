@@ -74,6 +74,16 @@ public class Ride {
 			nextRideID++;
 		} 
 		
+		public Ride(int rideID, int userID, int bikeID, int fromStationID, int toStationID, LocalDateTime startTime, LocalDateTime endTime) {
+			this.rideID = rideID;
+			this.userID = userID;
+			this.bikeID = bikeID;
+			this.fromStationID = fromStationID;
+			this.toStationID = toStationID;
+			this.startTime = startTime;
+			this.endTime = endTime;
+			calculateDuration();
+		} 
 		
 		/**
 		 * Getter methods for the Ride objects.

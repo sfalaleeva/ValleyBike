@@ -228,12 +228,30 @@ public final class inputUtil {
 			return "";
 		}
 	}
+	
+	/**
+	 * Converts date into a String in specified format. If the format or 
+	 * date are invalid it will return an empty String.
+	 * @param date
+	 * @return LocalDate object as a String
+	 */
+	public static String localDateToString(LocalDate date, String format) {
+		try {
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+			String dateString = formatter.format(date);
+			return dateString;
+		}
+		catch(Exception e) {
+			System.out.printf("The date could not be formatted into string of %s.", format);
+			return "";
+		}
+	}
 
 	/**
 	 * Turn provided string into date of specified format. If String
 	 * cannot be formatted with the given string, the LocalDate.MAX is
 	 * returned.
-	 * @return Date
+	 * @return LocalDate object
 	 */
 	public static LocalDate toLocalDate(String dateString, String format) {
 		try {
