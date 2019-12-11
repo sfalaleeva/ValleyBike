@@ -107,8 +107,7 @@ public class User extends Account{
 			LocalDate dob, String phone, String email, String pwd, String creditCard,
 		    LocalDate ccExpDate,Float balance, long rideTime, Float distance, 
 		    Membership membership, LocalDate expDate, boolean status, Integer currentRideId) {
-		  super(pwd);
-		  this.setUserID(ID);
+		  super(ID, pwd);
 		  this.firstName = firstName;
 		  this.lastName = lastName;
 		  this.address = address;
@@ -444,7 +443,6 @@ public class User extends Account{
 	private void updateStatus() {
 		// an active user has a valid credit card
 		if (creditCard == null || !Payment.validateCard(creditCard.getCreditCardNumber(), creditCard.getExpirationDate())) {
-			System.out.println("Issue processing user credit card.");
 		}
 		// has an active membership
 		// compareTo returns negative if expiration data is before current date,

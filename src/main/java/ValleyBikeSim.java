@@ -4,7 +4,6 @@ import java.util.stream.Collectors;
 import javax.swing.JFrame;
 
 //import com.sun.tools.javac.code.TypeMetadata.Entry;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class ValleyBikeSim {
@@ -49,10 +48,12 @@ public class ValleyBikeSim {
 	/** Private static instance of class. */
 	private static ValleyBikeSim valleyBike = new ValleyBikeSim();
 	
+	//TODO: remove this
 	/** A sample user to use to use as needed*/
+	/**
 	private static User fakeUser = new User("Sarah", "Pong", new Address("123 silver st","Holyoke", "MA", "01040", "USA"), 
 			LocalDate.now(), "4135555555", "sarah@gmail.com", "Pwd123");
-	
+	**/
 
 	/** 
 	 * Private ValleyBike constructor.
@@ -526,6 +527,8 @@ public class ValleyBikeSim {
 		// add admin to map of emails to user ids.
 		userRecords.put(ADMIN, 0);
 		
+		
+		//TODO: remove this 
 		//add sample user
 		/**
 		usersMap.put(fakeUser.getUserID(), fakeUser);
@@ -538,6 +541,7 @@ public class ValleyBikeSim {
 		CsvUtil.readStationData();
 		CsvUtil.readUserData();
 		CsvUtil.readOngoingRideData();
+		CsvUtil.readNextIds();
 		
 		reinitializeBikes(CsvUtil.readBikeData());
 	

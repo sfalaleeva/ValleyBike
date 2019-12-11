@@ -1,6 +1,5 @@
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
+
 public class Ride {
 		
 		/** 

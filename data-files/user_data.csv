@@ -1,0 +1,3 @@
+"ID","FirstName","LastName","Street"," City"," State"," Zip"," Country","DOB","Phone"," Email"," Password"," CreditCard"," CCExpDate"," Balance"," TotalRideTime"," TotalDistance"," Membership"," MembershipExpDate"," isActive"," currentRideId"
+"1","Sarah","Pong","123 silver st","Holyoke","MA","01040","USA","12/10/2019","4135555555","sarah@gmail.com","Pwd123","","12/31/2000","0.0","0","0.0","NONE","12/31/2999","0","-1"
+"2","Mary","Jones","44 Green St","Northampton","MA","01063","USA","09/05/1988","5673456978","mary@hotmail.com","Mary77","1234123412341234","02/01/2020","0.0","21","4.2000003","MONTH","01/10/2020","1","-1"

@@ -44,6 +44,7 @@ public final class UserModifier {
 		}
 		
 		User user = new User(fName, lName, userAddress, dob, phone, email, pwd);
+		user.setUserID(ValleyBikeSim.usersMap.lastKey()+1);
 		
 		System.out.println("Would you like to enter payment information and select a membership? Enter y/n");
 		if (inputUtil.getBool()) {

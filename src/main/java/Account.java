@@ -29,6 +29,11 @@ public class Account {
 		nextUserID++;
 	}
 	
+	public Account(Integer id, String pwd) {
+		userID = id;
+		password = pwd;
+	}
+	
 	/**
 	 * Sets the user's password
 	 * @param pwd - new password

@@ -4,9 +4,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Map.Entry;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
@@ -39,6 +37,7 @@ public final class CsvUtil {
 		saveStationList();
 		saveBikeData();
 		saveUserData();
+		saveNextIds();
 	}
 	
 	
@@ -175,7 +174,6 @@ public final class CsvUtil {
 
 			/* to read the CSV data row wise: */
 			List<String[]> allStationEntries = stationDataReader.readAll();
-			System.out.print(allStationEntries.toString());
 			stationDataReader.close();
 			System.out.println("");
 			int counter = 0;
@@ -543,6 +541,43 @@ public final class CsvUtil {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static void readNextIds() {
+		try {
+			String IdFile = "data-files/next_ID.csv";
+
+			CSVReader idReader = new CSVReader(new FileReader(IdFile));
+
+	        List<String[]> lines = idReader.readAll();
+	        idReader.close();
+	        String[] ids = lines.get(1);
+	        Integer userId = Integer.valueOf(ids[0]);
+	        Integer rideId = Integer.valueOf(ids[1]);
+	        
+	        Account.nextUserID = userId;
+	        Ride.nextRideID = rideId;
+	    }
+	    catch(Exception e) {
+	      System.out.println(e.getMessage());
+	    }
+	}
+	
+	public static void saveNextIds() {
+			File file = new File("data-files/next_ID.csv");
+			try {
+				  csvWriter = new FileWriter(file);
+				  writer = new CSVWriter(csvWriter);
+				  String[] record = {"nextUserID", "nextRideID"};
+			      writer.writeNext(record);
+			      String ids[] = {Integer.toString(User.nextUserID), Integer.toString(Ride.nextRideID)};
+			      writer.writeNext(ids);
+			      writer.close();
+			      
+			 } catch (IOException e) {
+				
+				e.printStackTrace();
+			}
 	}
 	
 }
