@@ -692,8 +692,7 @@ public class ValleyBikeSim {
 				+ "\n1. View station list\t6. View User Report"
 				+ "\n2. Unlock Bike\t\t7. Show Station Map"
 				+ "\n3. End Ride\t\t8. Logout"
-				+ "\n4. Report Issue"
-				+ "\n5. Show station map");
+				+ "\n4. Report Issue");
 	}
 	
 	/**
