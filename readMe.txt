@@ -10,16 +10,19 @@ Have Junit installed and working in order to get no errors
 
 Our main class is the ValleyBikeSim. 
 
-We have 2 accounts already accessible on start-up: 
+We have 3 accounts already accessible on start-up: 
 1. Admin, who is able to access more/do different things than a user. 
 	- To login as admin:
 		- select login option from main menu 
 		- type "admin" when prompted for email. 
-2. fakeUser, a sample user account 
-	- To login as fakeUser:
+2. Two user accounts stored in user_data.csv file 
+	- To login as one of those users :
 		- select login from main menu
-		- eneter "sarah@gmail.com" when prompted for email
+		- enter "sarah@gmail.com" when prompted for email
 		- enter "Pwd123" when prompted for password
+		- Second preloaded user: username "mary@hotmail.com" -- password "Mary77"
+
+If you register a new user that account will become accessible for login during current and any further sessions.
 
 Coding References: 
 https://stackoverflow.com/questions/8204680/java-regex-email
