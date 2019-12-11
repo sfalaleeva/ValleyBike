@@ -24,8 +24,12 @@ We have 3 accounts already accessible on start-up:
 
 If you register a new user that account will become accessible for login during current and any further sessions.
 
+Our additional feature is a map of stations, to access it - select 'Show station map' option from the user menu.
+
+
 Coding References: 
 https://stackoverflow.com/questions/8204680/java-regex-email
 https://www.mkyong.com/regular-expressions/how-to-validate-password-with-regular-expression/
 https://dzone.com/articles/java-string-format-examples
 https://stackoverflow.com/questions/6000810/printing-with-t-tabs-does-not-result-in-aligned-columns
+https://www.geeksforgeeks.org/writing-a-csv-file-in-java-using-opencsv/
