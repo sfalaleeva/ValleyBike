@@ -543,6 +543,10 @@ public final class CsvUtil {
 		}
 	}
 	
+	/**
+	 * Reads nextUserID and nextRideID from a CSV file and updates those values 
+	 * in Account and Ride classes
+	 */
 	public static void readNextIds() {
 		try {
 			String IdFile = "data-files/next_ID.csv";
@@ -563,6 +567,9 @@ public final class CsvUtil {
 	    }
 	}
 	
+	/**
+	 * Saves nextUserID and nextRideID into a CSV file
+	 */
 	public static void saveNextIds() {
 			File file = new File("data-files/next_ID.csv");
 			try {

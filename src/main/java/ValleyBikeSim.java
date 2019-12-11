@@ -662,6 +662,9 @@ public class ValleyBikeSim {
 		}
 	}
 	
+	/**
+	 * Prints goodbye message, saves all the data into CSV files and terminates execution of the program
+	 */
 	public static void quit() {
 		CsvUtil.saveData();
 		System.out.println("\nThank you for using Valley Bike Simulator!");
